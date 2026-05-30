@@ -1,15 +1,11 @@
 import { FLIGHTS_DATA, INITIAL_BIDS } from "../../data";
 import type { Bid, Flight } from "../../types";
-import type { FlightFilter, FlightQuery, FlightsPage, FlightsSummary } from "../contracts";
+import type { FlightsPage, FlightsSummary } from "../contracts";
 import type { AppDb } from "./contracts";
+import { createDbEmulator } from "./emulator";
 
 function cloneBids(bids: Bid[]): Bid[] {
   return bids.map((bid) => ({ ...bid }));
-}
-
-function createInitialBidsByFlightId(flights: Flight[]): Map<Flight["id"], Bid[]> {
-  const entries = flights.map((flight) => [flight.id, cloneBids(INITIAL_BIDS)] as const);
-  return new Map(entries);
 }
 
 function summarizeFlights(flights: Flight[]): FlightsSummary {
@@ -21,112 +17,95 @@ function summarizeFlights(flights: Flight[]): FlightsSummary {
   };
 }
 
-function queryFlightsData(query: FlightQuery): FlightsPage {
-  const search = (query.search ?? "").trim().toLowerCase();
-  const filters = query.filters ?? [];
-  const sortBy = query.sortBy ?? "dep";
-  const sortDir = query.sortDir ?? "asc";
-  const page = Math.max(1, query.page ?? 1);
-  const pageSize = Math.max(1, query.pageSize ?? 6);
-
-  const toComparableString = (value: unknown) => String(value ?? "").toLowerCase();
-  const matchesFilter = (flight: Flight, filter: FlightFilter): boolean => {
-    const fieldValue = flight[filter.field];
-
-    if (filter.op === "eq") {
-      return String(fieldValue) === String(filter.value);
-    }
-
-    if (filter.op === "contains") {
-      return toComparableString(fieldValue).includes(toComparableString(filter.value));
-    }
-
-    if (!Array.isArray(filter.value)) return false;
-    return filter.value.map((v) => String(v)).includes(String(fieldValue));
-  };
-
-  const filtered = FLIGHTS_DATA.filter((flight) => {
-    const filtersOk = filters.every((filter) => matchesFilter(flight, filter));
-    if (!filtersOk) return false;
-    if (!search) return true;
-
-    const haystack = [flight.id, flight.from, flight.to, flight.aircraft].join(" ").toLowerCase();
-    return haystack.includes(search);
-  }).sort((a, b) => {
-    const vals = {
-      dep: [a.dep, b.dep],
-      bids: [a.bids, b.bids],
-      revenue: [a.revenue, b.revenue],
-      topBid: [a.topBid, b.topBid],
-    } as const;
-    const [va, vb] = vals[sortBy];
-    return sortDir === "asc" ? (va > vb ? 1 : -1) : vb > va ? 1 : -1;
-  });
-
-  const total = filtered.length;
-  const offset = (page - 1) * pageSize;
-  const items = filtered.slice(offset, offset + pageSize);
-
-  return {
-    items: [...items],
-    total,
-    page,
-    pageSize,
-    summary: summarizeFlights(filtered),
-  };
-}
+type BidRow = Bid & { flightId: Flight["id"] };
 
 export const createInMemoryDb = (): AppDb => {
-  const bidsByFlightId = createInitialBidsByFlightId(FLIGHTS_DATA);
-
-  const getMutableBids = (flightId: Flight["id"]): Bid[] => {
-    const existing = bidsByFlightId.get(flightId);
-    if (existing) return existing;
-    const seeded = cloneBids(INITIAL_BIDS);
-    bidsByFlightId.set(flightId, seeded);
-    return seeded;
-  };
+  const bidRows: BidRow[] = FLIGHTS_DATA.flatMap((flight) =>
+    cloneBids(INITIAL_BIDS).map((bid) => ({ ...bid, flightId: flight.id })),
+  );
+  const db = createDbEmulator({
+    flights: FLIGHTS_DATA,
+    bids: bidRows,
+  });
 
   return {
     flights: {
       async listFlights() {
-        return [...FLIGHTS_DATA];
+        return db.list<Flight>("flights");
       },
 
       async queryFlights(query) {
-        return queryFlightsData(query);
+        const mappedFilters = query.filters?.map((filter) => ({
+          field: String(filter.field),
+          op: filter.op,
+          value: filter.value,
+        }));
+
+        const result = db.query<Flight>("flights", {
+          searchFields: ["id", "from", "to", "aircraft"],
+          ...(query.search !== undefined ? { search: query.search } : {}),
+          ...(mappedFilters !== undefined ? { filters: mappedFilters } : {}),
+          ...(query.sortBy !== undefined ? { sortBy: query.sortBy } : {}),
+          ...(query.sortDir !== undefined ? { sortDir: query.sortDir } : {}),
+          ...(query.page !== undefined ? { page: query.page } : {}),
+          ...(query.pageSize !== undefined ? { pageSize: query.pageSize } : {}),
+        });
+
+        const filteredForSummary = db.queryAll<Flight>("flights", {
+          searchFields: ["id", "from", "to", "aircraft"],
+          ...(query.search !== undefined ? { search: query.search } : {}),
+          ...(mappedFilters !== undefined ? { filters: mappedFilters } : {}),
+          ...(query.sortBy !== undefined ? { sortBy: query.sortBy } : {}),
+          ...(query.sortDir !== undefined ? { sortDir: query.sortDir } : {}),
+        });
+
+        const page: FlightsPage = {
+          items: result.items,
+          total: result.total,
+          page: result.page,
+          pageSize: result.pageSize,
+          summary: summarizeFlights(filteredForSummary),
+        };
+
+        return page;
       },
 
       async getFlightsSummary() {
-        return summarizeFlights(FLIGHTS_DATA);
+        const allFlights = db.list<Flight>("flights");
+        return summarizeFlights(allFlights);
       },
 
       async getFlightById(flightId) {
-        return FLIGHTS_DATA.find((flight) => flight.id === flightId);
+        return db.findOne<Flight>("flights", (flight) => flight.id === flightId);
       },
     },
     bids: {
       async listBids(flightId) {
-        return cloneBids(getMutableBids(flightId));
+        const all = db.list<BidRow>("bids");
+        return all
+          .filter((bid) => bid.flightId === flightId)
+          .map(({ flightId: _flightId, ...bid }) => bid);
       },
 
       async setBidState(flightId, bidId, state) {
-        const mutable = getMutableBids(flightId);
-        const found = mutable.find((bid) => bid.id === bidId);
-        if (!found) return undefined;
-        found.state = state;
-        return { ...found };
+        const updated = db.updateOne<BidRow>(
+          "bids",
+          (bid) => bid.flightId === flightId && bid.id === bidId,
+          (bid) => ({ ...bid, state }),
+        );
+        if (!updated) return undefined;
+        const { flightId: _flightId, ...bid } = updated;
+        return bid;
       },
 
       async setManyBidStates(flightId, bidIds, state) {
         if (bidIds.length === 0) return;
         const target = new Set(bidIds);
-        const mutable = getMutableBids(flightId);
-        for (const bid of mutable) {
-          if (target.has(bid.id)) {
-            bid.state = state;
-          }
-        }
+        db.updateMany<BidRow>(
+          "bids",
+          (bid) => bid.flightId === flightId && target.has(bid.id),
+          (bid) => ({ ...bid, state }),
+        );
       },
     },
   };
