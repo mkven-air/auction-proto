@@ -3,50 +3,52 @@ import { TIER_META, colorToken } from "./data";
 import { Pill, Toggle } from "./primitives";
 import { T } from "./theme";
 import { TXT } from "./i18n";
-import type { ProductActiveMap, ProductBidMap, ProductConfig, ProductKey, Tier } from "./types";
+import {
+  PASSENGER_DEFAULT_ACTIVE,
+  PASSENGER_DEFAULT_BIDS,
+  PASSENGER_FLIGHT,
+  PASSENGER_MULTIPLIER,
+  PASSENGER_PRODUCT_SPECS,
+  PASSENGER_PROFILE,
+} from "./passengerBidData";
+import type { ProductActiveMap, ProductBidMap, ProductConfig, ProductKey } from "./types";
 
 export function PassengerBidUI() {
-  const PASSENGER: { name: string; tier: Tier; initials: string } = {
-    name: "Азиз Каримов",
-    tier: "Platinum",
-    initials: "АК",
-  };
   const PRODUCTS: Record<ProductKey, ProductConfig> = {
     bc: {
       label: TXT.passenger.products.bc.label,
       desc: TXT.passenger.products.bc.desc,
-      icon: "🛋",
-      min: 262,
-      max: 750,
-      defaultVal: 350,
+      icon: PASSENGER_PRODUCT_SPECS.bc.icon,
+      min: PASSENGER_PRODUCT_SPECS.bc.min,
+      max: PASSENGER_PRODUCT_SPECS.bc.max,
+      defaultVal: PASSENGER_PRODUCT_SPECS.bc.defaultVal,
       color: T.brandPrimary,
       trackColor: T.brandPrimary,
     },
     ex: {
       label: TXT.passenger.products.ex.label,
       desc: TXT.passenger.products.ex.desc,
-      icon: "🦵",
-      min: 32,
-      max: 85,
-      defaultVal: 46,
+      icon: PASSENGER_PRODUCT_SPECS.ex.icon,
+      min: PASSENGER_PRODUCT_SPECS.ex.min,
+      max: PASSENGER_PRODUCT_SPECS.ex.max,
+      defaultVal: PASSENGER_PRODUCT_SPECS.ex.defaultVal,
       color: T.statusSuccess,
       trackColor: T.statusSuccess,
     },
     sb: {
       label: TXT.passenger.products.sb.label,
       desc: TXT.passenger.products.sb.desc,
-      icon: "🪑",
-      min: 8,
-      max: 45,
-      defaultVal: 18,
+      icon: PASSENGER_PRODUCT_SPECS.sb.icon,
+      min: PASSENGER_PRODUCT_SPECS.sb.min,
+      max: PASSENGER_PRODUCT_SPECS.sb.max,
+      defaultVal: PASSENGER_PRODUCT_SPECS.sb.defaultVal,
       color: T.brandPrimary,
       trackColor: T.brandPrimary,
     },
   };
-  const MULT = 1.1;
 
-  const [bids, setBids] = useState<ProductBidMap>({ bc: 350, ex: 46, sb: 18 });
-  const [active, setActive] = useState<ProductActiveMap>({ bc: true, ex: true, sb: false });
+  const [bids, setBids] = useState<ProductBidMap>(PASSENGER_DEFAULT_BIDS);
+  const [active, setActive] = useState<ProductActiveMap>(PASSENGER_DEFAULT_ACTIVE);
   const [submitted, setSubmitted] = useState(false);
   const productEntries = Object.entries(PRODUCTS) as Array<[ProductKey, ProductConfig]>;
 
@@ -62,7 +64,7 @@ export function PassengerBidUI() {
     (sum, key) => sum + (active[key] ? bids[key] : 0),
     0,
   );
-  const wt = Math.round(base * MULT);
+  const wt = Math.round(base * PASSENGER_MULTIPLIER);
 
   const sliderBg = (prod: ProductKey) => {
     const p = PRODUCTS[prod];
@@ -71,7 +73,7 @@ export function PassengerBidUI() {
     return `linear-gradient(to right,${p.trackColor} 0%,${p.trackColor} ${pct}%,${T.borderDefault} ${pct}%,${T.borderDefault} 100%)`;
   };
 
-  const tierMeta = TIER_META[PASSENGER.tier];
+  const tierMeta = TIER_META[PASSENGER_PROFILE.tier];
 
   if (submitted) {
     const prods = (Object.keys(active) as ProductKey[])
@@ -97,8 +99,12 @@ export function PassengerBidUI() {
               justifyContent: "space-between",
             }}
           >
-            <span style={{ fontSize: 11, color: T.textMuted }}>09:41</span>
-            <span style={{ fontSize: 11, color: T.textMuted }}>uzbekistanairways.uz</span>
+            <span style={{ fontSize: 11, color: T.textMuted }}>
+              {PASSENGER_FLIGHT.statusBarTime}
+            </span>
+            <span style={{ fontSize: 11, color: T.textMuted }}>
+              {PASSENGER_FLIGHT.statusBarHost}
+            </span>
             <span style={{ fontSize: 11, color: T.textMuted }}>●●●</span>
           </div>
           <div style={{ padding: "32px 20px 24px", textAlign: "center" }}>
@@ -137,7 +143,7 @@ export function PassengerBidUI() {
               }}
             >
               {[
-                [TXT.passenger.submitted.rows.flight, "HY 602 · TAS → IST"],
+                [TXT.passenger.submitted.rows.flight, PASSENGER_FLIGHT.submittedRoute],
                 [TXT.passenger.submitted.rows.upgrades, prods.join(" + ") || "—"],
                 [TXT.passenger.submitted.rows.paymentStatus, TXT.passenger.submitted.paymentValue],
                 [TXT.passenger.submitted.rows.weightedBid, `$${wt}`],
@@ -218,8 +224,8 @@ export function PassengerBidUI() {
             justifyContent: "space-between",
           }}
         >
-          <span style={{ fontSize: 11, color: T.textMuted }}>09:41</span>
-          <span style={{ fontSize: 11, color: T.textMuted }}>uzbekistanairways.uz</span>
+          <span style={{ fontSize: 11, color: T.textMuted }}>{PASSENGER_FLIGHT.statusBarTime}</span>
+          <span style={{ fontSize: 11, color: T.textMuted }}>{PASSENGER_FLIGHT.statusBarHost}</span>
           <span style={{ fontSize: 11, color: T.textMuted }}>●●●</span>
         </div>
 
@@ -257,7 +263,7 @@ export function PassengerBidUI() {
             <span
               style={{ fontSize: 16, fontWeight: 700, color: T.textPrimary, letterSpacing: -0.3 }}
             >
-              HY 602
+              {PASSENGER_FLIGHT.number}
             </span>
             <span
               style={{
@@ -267,12 +273,14 @@ export function PassengerBidUI() {
                 fontFamily: "monospace",
               }}
             >
-              15 июн · 08:45
+              {PASSENGER_FLIGHT.departureLabel}
             </span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 20, fontWeight: 700, color: T.textPrimary }}>TAS</div>
+              <div style={{ fontSize: 20, fontWeight: 700, color: T.textPrimary }}>
+                {PASSENGER_FLIGHT.fromIata}
+              </div>
               <div style={{ fontSize: 10, color: T.textMuted }}>
                 {TXT.passenger.flightHeader.tashkent}
               </div>
@@ -283,14 +291,16 @@ export function PassengerBidUI() {
               <div style={{ flex: 1, height: 1, background: T.borderDefault }} />
             </div>
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 20, fontWeight: 700, color: T.textPrimary }}>IST</div>
+              <div style={{ fontSize: 20, fontWeight: 700, color: T.textPrimary }}>
+                {PASSENGER_FLIGHT.toIata}
+              </div>
               <div style={{ fontSize: 10, color: T.textMuted }}>
                 {TXT.passenger.flightHeader.istanbul}
               </div>
             </div>
           </div>
           <div style={{ fontSize: 11, color: T.textMuted, marginTop: 7 }}>
-            {TXT.passenger.flightHeader.planeLine}
+            {PASSENGER_FLIGHT.aircraftLine}
           </div>
         </div>
 
@@ -323,16 +333,16 @@ export function PassengerBidUI() {
                 flexShrink: 0,
               }}
             >
-              {PASSENGER.initials}
+              {PASSENGER_PROFILE.initials}
             </div>
             <div>
               <div style={{ fontSize: 13, fontWeight: 600, color: T.textPrimary }}>
-                {PASSENGER.name}
+                {PASSENGER_PROFILE.name}
               </div>
               <div style={{ fontSize: 10, color: T.textMuted }}>{TXT.passenger.loyaltyProgram}</div>
             </div>
             <Pill color={colorToken(tierMeta.colorId)} bg={colorToken(tierMeta.bgId)} size={10}>
-              {PASSENGER.tier}
+              {PASSENGER_PROFILE.tier}
             </Pill>
           </div>
 
@@ -625,7 +635,7 @@ export function PassengerBidUI() {
           </button>
           <div style={{ fontSize: 10, color: T.textMuted, textAlign: "center", paddingBottom: 4 }}>
             {TXT.passenger.auctionClosesIn}{" "}
-            <strong style={{ color: T.statusWarning }}>3ч 20м</strong>
+            <strong style={{ color: T.statusWarning }}>{PASSENGER_FLIGHT.closingIn}</strong>
           </div>
         </div>
       </div>
