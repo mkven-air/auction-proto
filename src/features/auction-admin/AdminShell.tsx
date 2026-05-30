@@ -25,7 +25,7 @@ export function AdminHeader({
   return (
     <div
       style={{
-        borderBottom: `0.5px solid ${T.border}`,
+        borderBottom: `0.5px solid ${T.borderDefault}`,
         padding: "0 24px",
         display: "flex",
         alignItems: "center",
@@ -46,18 +46,25 @@ export function AdminHeader({
           style={{
             width: 26,
             height: 17,
-            background: T.accent,
+            background: T.brandPrimary,
             borderRadius: 3,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <span style={{ fontSize: 8, fontWeight: 800, color: T.onAccentSoft, letterSpacing: 0.5 }}>
+          <span
+            style={{
+              fontSize: 8,
+              fontWeight: 800,
+              color: T.onBrandPrimarySoft,
+              letterSpacing: 0.5,
+            }}
+          >
             HY
           </span>
         </div>
-        <span style={{ fontSize: 12, fontWeight: 700, color: T.text, letterSpacing: 0.5 }}>
+        <span style={{ fontSize: 12, fontWeight: 700, color: T.textPrimary, letterSpacing: 0.5 }}>
           Auction Admin
         </span>
       </div>
@@ -73,8 +80,9 @@ export function AdminHeader({
             padding: "14px 14px",
             fontSize: 13,
             fontWeight: 600,
-            color: activeTab === tab.id ? T.accent : T.textMuted,
-            borderBottom: activeTab === tab.id ? `2px solid ${T.accent}` : "2px solid transparent",
+            color: activeTab === tab.id ? T.brandPrimary : T.textMuted,
+            borderBottom:
+              activeTab === tab.id ? `2px solid ${T.brandPrimary}` : "2px solid transparent",
             marginBottom: -1,
             letterSpacing: 0.3,
           }}
@@ -83,10 +91,10 @@ export function AdminHeader({
         </button>
       ))}
       <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 10 }}>
-        <Pill color={T.greenText} bg={T.greenDim}>
+        <Pill color={T.statusSuccessFg} bg={T.statusSuccessBg}>
           {totalActive} активных
         </Pill>
-        <Pill color={T.accentText} bg={T.accentDim}>
+        <Pill color={T.brandPrimaryFg} bg={T.brandPrimaryBg}>
           {totalBids} заявок
         </Pill>
         <div
@@ -94,13 +102,13 @@ export function AdminHeader({
             width: 28,
             height: 28,
             borderRadius: "50%",
-            background: T.accentDim,
+            background: T.brandPrimaryBg,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             fontSize: 11,
             fontWeight: 700,
-            color: T.accentText,
+            color: T.brandPrimaryFg,
           }}
         >
           OP
@@ -128,7 +136,7 @@ export function EmailTemplateTabs({ activeTab, onChange }: EmailTemplateTabsProp
         display: "flex",
         gap: 4,
         marginBottom: 20,
-        borderBottom: `0.5px solid ${T.border}`,
+        borderBottom: `0.5px solid ${T.borderDefault}`,
       }}
     >
       {EMAIL_TABS.map(([id, label]) => (
@@ -143,8 +151,9 @@ export function EmailTemplateTabs({ activeTab, onChange }: EmailTemplateTabsProp
             padding: "10px 14px",
             fontSize: 13,
             fontWeight: 600,
-            color: activeTab === id ? T.text : T.textMuted,
-            borderBottom: activeTab === id ? `2px solid ${T.accent}` : "2px solid transparent",
+            color: activeTab === id ? T.textPrimary : T.textMuted,
+            borderBottom:
+              activeTab === id ? `2px solid ${T.brandPrimary}` : "2px solid transparent",
             marginBottom: -1,
           }}
         >

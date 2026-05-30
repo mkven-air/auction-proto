@@ -100,55 +100,7 @@ const SEMANTIC = {
   dividerSuccess: "rgba(16,185,129,.15)",
 } as const;
 
-export const T = {
-  ...SEMANTIC,
-
-  // Backward-compatible aliases
-  bg: SEMANTIC.surfacePage,
-  bgCard: SEMANTIC.surfaceCard,
-  bgElevated: SEMANTIC.surfaceElevated,
-  bgHover: SEMANTIC.surfaceHover,
-  border: SEMANTIC.borderDefault,
-  borderLight: SEMANTIC.borderSubtle,
-
-  accent: SEMANTIC.brandPrimary,
-  accentDim: SEMANTIC.brandPrimaryBg,
-  accentText: SEMANTIC.brandPrimaryFg,
-  accentSoft: SEMANTIC.brandPrimarySoft,
-  accentMuted: SEMANTIC.brandPrimaryMuted,
-  accentPale: SEMANTIC.brandPrimaryPale,
-
-  green: SEMANTIC.statusSuccess,
-  greenDim: SEMANTIC.statusSuccessBg,
-  greenText: SEMANTIC.statusSuccessFg,
-  greenSoft: SEMANTIC.statusSuccessSoft,
-  amber: SEMANTIC.statusWarning,
-  amberDim: SEMANTIC.statusWarningBg,
-  amberText: SEMANTIC.statusWarningFg,
-  red: SEMANTIC.statusDanger,
-  redDim: SEMANTIC.statusDangerBg,
-  redText: SEMANTIC.statusDangerFg,
-
-  text: SEMANTIC.textPrimary,
-  textMuted: SEMANTIC.textMuted,
-  textSub: SEMANTIC.textSecondary,
-
-  onAccent: SEMANTIC.onBrandPrimary,
-  onAccentSoft: SEMANTIC.onBrandPrimarySoft,
-
-  neutralSoft: SEMANTIC.neutralBgSoft,
-  neutralPale: SEMANTIC.neutralBgPale,
-  neutralMid: SEMANTIC.neutralText,
-
-  seatTaken: SEMANTIC.seatTakenBg,
-  seatTakenText: SEMANTIC.seatTakenFg,
-  seatTakenBorder: SEMANTIC.seatTakenBorder,
-  emailPteBg: SEMANTIC.emailPteHeaderBg,
-  emailChaserBg: SEMANTIC.emailChaserHeaderBg,
-  emailWinBg: SEMANTIC.emailWinHeaderBg,
-
-  overlayAccent: SEMANTIC.overlayBrand,
-} as const;
+export const T = SEMANTIC;
 
 export const F = {
   sans: "Segoe UI, Helvetica Neue, Arial, sans-serif",

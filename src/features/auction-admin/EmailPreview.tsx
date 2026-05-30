@@ -7,8 +7,8 @@ type MetaRow = [string, string];
 type MetadataRow = { key: string; label: string; value: ReactNode };
 
 const SIDE_PANEL_CARD_STYLE: CSSProperties = {
-  background: T.bgCard,
-  border: `0.5px solid ${T.border}`,
+  background: T.surfaceCard,
+  border: `0.5px solid ${T.borderDefault}`,
   borderRadius: 10,
   padding: "14px 16px",
 };
@@ -18,21 +18,25 @@ const META_ROW_STYLE: CSSProperties = {
   alignItems: "flex-start",
   gap: 12,
   padding: "7px 0",
-  borderBottom: `0.5px solid ${T.border}`,
+  borderBottom: `0.5px solid ${T.borderDefault}`,
 };
 
-const METRIC_TILE_STYLE: CSSProperties = { background: T.bg, borderRadius: 7, padding: "9px 11px" };
+const METRIC_TILE_STYLE: CSSProperties = {
+  background: T.surfacePage,
+  borderRadius: 7,
+  padding: "9px 11px",
+};
 
 const PREVIEW_FRAME_STYLE: CSSProperties = {
-  background: T.bgCard,
-  border: `0.5px solid ${T.border}`,
+  background: T.surfaceCard,
+  border: `0.5px solid ${T.borderDefault}`,
   borderRadius: 12,
   overflow: "hidden",
 };
 
 const PREVIEW_TOPBAR_STYLE: CSSProperties = {
-  background: T.bgElevated,
-  borderBottom: `0.5px solid ${T.border}`,
+  background: T.surfaceElevated,
+  borderBottom: `0.5px solid ${T.borderDefault}`,
   padding: "7px 12px",
   display: "flex",
   alignItems: "center",
@@ -40,8 +44,8 @@ const PREVIEW_TOPBAR_STYLE: CSSProperties = {
 };
 
 const FLIGHT_STRIP_STYLE: CSSProperties = {
-  background: T.bgElevated,
-  border: `0.5px solid ${T.border}`,
+  background: T.surfaceElevated,
+  border: `0.5px solid ${T.borderDefault}`,
   borderRadius: 6,
   padding: "8px 10px",
   marginBottom: 10,
@@ -51,7 +55,7 @@ const FLIGHT_STRIP_STYLE: CSSProperties = {
 };
 
 const OFFER_ROW_STYLE: CSSProperties = {
-  border: `0.5px solid ${T.border}`,
+  border: `0.5px solid ${T.borderDefault}`,
   borderRadius: 5,
   padding: "6px 9px",
   marginBottom: 5,
@@ -65,14 +69,14 @@ const TEMPLATE_CONFIGS: Record<EmailTemplateType, EmailTemplateConfig> = {
     subject: "Азиз, предложите свою цену на бизнес-класс",
     to: "aziz.karimov@mail.uz",
     tag: "PTE · за 7–14 дней",
-    tagC: T.accent,
-    tagBg: T.accentDim,
-    hBg: T.emailPteBg,
-    hLine: T.accent,
+    tagC: T.brandPrimary,
+    tagBg: T.brandPrimaryBg,
+    hBg: T.emailPteHeaderBg,
+    hLine: T.brandPrimary,
     title: "Улучшите перелёт до бизнес-класса",
     body: "Ваш рейс HY 602 квалифицирован для участия в аукционе. Предложите цену — средства спишутся только при подтверждении.",
     ctaLabel: "Предложить цену →",
-    ctaBg: T.accent,
+    ctaBg: T.brandPrimary,
     offers: [
       { name: "Бизнес-класс", desc: "Раскладное кресло · Лаундж", from: "$262" },
       { name: "Ряд у выхода", desc: "+30 см для ног", from: "$32" },
@@ -83,14 +87,14 @@ const TEMPLATE_CONFIGS: Record<EmailTemplateType, EmailTemplateConfig> = {
     subject: "Последний шанс: мест в бизнес-классе почти нет",
     to: "j.smith@company.com",
     tag: "Chaser · за 48–72 часа",
-    tagC: T.amber,
-    tagBg: T.amberDim,
-    hBg: T.emailChaserBg,
-    hLine: T.amber,
+    tagC: T.statusWarning,
+    tagBg: T.statusWarningBg,
+    hBg: T.emailChaserHeaderBg,
+    hLine: T.statusWarning,
     title: "Аукцион закрывается через 14 часов",
     body: "Вы не подавали заявку. Осталось ограниченное число мест. Деньги не списываются без подтверждённого апгрейда.",
     ctaLabel: "Участвовать — осталось мало мест →",
-    ctaBg: T.amber,
+    ctaBg: T.statusWarning,
     urgency: true,
     footer: "Ставка не гарантирует апгрейд. Оплата только при подтверждении.",
   },
@@ -98,14 +102,14 @@ const TEMPLATE_CONFIGS: Record<EmailTemplateType, EmailTemplateConfig> = {
     subject: "Поздравляем — вы летите бизнес-классом!",
     to: "aziz.karimov@mail.uz",
     tag: "Confirm · за 4–8 часов",
-    tagC: T.green,
-    tagBg: T.greenDim,
-    hBg: T.emailWinBg,
-    hLine: T.green,
+    tagC: T.statusSuccess,
+    tagBg: T.statusSuccessBg,
+    hBg: T.emailWinHeaderBg,
+    hLine: T.statusSuccess,
     title: "Ваш апгрейд подтверждён!",
     body: "Добро пожаловать в бизнес-класс, Азиз! Место 4A забронировано, $580 списано. Приоритетная посадка и лаундж уже доступны.",
     ctaLabel: "Посмотреть посадочный →",
-    ctaBg: T.green,
+    ctaBg: T.statusSuccess,
     booking: {
       Рейс: "HY 602",
       Маршрут: "Ташкент → Стамбул",
@@ -154,12 +158,12 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
     {
       key: "to",
       label: "Кому",
-      value: <span style={{ fontSize: 12, color: T.textSub }}>{c.to}</span>,
+      value: <span style={{ fontSize: 12, color: T.textSecondary }}>{c.to}</span>,
     },
     {
       key: "subject",
       label: "Тема",
-      value: <span style={{ fontSize: 12, color: T.text }}>{c.subject}</span>,
+      value: <span style={{ fontSize: 12, color: T.textPrimary }}>{c.subject}</span>,
     },
   ];
   return (
@@ -205,7 +209,7 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
                   style={{
                     fontSize: 17,
                     fontWeight: 700,
-                    color: T.text,
+                    color: T.textPrimary,
                     marginTop: 3,
                     fontFamily: F.mono,
                   }}
@@ -225,7 +229,7 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
           <div
             style={{
               flex: 1,
-              background: T.bg,
+              background: T.surfacePage,
               borderRadius: 4,
               height: 17,
               marginLeft: 8,
@@ -238,7 +242,13 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
           </div>
         </div>
         <div style={{ padding: 12 }}>
-          <div style={{ borderRadius: 7, overflow: "hidden", border: `0.5px solid ${T.border}` }}>
+          <div
+            style={{
+              borderRadius: 7,
+              overflow: "hidden",
+              border: `0.5px solid ${T.borderDefault}`,
+            }}
+          >
             <div
               style={{
                 background: c.hBg,
@@ -260,33 +270,33 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
                   justifyContent: "center",
                 }}
               >
-                <span style={{ fontSize: 8, fontWeight: 800, color: T.onAccent }}>HY</span>
+                <span style={{ fontSize: 8, fontWeight: 800, color: T.onBrandPrimary }}>HY</span>
               </div>
-              <span style={{ color: T.text, fontWeight: 600, fontSize: 12 }}>
+              <span style={{ color: T.textPrimary, fontWeight: 600, fontSize: 12 }}>
                 Uzbekistan Airways
               </span>
             </div>
-            <div style={{ background: T.bgCard, padding: 14 }}>
+            <div style={{ background: T.surfaceCard, padding: 14 }}>
               <div style={FLIGHT_STRIP_STYLE}>
                 <div style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: T.text }}>TAS</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: T.textPrimary }}>TAS</div>
                   <div style={{ fontSize: 9, color: T.textMuted }}>Ташкент</div>
                 </div>
                 <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 3 }}>
-                  <div style={{ flex: 1, height: 1, background: T.border }} />
+                  <div style={{ flex: 1, height: 1, background: T.borderDefault }} />
                   <span style={{ fontSize: 10, color: T.textMuted }}>✈</span>
-                  <div style={{ flex: 1, height: 1, background: T.border }} />
+                  <div style={{ flex: 1, height: 1, background: T.borderDefault }} />
                 </div>
                 <div style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: T.text }}>IST</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: T.textPrimary }}>IST</div>
                   <div style={{ fontSize: 9, color: T.textMuted }}>Стамбул</div>
                 </div>
               </div>
               {c.urgency && (
                 <div
                   style={{
-                    background: T.amberDim,
-                    border: `0.5px solid ${T.amber}`,
+                    background: T.statusWarningBg,
+                    border: `0.5px solid ${T.statusWarning}`,
                     borderRadius: 5,
                     padding: "6px 9px",
                     marginBottom: 9,
@@ -297,23 +307,29 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
                 >
                   <span style={{ fontSize: 12 }}>⏳</span>
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 600, color: T.amberText }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: T.statusWarningFg }}>
                       Аукцион закрывается через 14 часов
                     </div>
-                    <div style={{ fontSize: 10, color: T.amber }}>HY 602 · 15 июня · 08:45</div>
+                    <div style={{ fontSize: 10, color: T.statusWarning }}>
+                      HY 602 · 15 июня · 08:45
+                    </div>
                   </div>
                 </div>
               )}
-              <div style={{ fontSize: 13, fontWeight: 600, color: T.text, marginBottom: 4 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: T.textPrimary, marginBottom: 4 }}>
                 {c.title}
               </div>
-              <div style={{ fontSize: 11, color: T.textSub, lineHeight: 1.6, marginBottom: 9 }}>
+              <div
+                style={{ fontSize: 11, color: T.textSecondary, lineHeight: 1.6, marginBottom: 9 }}
+              >
                 {c.body}
               </div>
               {c.offers?.map((o) => (
                 <div key={o.name} style={OFFER_ROW_STYLE}>
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 600, color: T.text }}>{o.name}</div>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: T.textPrimary }}>
+                      {o.name}
+                    </div>
                     <div style={{ fontSize: 10, color: T.textMuted }}>{o.desc}</div>
                   </div>
                   <div style={{ textAlign: "right" }}>
@@ -325,8 +341,8 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
               {c.booking && (
                 <div
                   style={{
-                    background: T.greenDim,
-                    border: `0.5px solid ${T.green}`,
+                    background: T.statusSuccessBg,
+                    border: `0.5px solid ${T.statusSuccess}`,
                     borderRadius: 5,
                     padding: "8px 9px",
                     marginBottom: 9,
@@ -343,8 +359,8 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
                         borderBottom: `0.5px solid ${T.dividerSuccess}`,
                       }}
                     >
-                      <span style={{ color: T.greenText }}>{k}</span>
-                      <span style={{ fontWeight: 600, color: T.greenText }}>{v}</span>
+                      <span style={{ color: T.statusSuccessFg }}>{k}</span>
+                      <span style={{ fontWeight: 600, color: T.statusSuccessFg }}>{v}</span>
                     </div>
                   ))}
                 </div>
@@ -357,7 +373,7 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
                   textAlign: "center",
                   fontSize: 11,
                   fontWeight: 700,
-                  color: T.onAccent,
+                  color: T.onBrandPrimary,
                   marginBottom: 7,
                   cursor: "pointer",
                 }}
@@ -368,7 +384,7 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
                 style={{
                   fontSize: 10,
                   color: T.textMuted,
-                  borderTop: `0.5px solid ${T.border}`,
+                  borderTop: `0.5px solid ${T.borderDefault}`,
                   paddingTop: 7,
                   lineHeight: 1.6,
                 }}

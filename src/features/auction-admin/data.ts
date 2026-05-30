@@ -336,10 +336,10 @@ export const DIST_DATA: Array<{
   pct: number;
   colorId: ColorTokenId;
 }> = [
-  { range: "$500–750", count: 7, pct: 25, colorId: "accent" },
-  { range: "$400–499", count: 10, pct: 36, colorId: "accentSoft" },
-  { range: "$300–399", count: 8, pct: 29, colorId: "accentMuted" },
-  { range: "$262–299", count: 3, pct: 10, colorId: "accentPale" },
+  { range: "$500–750", count: 7, pct: 25, colorId: "brandPrimary" },
+  { range: "$400–499", count: 10, pct: 36, colorId: "brandPrimarySoft" },
+  { range: "$300–399", count: 8, pct: 29, colorId: "brandPrimaryMuted" },
+  { range: "$262–299", count: 3, pct: 10, colorId: "brandPrimaryPale" },
 ];
 
 export const EXIT_DATA: Array<{
@@ -348,36 +348,36 @@ export const EXIT_DATA: Array<{
   pct: number;
   colorId: ColorTokenId;
 }> = [
-  { range: "$60–85", count: 9, pct: 64, colorId: "green" },
-  { range: "$32–59", count: 5, pct: 36, colorId: "greenSoft" },
+  { range: "$60–85", count: 9, pct: 64, colorId: "statusSuccess" },
+  { range: "$32–59", count: 5, pct: 36, colorId: "statusSuccessSoft" },
 ];
 
 export const TIER_META: Record<
   Tier,
   { colorId: ColorTokenId; bgId: ColorTokenId; label: string; mult: string }
 > = {
-  Platinum: { colorId: "amber", bgId: "amberDim", label: "Platinum", mult: "+10%" },
-  Gold: { colorId: "accent", bgId: "accentDim", label: "Gold", mult: "+5%" },
-  Silver: { colorId: "textSub", bgId: "neutralSoft", label: "Silver", mult: "+3%" },
-  Standard: { colorId: "textMuted", bgId: "neutralPale", label: "Standard", mult: "—" },
+  Platinum: { colorId: "statusWarning", bgId: "statusWarningBg", label: "Platinum", mult: "+10%" },
+  Gold: { colorId: "brandPrimary", bgId: "brandPrimaryBg", label: "Gold", mult: "+5%" },
+  Silver: { colorId: "textSecondary", bgId: "neutralBgSoft", label: "Silver", mult: "+3%" },
+  Standard: { colorId: "textMuted", bgId: "neutralBgPale", label: "Standard", mult: "—" },
 };
 
 export const STATE_META: Record<
   BidState,
   { label: string; colorId: ColorTokenId; bgId: ColorTokenId }
 > = {
-  pending: { label: "Ожидает", colorId: "textMuted", bgId: "neutralSoft" },
-  approved: { label: "Принята", colorId: "greenText", bgId: "greenDim" },
-  rejected: { label: "Отклонена", colorId: "redText", bgId: "redDim" },
+  pending: { label: "Ожидает", colorId: "textMuted", bgId: "neutralBgSoft" },
+  approved: { label: "Принята", colorId: "statusSuccessFg", bgId: "statusSuccessBg" },
+  rejected: { label: "Отклонена", colorId: "statusDangerFg", bgId: "statusDangerBg" },
 };
 
 export const STATUS_META: Record<
   FlightStatus,
   { label: string; colorId: ColorTokenId; bgId: ColorTokenId }
 > = {
-  active: { label: "Активен", colorId: "greenText", bgId: "greenDim" },
-  sold: { label: "Нет мест", colorId: "redText", bgId: "redDim" },
-  upcoming: { label: "Скоро", colorId: "amberText", bgId: "amberDim" },
+  active: { label: "Активен", colorId: "statusSuccessFg", bgId: "statusSuccessBg" },
+  sold: { label: "Нет мест", colorId: "statusDangerFg", bgId: "statusDangerBg" },
+  upcoming: { label: "Скоро", colorId: "statusWarningFg", bgId: "statusWarningBg" },
 };
 
 export const HAUL_LABELS: Record<FlightHaul, string> = {

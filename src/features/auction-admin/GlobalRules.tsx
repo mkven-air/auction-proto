@@ -124,9 +124,9 @@ const TIMING_TOGGLE_ROWS: LabelDescRow<RulesBooleanKey>[] = [
 ];
 
 const LOYALTY_ROWS: LoyaltyRow[] = [
-  { key: "multiplierPlatinum", tier: "Platinum", color: T.amber, bg: T.amberDim },
-  { key: "multiplierGold", tier: "Gold", color: T.accent, bg: T.accentDim },
-  { key: "multiplierSilver", tier: "Silver", color: T.textSub, bg: T.neutralSoft },
+  { key: "multiplierPlatinum", tier: "Platinum", color: T.statusWarning, bg: T.statusWarningBg },
+  { key: "multiplierGold", tier: "Gold", color: T.brandPrimary, bg: T.brandPrimaryBg },
+  { key: "multiplierSilver", tier: "Silver", color: T.textSecondary, bg: T.neutralBgSoft },
 ];
 
 const CHANNEL_ROWS: LabelDescRow<ChannelRuleKey>[] = [
@@ -221,12 +221,12 @@ export function GlobalRules() {
         alignItems: "center",
         justifyContent: "space-between",
         padding: "13px 0",
-        borderBottom: `0.5px solid ${T.border}`,
+        borderBottom: `0.5px solid ${T.borderDefault}`,
         gap: 20,
       }}
     >
       <div style={{ flex: 1 }}>
-        <div style={{ fontSize: 13, fontWeight: 500, color: T.text }}>{label}</div>
+        <div style={{ fontSize: 13, fontWeight: 500, color: T.textPrimary }}>{label}</div>
         {desc && (
           <div style={{ fontSize: 11, color: T.textMuted, marginTop: 3, lineHeight: 1.5 }}>
             {desc}
@@ -250,13 +250,13 @@ export function GlobalRules() {
     >
       <div
         style={{
-          background: T.bgCard,
-          border: `0.5px solid ${T.border}`,
+          background: T.surfaceCard,
+          border: `0.5px solid ${T.borderDefault}`,
           borderRadius: 12,
           overflow: "hidden",
         }}
       >
-        <div style={{ padding: "12px 14px", borderBottom: `0.5px solid ${T.border}` }}>
+        <div style={{ padding: "12px 14px", borderBottom: `0.5px solid ${T.borderDefault}` }}>
           <div
             style={{
               fontSize: 10,
@@ -284,17 +284,18 @@ export function GlobalRules() {
               padding: "11px 14px",
               fontSize: 13,
               fontWeight: activeSection === s.id ? 600 : 400,
-              color: activeSection === s.id ? T.accent : T.textSub,
-              background: activeSection === s.id ? T.accentDim : "transparent",
+              color: activeSection === s.id ? T.brandPrimary : T.textSecondary,
+              background: activeSection === s.id ? T.brandPrimaryBg : "transparent",
               border: "none",
               cursor: "pointer",
-              borderBottom: i < RULE_SECTIONS.length - 1 ? `0.5px solid ${T.border}` : "none",
+              borderBottom:
+                i < RULE_SECTIONS.length - 1 ? `0.5px solid ${T.borderDefault}` : "none",
             }}
           >
             {s.l}
           </button>
         ))}
-        <div style={{ padding: "10px 12px", borderTop: `0.5px solid ${T.border}` }}>
+        <div style={{ padding: "10px 12px", borderTop: `0.5px solid ${T.borderDefault}` }}>
           <button
             type="button"
             onClick={() => setSaved(true)}
@@ -305,16 +306,18 @@ export function GlobalRules() {
               fontSize: 12,
               fontWeight: 700,
               cursor: "pointer",
-              background: saved ? T.greenDim : T.accent,
-              border: `0.5px solid ${saved ? T.green : T.accent}`,
-              color: saved ? T.greenText : T.onAccentSoft,
+              background: saved ? T.statusSuccessBg : T.brandPrimary,
+              border: `0.5px solid ${saved ? T.statusSuccess : T.brandPrimary}`,
+              color: saved ? T.statusSuccessFg : T.onBrandPrimarySoft,
               transition: "all .2s",
             }}
           >
             {saved ? "✓ Сохранено" : "Сохранить правила"}
           </button>
           {!saved && (
-            <div style={{ fontSize: 10, color: T.amber, marginTop: 5, textAlign: "center" }}>
+            <div
+              style={{ fontSize: 10, color: T.statusWarning, marginTop: 5, textAlign: "center" }}
+            >
               Есть несохранённые изменения
             </div>
           )}
@@ -323,8 +326,8 @@ export function GlobalRules() {
 
       <div
         style={{
-          background: T.bgCard,
-          border: `0.5px solid ${T.border}`,
+          background: T.surfaceCard,
+          border: `0.5px solid ${T.borderDefault}`,
           borderRadius: 12,
           padding: "20px 24px",
         }}
@@ -381,8 +384,8 @@ export function GlobalRules() {
                         fontWeight: 600,
                         textTransform: "uppercase",
                         letterSpacing: 0.8,
-                        borderBottom: `0.5px solid ${T.border}`,
-                        background: T.bgElevated,
+                        borderBottom: `0.5px solid ${T.borderDefault}`,
+                        background: T.surfaceElevated,
                       }}
                     >
                       Продукт
@@ -398,8 +401,8 @@ export function GlobalRules() {
                           fontWeight: 600,
                           textTransform: "uppercase",
                           letterSpacing: 0.8,
-                          borderBottom: `0.5px solid ${T.border}`,
-                          background: T.bgElevated,
+                          borderBottom: `0.5px solid ${T.borderDefault}`,
+                          background: T.surfaceElevated,
                         }}
                       >
                         {c.lbl}
@@ -409,8 +412,11 @@ export function GlobalRules() {
                 </thead>
                 <tbody>
                   {PRICING_ROWS.map((row) => (
-                    <tr key={row.product} style={{ borderBottom: `0.5px solid ${T.border}` }}>
-                      <td style={{ padding: "9px 10px", fontWeight: 600, color: T.text }}>
+                    <tr
+                      key={row.product}
+                      style={{ borderBottom: `0.5px solid ${T.borderDefault}` }}
+                    >
+                      <td style={{ padding: "9px 10px", fontWeight: 600, color: T.textPrimary }}>
                         {row.product}
                       </td>
                       {HAUL_COLS.map((c) => (
@@ -425,9 +431,9 @@ export function GlobalRules() {
                               padding: "4px 6px",
                               borderRadius: 5,
                               textAlign: "center",
-                              border: `0.5px solid ${T.borderLight}`,
-                              background: T.bgElevated,
-                              color: T.text,
+                              border: `0.5px solid ${T.borderSubtle}`,
+                              background: T.surfaceElevated,
+                              color: T.textPrimary,
                               fontSize: 12,
                               fontFamily: "monospace",
                               outline: "none",
@@ -465,7 +471,9 @@ export function GlobalRules() {
                     <Pill color={row.color} bg={row.bg}>
                       {row.tier}
                     </Pill>
-                    <span style={{ fontSize: 13, fontWeight: 500, color: T.text }}>{row.tier}</span>
+                    <span style={{ fontSize: 13, fontWeight: 500, color: T.textPrimary }}>
+                      {row.tier}
+                    </span>
                   </span>
                 }
                 desc=""
@@ -480,7 +488,12 @@ export function GlobalRules() {
               </RuleRow>
             ))}
             <div
-              style={{ marginTop: 16, background: T.bgElevated, borderRadius: 10, padding: "14px" }}
+              style={{
+                marginTop: 16,
+                background: T.surfaceElevated,
+                borderRadius: 10,
+                padding: "14px",
+              }}
             >
               <div
                 style={{
@@ -501,7 +514,7 @@ export function GlobalRules() {
                     <div
                       key={row.tier}
                       style={{
-                        background: T.bg,
+                        background: T.surfacePage,
                         borderRadius: 8,
                         padding: "9px 11px",
                         textAlign: "center",
@@ -517,7 +530,7 @@ export function GlobalRules() {
                         style={{
                           fontSize: 16,
                           fontWeight: 700,
-                          color: T.accentText,
+                          color: T.brandPrimaryFg,
                           fontFamily: "monospace",
                         }}
                       >
@@ -564,16 +577,23 @@ export function GlobalRules() {
               <div
                 style={{
                   marginTop: 8,
-                  background: T.amberDim,
-                  border: `0.5px solid ${T.amber}`,
+                  background: T.statusWarningBg,
+                  border: `0.5px solid ${T.statusWarning}`,
                   borderRadius: 8,
                   padding: "10px 13px",
                 }}
               >
-                <div style={{ fontSize: 12, fontWeight: 600, color: T.amberText, marginBottom: 2 }}>
+                <div
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: T.statusWarningFg,
+                    marginBottom: 2,
+                  }}
+                >
                   ⚠ 3DS включён
                 </div>
-                <div style={{ fontSize: 11, color: T.amber, lineHeight: 1.5 }}>
+                <div style={{ fontSize: 11, color: T.statusWarning, lineHeight: 1.5 }}>
                   Используйте Plusgrade Community MPI.
                 </div>
               </div>
@@ -589,7 +609,12 @@ export function GlobalRules() {
               </RuleRow>
             ))}
             <div
-              style={{ marginTop: 16, background: T.bgElevated, borderRadius: 10, padding: "14px" }}
+              style={{
+                marginTop: 16,
+                background: T.surfaceElevated,
+                borderRadius: 10,
+                padding: "14px",
+              }}
             >
               <div
                 style={{
@@ -614,17 +639,17 @@ export function GlobalRules() {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        background: T.bg,
+                        background: T.surfacePage,
                         borderRadius: 7,
                         padding: "7px 11px",
                       }}
                     >
-                      <span style={{ fontSize: 12, color: T.textSub }}>
+                      <span style={{ fontSize: 12, color: T.textSecondary }}>
                         {FEATURE_STATUS_LABELS[k]}
                       </span>
                       <Pill
-                        color={rules[k] ? T.greenText : T.textMuted}
-                        bg={rules[k] ? T.greenDim : T.neutralSoft}
+                        color={rules[k] ? T.statusSuccessFg : T.textMuted}
+                        bg={rules[k] ? T.statusSuccessBg : T.neutralBgSoft}
                         size={10}
                       >
                         {rules[k] ? "вкл" : "выкл"}

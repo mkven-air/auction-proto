@@ -18,8 +18,8 @@ export function PassengerBidUI() {
       min: 262,
       max: 750,
       defaultVal: 350,
-      color: T.accent,
-      trackColor: T.accent,
+      color: T.brandPrimary,
+      trackColor: T.brandPrimary,
     },
     ex: {
       label: "Ряд у аварийного выхода",
@@ -28,8 +28,8 @@ export function PassengerBidUI() {
       min: 32,
       max: 85,
       defaultVal: 46,
-      color: T.green,
-      trackColor: T.green,
+      color: T.statusSuccess,
+      trackColor: T.statusSuccess,
     },
     sb: {
       label: "Seat Blocker",
@@ -38,8 +38,8 @@ export function PassengerBidUI() {
       min: 8,
       max: 45,
       defaultVal: 18,
-      color: T.accent,
-      trackColor: T.accent,
+      color: T.brandPrimary,
+      trackColor: T.brandPrimary,
     },
   };
   const MULT = 1.1;
@@ -54,7 +54,8 @@ export function PassengerBidUI() {
     const pct = (val - p.min) / (p.max - p.min);
     return Math.min(Math.max(Math.round(pct * 72 + 8), 5), 90);
   };
-  const chanceColor = (p: number) => (p >= 65 ? T.green : p >= 40 ? T.amber : T.red);
+  const chanceColor = (p: number) =>
+    p >= 65 ? T.statusSuccess : p >= 40 ? T.statusWarning : T.statusDanger;
 
   const base = (Object.keys(active) as ProductKey[]).reduce(
     (sum, key) => sum + (active[key] ? bids[key] : 0),
@@ -66,7 +67,7 @@ export function PassengerBidUI() {
     const p = PRODUCTS[prod];
     const v = bids[prod];
     const pct = Math.round(((v - p.min) / (p.max - p.min)) * 100);
-    return `linear-gradient(to right,${p.trackColor} 0%,${p.trackColor} ${pct}%,${T.border} ${pct}%,${T.border} 100%)`;
+    return `linear-gradient(to right,${p.trackColor} 0%,${p.trackColor} ${pct}%,${T.borderDefault} ${pct}%,${T.borderDefault} 100%)`;
   };
 
   const tierMeta = TIER_META[PASSENGER.tier];
@@ -80,16 +81,16 @@ export function PassengerBidUI() {
         <div
           style={{
             width: 390,
-            background: T.bgCard,
+            background: T.surfaceCard,
             borderRadius: 16,
-            border: `0.5px solid ${T.border}`,
+            border: `0.5px solid ${T.borderDefault}`,
             overflow: "hidden",
           }}
         >
           {/* Status bar */}
           <div
             style={{
-              background: T.bgElevated,
+              background: T.surfaceElevated,
               padding: "9px 16px 7px",
               display: "flex",
               justifyContent: "space-between",
@@ -105,8 +106,8 @@ export function PassengerBidUI() {
                 width: 60,
                 height: 60,
                 borderRadius: "50%",
-                background: T.greenDim,
-                border: `1.5px solid ${T.green}`,
+                background: T.statusSuccessBg,
+                border: `1.5px solid ${T.statusSuccess}`,
                 margin: "0 auto 16px",
                 display: "flex",
                 alignItems: "center",
@@ -116,7 +117,7 @@ export function PassengerBidUI() {
             >
               ✓
             </div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: T.text, marginBottom: 4 }}>
+            <div style={{ fontSize: 18, fontWeight: 700, color: T.textPrimary, marginBottom: 4 }}>
               Заявка принята!
             </div>
             <div style={{ fontSize: 12, color: T.textMuted, marginBottom: 22, lineHeight: 1.7 }}>
@@ -126,8 +127,8 @@ export function PassengerBidUI() {
             </div>
             <div
               style={{
-                background: T.bgElevated,
-                border: `0.5px solid ${T.greenDim}`,
+                background: T.surfaceElevated,
+                border: `0.5px solid ${T.statusSuccessBg}`,
                 borderRadius: 10,
                 padding: "12px 14px",
                 marginBottom: 16,
@@ -147,7 +148,7 @@ export function PassengerBidUI() {
                     display: "flex",
                     justifyContent: "space-between",
                     padding: "6px 0",
-                    borderBottom: i < arr.length - 1 ? `0.5px solid ${T.border}` : "none",
+                    borderBottom: i < arr.length - 1 ? `0.5px solid ${T.borderDefault}` : "none",
                   }}
                 >
                   <span style={{ fontSize: 12, color: T.textMuted }}>{k}</span>
@@ -157,10 +158,10 @@ export function PassengerBidUI() {
                       fontWeight: 600,
                       color:
                         k === "Статус оплаты"
-                          ? T.greenText
+                          ? T.statusSuccessFg
                           : k === "Взвешенная ставка"
-                            ? T.accentText
-                            : T.text,
+                            ? T.brandPrimaryFg
+                            : T.textPrimary,
                       fontFamily: "monospace",
                     }}
                   >
@@ -178,7 +179,7 @@ export function PassengerBidUI() {
               onClick={() => setSubmitted(false)}
               style={{
                 background: "transparent",
-                border: `0.5px solid ${T.border}`,
+                border: `0.5px solid ${T.borderDefault}`,
                 borderRadius: 8,
                 padding: "9px 18px",
                 fontSize: 13,
@@ -199,16 +200,16 @@ export function PassengerBidUI() {
       <div
         style={{
           width: 390,
-          background: T.bgCard,
+          background: T.surfaceCard,
           borderRadius: 16,
-          border: `0.5px solid ${T.border}`,
+          border: `0.5px solid ${T.borderDefault}`,
           overflow: "hidden",
         }}
       >
         {/* Status bar */}
         <div
           style={{
-            background: T.bgElevated,
+            background: T.surfaceElevated,
             padding: "9px 16px 7px",
             display: "flex",
             justifyContent: "space-between",
@@ -222,15 +223,15 @@ export function PassengerBidUI() {
         {/* Flight header */}
         <div
           style={{
-            background: T.bgElevated,
+            background: T.surfaceElevated,
             padding: "12px 16px 14px",
-            borderBottom: `0.5px solid ${T.border}`,
+            borderBottom: `0.5px solid ${T.borderDefault}`,
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 10 }}>
             <div
               style={{
-                background: T.accent,
+                background: T.brandPrimary,
                 borderRadius: 4,
                 width: 28,
                 height: 18,
@@ -240,12 +241,19 @@ export function PassengerBidUI() {
               }}
             >
               <span
-                style={{ fontSize: 8, fontWeight: 800, color: T.onAccentSoft, letterSpacing: 0.5 }}
+                style={{
+                  fontSize: 8,
+                  fontWeight: 800,
+                  color: T.onBrandPrimarySoft,
+                  letterSpacing: 0.5,
+                }}
               >
                 HY
               </span>
             </div>
-            <span style={{ fontSize: 16, fontWeight: 700, color: T.text, letterSpacing: -0.3 }}>
+            <span
+              style={{ fontSize: 16, fontWeight: 700, color: T.textPrimary, letterSpacing: -0.3 }}
+            >
               HY 602
             </span>
             <span
@@ -261,16 +269,16 @@ export function PassengerBidUI() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 20, fontWeight: 700, color: T.text }}>TAS</div>
+              <div style={{ fontSize: 20, fontWeight: 700, color: T.textPrimary }}>TAS</div>
               <div style={{ fontSize: 10, color: T.textMuted }}>Ташкент</div>
             </div>
             <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 4 }}>
-              <div style={{ flex: 1, height: 1, background: T.border }} />
+              <div style={{ flex: 1, height: 1, background: T.borderDefault }} />
               <span style={{ fontSize: 14, color: T.textMuted }}>✈</span>
-              <div style={{ flex: 1, height: 1, background: T.border }} />
+              <div style={{ flex: 1, height: 1, background: T.borderDefault }} />
             </div>
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 20, fontWeight: 700, color: T.text }}>IST</div>
+              <div style={{ fontSize: 20, fontWeight: 700, color: T.textPrimary }}>IST</div>
               <div style={{ fontSize: 10, color: T.textMuted }}>Стамбул</div>
             </div>
           </div>
@@ -287,8 +295,8 @@ export function PassengerBidUI() {
               alignItems: "center",
               gap: 9,
               marginBottom: 14,
-              background: T.bgElevated,
-              border: `0.5px solid ${T.border}`,
+              background: T.surfaceElevated,
+              border: `0.5px solid ${T.borderDefault}`,
               borderRadius: 8,
               padding: "9px 12px",
             }}
@@ -298,20 +306,22 @@ export function PassengerBidUI() {
                 width: 30,
                 height: 30,
                 borderRadius: "50%",
-                background: T.amberDim,
+                background: T.statusWarningBg,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 fontSize: 11,
                 fontWeight: 700,
-                color: T.amberText,
+                color: T.statusWarningFg,
                 flexShrink: 0,
               }}
             >
               {PASSENGER.initials}
             </div>
             <div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: T.text }}>{PASSENGER.name}</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: T.textPrimary }}>
+                {PASSENGER.name}
+              </div>
               <div style={{ fontSize: 10, color: T.textMuted }}>Программа лояльности</div>
             </div>
             <Pill color={colorToken(tierMeta.colorId)} bg={colorToken(tierMeta.bgId)} size={10}>
@@ -342,8 +352,8 @@ export function PassengerBidUI() {
               <div
                 key={key}
                 style={{
-                  background: T.bgElevated,
-                  border: `0.5px solid ${on ? T.accent : T.border}`,
+                  background: T.surfaceElevated,
+                  border: `0.5px solid ${on ? T.brandPrimary : T.borderDefault}`,
                   borderRadius: 10,
                   padding: "12px 13px",
                   marginBottom: 9,
@@ -365,7 +375,7 @@ export function PassengerBidUI() {
                         width: 28,
                         height: 28,
                         borderRadius: 6,
-                        background: on ? T.accentDim : T.border,
+                        background: on ? T.brandPrimaryBg : T.borderDefault,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -376,7 +386,7 @@ export function PassengerBidUI() {
                       {prod.icon}
                     </div>
                     <div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: T.text }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: T.textPrimary }}>
                         {prod.label}
                       </div>
                       <div style={{ fontSize: 10, color: T.textMuted, marginTop: 1 }}>
@@ -391,7 +401,7 @@ export function PassengerBidUI() {
                   style={{
                     fontSize: 20,
                     fontWeight: 700,
-                    color: on ? T.text : T.textMuted,
+                    color: on ? T.textPrimary : T.textMuted,
                     fontFamily: "monospace",
                     marginBottom: 7,
                   }}
@@ -418,7 +428,7 @@ export function PassengerBidUI() {
                     cursor: on ? "pointer" : "not-allowed",
                     display: "block",
                     marginBottom: 5,
-                    background: on ? sliderBg(key) : T.border,
+                    background: on ? sliderBg(key) : T.borderDefault,
                     opacity: on ? 1 : 0.5,
                   }}
                 />
@@ -461,7 +471,7 @@ export function PassengerBidUI() {
                     <div
                       style={{
                         height: 4,
-                        background: T.border,
+                        background: T.borderDefault,
                         borderRadius: 2,
                         overflow: "hidden",
                       }}
@@ -483,7 +493,7 @@ export function PassengerBidUI() {
           })}
 
           {/* Divider */}
-          <div style={{ height: "0.5px", background: T.border, margin: "12px 0" }} />
+          <div style={{ height: "0.5px", background: T.borderDefault, margin: "12px 0" }} />
 
           {/* Summary */}
           <div
@@ -500,8 +510,8 @@ export function PassengerBidUI() {
           </div>
           <div
             style={{
-              background: T.bgElevated,
-              border: `0.5px solid ${T.border}`,
+              background: T.surfaceElevated,
+              border: `0.5px solid ${T.borderDefault}`,
               borderRadius: 10,
               padding: "11px 13px",
               marginBottom: 11,
@@ -516,7 +526,7 @@ export function PassengerBidUI() {
                       display: "flex",
                       justifyContent: "space-between",
                       padding: "5px 0",
-                      borderBottom: `0.5px solid ${T.border}`,
+                      borderBottom: `0.5px solid ${T.borderDefault}`,
                     }}
                   >
                     <span style={{ fontSize: 12, color: T.textMuted }}>{prod.label}</span>
@@ -524,7 +534,7 @@ export function PassengerBidUI() {
                       style={{
                         fontSize: 13,
                         fontWeight: 600,
-                        color: T.text,
+                        color: T.textPrimary,
                         fontFamily: "monospace",
                       }}
                     >
@@ -534,12 +544,14 @@ export function PassengerBidUI() {
                 ),
             )}
             <div style={{ display: "flex", justifyContent: "space-between", padding: "7px 0 3px" }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: T.text }}>Взвешенная сумма</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: T.textPrimary }}>
+                Взвешенная сумма
+              </span>
               <span
                 style={{
                   fontSize: 16,
                   fontWeight: 700,
-                  color: T.accentText,
+                  color: T.brandPrimaryFg,
                   fontFamily: "monospace",
                 }}
               >
@@ -557,8 +569,8 @@ export function PassengerBidUI() {
           {/* Info */}
           <div
             style={{
-              background: T.accentDim,
-              border: `0.5px solid ${T.accent}`,
+              background: T.brandPrimaryBg,
+              border: `0.5px solid ${T.brandPrimary}`,
               borderRadius: 8,
               padding: "9px 12px",
               marginBottom: 11,
@@ -566,12 +578,12 @@ export function PassengerBidUI() {
               gap: 8,
             }}
           >
-            <span style={{ color: T.accentText, fontSize: 13, flexShrink: 0, lineHeight: 1.5 }}>
+            <span style={{ color: T.brandPrimaryFg, fontSize: 13, flexShrink: 0, lineHeight: 1.5 }}>
               ℹ
             </span>
-            <div style={{ fontSize: 11, color: T.accentText, lineHeight: 1.6 }}>
-              Средства <strong style={{ color: T.onAccentSoft }}>не списываются</strong> сразу.
-              Оплата — только при подтверждении апгрейда авиакомпанией.
+            <div style={{ fontSize: 11, color: T.brandPrimaryFg, lineHeight: 1.6 }}>
+              Средства <strong style={{ color: T.onBrandPrimarySoft }}>не списываются</strong>{" "}
+              сразу. Оплата — только при подтверждении апгрейда авиакомпанией.
             </div>
           </div>
 
@@ -588,8 +600,8 @@ export function PassengerBidUI() {
               fontSize: 14,
               fontWeight: 700,
               cursor: base === 0 ? "not-allowed" : "pointer",
-              background: base === 0 ? T.border : T.accent,
-              color: base === 0 ? T.textMuted : T.onAccentSoft,
+              background: base === 0 ? T.borderDefault : T.brandPrimary,
+              color: base === 0 ? T.textMuted : T.onBrandPrimarySoft,
               letterSpacing: 0.2,
               marginBottom: 8,
             }}
@@ -597,7 +609,7 @@ export function PassengerBidUI() {
             {base === 0 ? "Выберите хотя бы один апгрейд" : `Подать заявку · $${base}`}
           </button>
           <div style={{ fontSize: 10, color: T.textMuted, textAlign: "center", paddingBottom: 4 }}>
-            Аукцион закрывается через <strong style={{ color: T.amber }}>3ч 20м</strong>
+            Аукцион закрывается через <strong style={{ color: T.statusWarning }}>3ч 20м</strong>
           </div>
         </div>
       </div>

@@ -48,8 +48,8 @@ export function MetricCard({
   return (
     <div
       style={{
-        background: T.bgElevated,
-        border: `0.5px solid ${T.border}`,
+        background: T.surfaceElevated,
+        border: `0.5px solid ${T.borderDefault}`,
         borderRadius: 10,
         padding: "16px 18px",
       }}
@@ -70,7 +70,7 @@ export function MetricCard({
         style={{
           fontSize: 22,
           fontWeight: 700,
-          color: accent || T.text,
+          color: accent || T.textPrimary,
           fontFamily: F.mono,
           lineHeight: 1.1,
         }}
@@ -115,7 +115,7 @@ export function BarChart({
             style={{
               flex: 1,
               height: 6,
-              background: T.border,
+              background: T.borderDefault,
               borderRadius: 3,
               overflow: "hidden",
             }}
@@ -125,7 +125,13 @@ export function BarChart({
             />
           </div>
           <div
-            style={{ width: 18, fontSize: 12, fontWeight: 600, color: T.text, textAlign: "right" }}
+            style={{
+              width: 18,
+              fontSize: 12,
+              fontWeight: 600,
+              color: T.textPrimary,
+              textAlign: "right",
+            }}
           >
             {d.count}
           </div>
@@ -140,9 +146,9 @@ export function SeatMap() {
     <div>
       <div style={{ display: "flex", gap: 12, marginBottom: 10, flexWrap: "wrap" }}>
         {[
-          { c: T.seatTaken, l: "Занято" },
-          { c: T.accent, l: "Заявка" },
-          { c: T.bgElevated, l: "Свободно", b: T.border },
+          { c: T.seatTakenBg, l: "Занято" },
+          { c: T.brandPrimary, l: "Заявка" },
+          { c: T.surfaceElevated, l: "Свободно", b: T.borderDefault },
         ].map((s) => (
           <div key={s.l} style={{ display: "flex", alignItems: "center", gap: 5 }}>
             <div
@@ -179,9 +185,13 @@ export function SeatMap() {
                   justifyContent: "center",
                   fontSize: 9,
                   fontWeight: 600,
-                  background: seat.bid ? T.accent : seat.taken ? T.seatTaken : T.bgElevated,
-                  color: seat.bid ? T.onAccent : seat.taken ? T.seatTakenText : T.border,
-                  border: `0.5px solid ${seat.bid ? T.accent : seat.taken ? T.seatTakenBorder : T.border}`,
+                  background: seat.bid
+                    ? T.brandPrimary
+                    : seat.taken
+                      ? T.seatTakenBg
+                      : T.surfaceElevated,
+                  color: seat.bid ? T.onBrandPrimary : seat.taken ? T.seatTakenFg : T.borderDefault,
+                  border: `0.5px solid ${seat.bid ? T.brandPrimary : seat.taken ? T.seatTakenBorder : T.borderDefault}`,
                 }}
               >
                 {seat.id}
@@ -214,7 +224,7 @@ export function Toggle({
         padding: 0,
         cursor: "pointer",
         flexShrink: 0,
-        background: checked ? T.accent : T.border,
+        background: checked ? T.brandPrimary : T.borderDefault,
         position: "relative",
         transition: "background .2s",
       }}
@@ -227,7 +237,7 @@ export function Toggle({
           width: 14,
           height: 14,
           borderRadius: 7,
-          background: checked ? T.text : T.neutralMid,
+          background: checked ? T.textPrimary : T.neutralText,
           transition: "left .2s",
         }}
       />
@@ -260,9 +270,9 @@ export function NumInput({
           width: 72,
           padding: "5px 8px",
           borderRadius: 6,
-          border: `0.5px solid ${T.borderLight}`,
-          background: T.bgElevated,
-          color: T.text,
+          border: `0.5px solid ${T.borderSubtle}`,
+          background: T.surfaceElevated,
+          color: T.textPrimary,
           fontSize: 13,
           fontFamily: "monospace",
           outline: "none",

@@ -72,13 +72,13 @@ export function FlightList({ onSelect }: FlightListProps) {
         <MetricCard
           label="Свободных мест BC"
           value={String(totalFree)}
-          accent={totalFree < 10 ? T.redText : T.greenText}
+          accent={totalFree < 10 ? T.statusDangerFg : T.statusSuccessFg}
           sub="для апгрейда"
         />
         <MetricCard
           label="Прогноз выручки"
           value={`$${Math.round(totalRevenue / 1000)}K`}
-          accent={T.greenText}
+          accent={T.statusSuccessFg}
           sub="все рейсы"
         />
       </div>
@@ -98,9 +98,9 @@ export function FlightList({ onSelect }: FlightListProps) {
           style={{
             padding: "7px 12px",
             borderRadius: 8,
-            border: `0.5px solid ${T.border}`,
-            background: T.bgElevated,
-            color: T.text,
+            border: `0.5px solid ${T.borderDefault}`,
+            background: T.surfaceElevated,
+            color: T.textPrimary,
             fontSize: 13,
             outline: "none",
             width: 200,
@@ -118,9 +118,9 @@ export function FlightList({ onSelect }: FlightListProps) {
                 fontSize: 11,
                 fontWeight: 600,
                 cursor: "pointer",
-                border: `0.5px solid ${statusF === k ? T.accent : T.border}`,
-                background: statusF === k ? T.accentDim : "transparent",
-                color: statusF === k ? T.accentText : T.textMuted,
+                border: `0.5px solid ${statusF === k ? T.brandPrimary : T.borderDefault}`,
+                background: statusF === k ? T.brandPrimaryBg : "transparent",
+                color: statusF === k ? T.brandPrimaryFg : T.textMuted,
               }}
             >
               {l}
@@ -133,8 +133,8 @@ export function FlightList({ onSelect }: FlightListProps) {
       </div>
       <div
         style={{
-          background: T.bgCard,
-          border: `0.5px solid ${T.border}`,
+          background: T.surfaceCard,
+          border: `0.5px solid ${T.borderDefault}`,
           borderRadius: 12,
           overflow: "hidden",
         }}
@@ -149,7 +149,7 @@ export function FlightList({ onSelect }: FlightListProps) {
             }}
           >
             <thead>
-              <tr style={{ borderBottom: `0.5px solid ${T.border}` }}>
+              <tr style={{ borderBottom: `0.5px solid ${T.borderDefault}` }}>
                 {headerCols.map(([col, lbl, w]) => (
                   <th
                     key={lbl}
@@ -160,12 +160,12 @@ export function FlightList({ onSelect }: FlightListProps) {
                       padding: "11px 14px",
                       fontSize: 11,
                       fontWeight: 600,
-                      color: col && sortCol === col ? T.accentText : T.textMuted,
+                      color: col && sortCol === col ? T.brandPrimaryFg : T.textMuted,
                       textTransform: "uppercase",
                       letterSpacing: 0.7,
                       cursor: col ? "pointer" : "default",
                       userSelect: "none",
-                      background: T.bgElevated,
+                      background: T.surfaceElevated,
                     }}
                   >
                     {lbl}
@@ -177,31 +177,41 @@ export function FlightList({ onSelect }: FlightListProps) {
             <tbody>
               {filtered.map((f) => {
                 const sm = STATUS_META[f.status] ?? STATUS_META.upcoming;
-                const fc = f.bcFree === 0 ? T.red : f.bcFree < 4 ? T.amber : T.green;
+                const fc =
+                  f.bcFree === 0
+                    ? T.statusDanger
+                    : f.bcFree < 4
+                      ? T.statusWarning
+                      : T.statusSuccess;
                 return (
                   <tr
                     key={f.id}
-                    style={{ borderBottom: `0.5px solid ${T.border}`, cursor: "pointer" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = T.bgHover)}
+                    style={{ borderBottom: `0.5px solid ${T.borderDefault}`, cursor: "pointer" }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = T.surfaceHover)}
                     onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                   >
                     <td style={{ padding: "11px 14px" }}>
                       <div
-                        style={{ fontWeight: 700, fontSize: 14, color: T.text, letterSpacing: 0.2 }}
+                        style={{
+                          fontWeight: 700,
+                          fontSize: 14,
+                          color: T.textPrimary,
+                          letterSpacing: 0.2,
+                        }}
                       >
                         {f.id}
                       </div>
                       <div style={{ fontSize: 12, color: T.textMuted, marginTop: 2 }}>
-                        <span style={{ color: T.textSub, fontWeight: 600 }}>{f.from}</span>
+                        <span style={{ color: T.textSecondary, fontWeight: 600 }}>{f.from}</span>
                         <span style={{ margin: "0 4px" }}>→</span>
-                        <span style={{ color: T.textSub, fontWeight: 600 }}>{f.to}</span>
+                        <span style={{ color: T.textSecondary, fontWeight: 600 }}>{f.to}</span>
                         <span style={{ marginLeft: 6 }}>{f.duration}</span>
                       </div>
                     </td>
                     <td
                       style={{
                         padding: "11px 14px",
-                        color: T.textSub,
+                        color: T.textSecondary,
                         fontSize: 12,
                         fontFamily: F.mono,
                       }}
@@ -213,10 +223,10 @@ export function FlightList({ onSelect }: FlightListProps) {
                         style={{
                           fontSize: 11,
                           color: T.textMuted,
-                          background: T.bgElevated,
+                          background: T.surfaceElevated,
                           padding: "2px 6px",
                           borderRadius: 4,
-                          border: `0.5px solid ${T.border}`,
+                          border: `0.5px solid ${T.borderDefault}`,
                         }}
                       >
                         {f.aircraft}
@@ -227,7 +237,7 @@ export function FlightList({ onSelect }: FlightListProps) {
                         padding: "11px 14px",
                         fontWeight: 700,
                         fontFamily: F.mono,
-                        color: f.bids > 20 ? T.accentText : T.text,
+                        color: f.bids > 20 ? T.brandPrimaryFg : T.textPrimary,
                       }}
                     >
                       {f.bids}
@@ -246,7 +256,7 @@ export function FlightList({ onSelect }: FlightListProps) {
                         padding: "11px 14px",
                         fontWeight: 700,
                         fontFamily: F.mono,
-                        color: T.greenText,
+                        color: T.statusSuccessFg,
                       }}
                     >
                       {f.revenue > 0 ? `$${f.revenue.toLocaleString()}` : "—"}
@@ -266,9 +276,9 @@ export function FlightList({ onSelect }: FlightListProps) {
                           fontWeight: 600,
                           borderRadius: 6,
                           cursor: "pointer",
-                          background: T.accentDim,
-                          border: `0.5px solid ${T.accent}`,
-                          color: T.accentText,
+                          background: T.brandPrimaryBg,
+                          border: `0.5px solid ${T.brandPrimary}`,
+                          color: T.brandPrimaryFg,
                         }}
                       >
                         Открыть →

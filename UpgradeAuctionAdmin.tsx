@@ -43,10 +43,10 @@ export default function UpgradeAuctionAdmin() {
   return (
     <div
       style={{
-        background: T.bg,
+        background: T.surfacePage,
         minHeight: "600px",
         fontFamily: F.sans,
-        color: T.text,
+        color: T.textPrimary,
         lineHeight: 1.4,
       }}
     >

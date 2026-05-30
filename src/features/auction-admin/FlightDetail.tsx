@@ -103,7 +103,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
             fontWeight: 600,
             cursor: "pointer",
             background: "transparent",
-            border: `0.5px solid ${T.border}`,
+            border: `0.5px solid ${T.borderDefault}`,
             color: T.textMuted,
           }}
         >
@@ -111,10 +111,10 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
         </button>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ fontSize: 20, fontWeight: 800 }}>{flight.id}</span>
-          <span style={{ fontSize: 13, color: T.textSub }}>
+          <span style={{ fontSize: 13, color: T.textSecondary }}>
             {flight.from} → {flight.to}
           </span>
-          <Pill color={T.greenText} bg={T.greenDim}>
+          <Pill color={T.statusSuccessFg} bg={T.statusSuccessBg}>
             Аукцион открыт
           </Pill>
         </div>
@@ -124,20 +124,20 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
               type="button"
               onClick={autoSelect}
               style={{
-                background: T.accent,
+                background: T.brandPrimary,
                 border: "none",
                 borderRadius: 8,
                 padding: "9px 16px",
                 fontSize: 13,
                 fontWeight: 600,
-                color: T.onAccentSoft,
+                color: T.onBrandPrimarySoft,
                 cursor: "pointer",
               }}
             >
               ⚡ Авто-отбор
             </button>
           ) : (
-            <Pill color={T.greenText} bg={T.greenDim}>
+            <Pill color={T.statusSuccessFg} bg={T.statusSuccessBg}>
               ✓ Amadeus RES обновлён
             </Pill>
           )}
@@ -153,7 +153,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
         <MetricCard
           label="Мест в BC"
           value={`${flight.bcFree} / ${flight.bcTotal}`}
-          accent={flight.bcFree < 4 ? T.redText : T.greenText}
+          accent={flight.bcFree < 4 ? T.statusDangerFg : T.statusSuccessFg}
           sub="свободно"
         />
         <MetricCard
@@ -164,21 +164,21 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
         <MetricCard
           label="Топ ставка"
           value={`$${flight.topBid}`}
-          accent={T.accentText}
+          accent={T.brandPrimaryFg}
           sub={`взвеш. $${Math.round(flight.topBid * 1.1)}`}
         />
         <MetricCard
           label="Прогноз выручки"
           value={`$${flight.revenue.toLocaleString()}`}
-          accent={T.greenText}
+          accent={T.statusSuccessFg}
           sub={`${flight.bcFree} победителя`}
         />
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 18 }}>
         <div
           style={{
-            background: T.bgCard,
-            border: `0.5px solid ${T.border}`,
+            background: T.surfaceCard,
+            border: `0.5px solid ${T.borderDefault}`,
             borderRadius: 12,
             padding: "16px 18px",
           }}
@@ -191,8 +191,8 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
         </div>
         <div
           style={{
-            background: T.bgCard,
-            border: `0.5px solid ${T.border}`,
+            background: T.surfaceCard,
+            border: `0.5px solid ${T.borderDefault}`,
             borderRadius: 12,
             padding: "16px 18px",
           }}
@@ -211,7 +211,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
             Бизнес-класс
           </div>
           <BarChart data={DIST_DATA.map((row) => ({ ...row, color: colorToken(row.colorId) }))} />
-          <div style={{ height: 1, background: T.border, margin: "12px 0" }} />
+          <div style={{ height: 1, background: T.borderDefault, margin: "12px 0" }} />
           <div
             style={{
               fontSize: 10,
@@ -229,8 +229,8 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
       </div>
       <div
         style={{
-          background: T.bgCard,
-          border: `0.5px solid ${T.border}`,
+          background: T.surfaceCard,
+          border: `0.5px solid ${T.borderDefault}`,
           borderRadius: 12,
           padding: "16px 18px",
         }}
@@ -258,9 +258,9 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                   fontSize: 11,
                   fontWeight: 600,
                   cursor: "pointer",
-                  border: `0.5px solid ${filter === k ? T.accent : T.border}`,
-                  background: filter === k ? T.accentDim : "transparent",
-                  color: filter === k ? T.accentText : T.textMuted,
+                  border: `0.5px solid ${filter === k ? T.brandPrimary : T.borderDefault}`,
+                  background: filter === k ? T.brandPrimaryBg : "transparent",
+                  color: filter === k ? T.brandPrimaryFg : T.textMuted,
                 }}
               >
                 {lbl} ({counts[k]})
@@ -299,10 +299,10 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                       padding: "9px 10px",
                       fontSize: 11,
                       fontWeight: 600,
-                      color: col && sortCol === col ? T.accentText : T.textMuted,
+                      color: col && sortCol === col ? T.brandPrimaryFg : T.textMuted,
                       textTransform: "uppercase",
                       letterSpacing: 0.7,
-                      borderBottom: `0.5px solid ${T.border}`,
+                      borderBottom: `0.5px solid ${T.borderDefault}`,
                       cursor: col ? "pointer" : "default",
                       userSelect: "none",
                     }}
@@ -320,29 +320,39 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                 const tm = TIER_META[b.tier];
                 const sm = STATE_META[b.state] ?? STATE_META.pending;
                 return (
-                  <tr key={b.id} style={{ background: isTop ? T.overlayAccent : "transparent" }}>
-                    <td style={{ padding: "10px 10px", borderBottom: `0.5px solid ${T.border}` }}>
+                  <tr key={b.id} style={{ background: isTop ? T.overlayBrand : "transparent" }}>
+                    <td
+                      style={{
+                        padding: "10px 10px",
+                        borderBottom: `0.5px solid ${T.borderDefault}`,
+                      }}
+                    >
                       <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
                         {isTop && (
                           <div
                             style={{
                               width: 3,
                               height: 28,
-                              background: T.accent,
+                              background: T.brandPrimary,
                               borderRadius: 2,
                               flexShrink: 0,
                             }}
                           />
                         )}
                         <div>
-                          <div style={{ fontWeight: 600, color: T.text }}>{b.name}</div>
+                          <div style={{ fontWeight: 600, color: T.textPrimary }}>{b.name}</div>
                           {isTop && (
-                            <div style={{ fontSize: 10, color: T.accentText }}>→ кандидат</div>
+                            <div style={{ fontSize: 10, color: T.brandPrimaryFg }}>→ кандидат</div>
                           )}
                         </div>
                       </div>
                     </td>
-                    <td style={{ padding: "10px 10px", borderBottom: `0.5px solid ${T.border}` }}>
+                    <td
+                      style={{
+                        padding: "10px 10px",
+                        borderBottom: `0.5px solid ${T.borderDefault}`,
+                      }}
+                    >
                       <Pill color={colorToken(tm.colorId)} bg={colorToken(tm.bgId)} size={10}>
                         {tm.label}
                       </Pill>
@@ -353,7 +363,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                     <td
                       style={{
                         padding: "10px 10px",
-                        borderBottom: `0.5px solid ${T.border}`,
+                        borderBottom: `0.5px solid ${T.borderDefault}`,
                         fontWeight: 700,
                         fontFamily: F.mono,
                       }}
@@ -363,9 +373,9 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                     <td
                       style={{
                         padding: "10px 10px",
-                        borderBottom: `0.5px solid ${T.border}`,
+                        borderBottom: `0.5px solid ${T.borderDefault}`,
                         fontWeight: 700,
-                        color: T.accentText,
+                        color: T.brandPrimaryFg,
                         fontFamily: F.mono,
                       }}
                     >
@@ -374,7 +384,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                     <td
                       style={{
                         padding: "10px 10px",
-                        borderBottom: `0.5px solid ${T.border}`,
+                        borderBottom: `0.5px solid ${T.borderDefault}`,
                         color: T.textMuted,
                         fontSize: 12,
                       }}
@@ -384,7 +394,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                     <td
                       style={{
                         padding: "10px 10px",
-                        borderBottom: `0.5px solid ${T.border}`,
+                        borderBottom: `0.5px solid ${T.borderDefault}`,
                         color: T.textMuted,
                         fontFamily: F.mono,
                         fontSize: 12,
@@ -392,12 +402,22 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                     >
                       {b.time}
                     </td>
-                    <td style={{ padding: "10px 10px", borderBottom: `0.5px solid ${T.border}` }}>
+                    <td
+                      style={{
+                        padding: "10px 10px",
+                        borderBottom: `0.5px solid ${T.borderDefault}`,
+                      }}
+                    >
                       <Pill color={colorToken(sm.colorId)} bg={colorToken(sm.bgId)} size={10}>
                         {sm.label}
                       </Pill>
                     </td>
-                    <td style={{ padding: "10px 10px", borderBottom: `0.5px solid ${T.border}` }}>
+                    <td
+                      style={{
+                        padding: "10px 10px",
+                        borderBottom: `0.5px solid ${T.borderDefault}`,
+                      }}
+                    >
                       {b.state === "pending" && (
                         <div style={{ display: "flex", gap: 5 }}>
                           <button
@@ -409,9 +429,9 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                               fontWeight: 600,
                               borderRadius: 5,
                               cursor: "pointer",
-                              background: T.greenDim,
-                              border: `0.5px solid ${T.green}`,
-                              color: T.greenText,
+                              background: T.statusSuccessBg,
+                              border: `0.5px solid ${T.statusSuccess}`,
+                              color: T.statusSuccessFg,
                             }}
                           >
                             ✓ Принять
@@ -425,9 +445,9 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                               fontWeight: 600,
                               borderRadius: 5,
                               cursor: "pointer",
-                              background: T.redDim,
-                              border: `0.5px solid ${T.red}`,
-                              color: T.redText,
+                              background: T.statusDangerBg,
+                              border: `0.5px solid ${T.statusDanger}`,
+                              color: T.statusDangerFg,
                             }}
                           >
                             ✕
