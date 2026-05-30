@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { FLIGHTS_DATA, STATUS_META, colorToken } from "./data";
+import { useEffect, useState } from "react";
+import { STATUS_META, colorToken } from "./data";
+import { backendClient } from "./backend/client";
 import { MetricCard, Pill } from "./primitives";
 import { F, T } from "./theme";
 import { TXT } from "./i18n";
@@ -10,10 +11,24 @@ type FlightListProps = {
 };
 
 export function FlightList({ onSelect }: FlightListProps) {
+  const [flights, setFlights] = useState<Flight[]>([]);
   const [search, setSearch] = useState("");
   const [statusF, setStatusF] = useState<FlightListFilter>("all");
   const [sortCol, setSortCol] = useState<FlightListSortCol>("dep");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
+
+  useEffect(() => {
+    let mounted = true;
+
+    void backendClient.flights.listFlights().then((items) => {
+      if (mounted) setFlights(items);
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   const statusFilters: Array<[FlightListFilter, string]> = [
     ["all", TXT.flightList.statusFilters.all],
     ["active", TXT.flightList.statusFilters.active],
@@ -40,7 +55,8 @@ export function FlightList({ onSelect }: FlightListProps) {
     }
   };
 
-  const filtered = FLIGHTS_DATA.filter((f) => statusF === "all" || f.status === statusF)
+  const filtered = flights
+    .filter((f) => statusF === "all" || f.status === statusF)
     .filter(
       (f) =>
         f.id.toLowerCase().includes(search.toLowerCase()) ||
@@ -58,10 +74,10 @@ export function FlightList({ onSelect }: FlightListProps) {
       return sortDir === "asc" ? (va > vb ? 1 : -1) : vb > va ? 1 : -1;
     });
 
-  const totalActive = FLIGHTS_DATA.filter((f) => f.status === "active").length;
-  const totalBids = FLIGHTS_DATA.reduce((s, f) => s + f.bids, 0);
-  const totalRevenue = FLIGHTS_DATA.reduce((s, f) => s + f.revenue, 0);
-  const totalFree = FLIGHTS_DATA.reduce((s, f) => s + f.bcFree, 0);
+  const totalActive = flights.filter((f) => f.status === "active").length;
+  const totalBids = flights.reduce((s, f) => s + f.bids, 0);
+  const totalRevenue = flights.reduce((s, f) => s + f.revenue, 0);
+  const totalFree = flights.reduce((s, f) => s + f.bcFree, 0);
 
   return (
     <div>
