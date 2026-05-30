@@ -1,7 +1,13 @@
 import { FLIGHTS_DATA } from "../data";
 import { INITIAL_BIDS, weighted } from "../data";
 import type { Bid, Flight } from "../types";
-import type { BackendClient, FlightQuery, FlightsPage, FlightsSummary } from "./contracts";
+import type {
+  BackendClient,
+  FlightFilter,
+  FlightQuery,
+  FlightsPage,
+  FlightsSummary,
+} from "./contracts";
 import {
   composeBeforeCall,
   createJitterSleeper,
@@ -30,15 +36,31 @@ function summarizeFlights(flights: Flight[]): FlightsSummary {
 
 function queryFlightsData(query: FlightQuery): FlightsPage {
   const search = (query.search ?? "").trim().toLowerCase();
-  const status = query.status ?? "all";
+  const filters = query.filters ?? [];
   const sortBy = query.sortBy ?? "dep";
   const sortDir = query.sortDir ?? "asc";
   const page = Math.max(1, query.page ?? 1);
   const pageSize = Math.max(1, query.pageSize ?? 6);
 
+  const toComparableString = (value: unknown) => String(value ?? "").toLowerCase();
+  const matchesFilter = (flight: Flight, filter: FlightFilter): boolean => {
+    const fieldValue = flight[filter.field];
+
+    if (filter.op === "eq") {
+      return String(fieldValue) === String(filter.value);
+    }
+
+    if (filter.op === "contains") {
+      return toComparableString(fieldValue).includes(toComparableString(filter.value));
+    }
+
+    if (!Array.isArray(filter.value)) return false;
+    return filter.value.map((v) => String(v)).includes(String(fieldValue));
+  };
+
   const filtered = FLIGHTS_DATA.filter((flight) => {
-    const statusOk = status === "all" || flight.status === status;
-    if (!statusOk) return false;
+    const filtersOk = filters.every((filter) => matchesFilter(flight, filter));
+    if (!filtersOk) return false;
     if (!search) return true;
 
     const haystack = [flight.id, flight.from, flight.to, flight.aircraft].join(" ").toLowerCase();

@@ -36,10 +36,20 @@ export function FlightList({ onSelect }: FlightListProps) {
   const sortDir: SortDir = rawSortDir === "desc" ? "desc" : "asc";
   const page = Math.max(1, Number(rawPage ?? "1") || 1);
   const pageSize = 6;
+  const filters =
+    statusF === "all"
+      ? []
+      : [
+          {
+            field: "status" as const,
+            op: "eq" as const,
+            value: statusF,
+          },
+        ];
 
   const { data, isLoading, isError } = useFlightsQuery({
     search,
-    status: statusF,
+    filters,
     sortBy: sortCol,
     sortDir,
     page,

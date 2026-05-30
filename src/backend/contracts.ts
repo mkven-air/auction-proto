@@ -1,8 +1,14 @@
-import type { Bid, Flight, FlightListFilter, FlightListSortCol, SortDir } from "../types";
+import type { Bid, Flight, FlightListSortCol, SortDir } from "../types";
+
+export type FlightFilter = {
+  field: keyof Flight;
+  op: "eq" | "contains" | "in";
+  value: string | number | Array<string | number>;
+};
 
 export type FlightQuery = {
   search?: string;
-  status?: FlightListFilter;
+  filters?: FlightFilter[];
   sortBy?: FlightListSortCol;
   sortDir?: SortDir;
   page?: number;

@@ -7,7 +7,7 @@ export const useFlightsQuery = (query: FlightQuery) =>
   useQuery({
     queryKey: queryKeys.flightsQuery({
       ...(query.search !== undefined ? { search: query.search } : {}),
-      ...(query.status !== undefined ? { status: query.status } : {}),
+      ...(query.filters !== undefined ? { filters: JSON.stringify(query.filters) } : {}),
       ...(query.sortBy !== undefined ? { sortBy: query.sortBy } : {}),
       ...(query.sortDir !== undefined ? { sortDir: query.sortDir } : {}),
       ...(query.page !== undefined ? { page: query.page } : {}),
