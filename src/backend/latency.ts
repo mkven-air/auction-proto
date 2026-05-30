@@ -46,21 +46,39 @@ export function createJitterSleeper(getRange: () => LatencyRange): () => Promise
   };
 }
 
+type AsyncFn<TArgs extends unknown[] = unknown[], TResult = unknown> = (
+  ...args: TArgs
+) => Promise<TResult>;
+
+function withAsyncLatency<TArgs extends unknown[], TResult>(
+  fn: AsyncFn<TArgs, TResult>,
+  sleep: () => Promise<void>,
+): AsyncFn<TArgs, TResult> {
+  return async (...args: TArgs) => {
+    await sleep();
+    return fn(...args);
+  };
+}
+
+function withServiceLatency<TService extends Record<string, unknown>>(
+  service: TService,
+  sleep: () => Promise<void>,
+): TService {
+  const wrappedEntries = Object.entries(service).map(([key, value]) => {
+    if (typeof value === "function") {
+      return [key, withAsyncLatency(value as AsyncFn, sleep)];
+    }
+    return [key, value];
+  });
+
+  return Object.fromEntries(wrappedEntries) as TService;
+}
+
 export function withBackendClientLatency(
   client: BackendClient,
   sleep: () => Promise<void>,
 ): BackendClient {
   return {
-    flights: {
-      async listFlights() {
-        await sleep();
-        return client.flights.listFlights();
-      },
-
-      async getFlightById(flightId) {
-        await sleep();
-        return client.flights.getFlightById(flightId);
-      },
-    },
+    flights: withServiceLatency(client.flights, sleep),
   };
 }
