@@ -1,6 +1,6 @@
 import { FLIGHTS_DATA, INITIAL_BIDS } from "../../data";
 import type { Bid, Flight } from "../../types";
-import type { FlightsPage, FlightsSummary } from "../contracts";
+import type { FlightsPage, FlightsSummary } from "./contracts";
 import type { AppDb } from "./contracts";
 import { createDbEmulator } from "./emulator";
 
@@ -19,7 +19,7 @@ function summarizeFlights(flights: Flight[]): FlightsSummary {
 
 type BidRow = Bid & { flightId: Flight["id"] };
 
-export const createInMemoryDb = (): AppDb => {
+export const createAppInMemoryDb = (): AppDb => {
   const bidRows: BidRow[] = FLIGHTS_DATA.flatMap((flight) =>
     cloneBids(INITIAL_BIDS).map((bid) => ({ ...bid, flightId: flight.id })),
   );

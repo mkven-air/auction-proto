@@ -1,6 +1,6 @@
 import { weighted } from "../data";
 import type { BackendClient } from "./contracts";
-import { createInMemoryDb } from "./db/inMemory";
+import { createAppInMemoryDb } from "./db/appInMemoryDb";
 import {
   composeBeforeCall,
   createJitterSleeper,
@@ -9,8 +9,8 @@ import {
   withLatency,
 } from "./latency";
 
-export const createMockBackendClient = (): BackendClient => {
-  const db = createInMemoryDb();
+export const createServiceClient = (): BackendClient => {
+  const db = createAppInMemoryDb();
 
   const baseClient: BackendClient = {
     flights: {
