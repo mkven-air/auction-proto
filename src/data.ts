@@ -142,23 +142,6 @@ export const FLIGHTS_DATA: Flight[] = [
   },
 ];
 
-export const FALLBACK_FLIGHT: Flight = {
-  id: "HY 000",
-  from: "TAS",
-  to: "TAS",
-  dep: "—",
-  arr: "—",
-  duration: "—",
-  aircraft: "—",
-  bcFree: 0,
-  bcTotal: 0,
-  bids: 0,
-  topBid: 0,
-  revenue: 0,
-  status: "upcoming",
-  haul: "ultra-short",
-};
-
 export const INITIAL_BIDS: Bid[] = [
   {
     id: 1,

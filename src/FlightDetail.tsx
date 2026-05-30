@@ -5,7 +5,6 @@ import {
   CH_ICONS,
   DIST_DATA,
   EXIT_DATA,
-  FALLBACK_FLIGHT,
   HAUL_LABELS,
   INITIAL_BIDS,
   STATE_META,
@@ -18,8 +17,7 @@ import { TXT } from "./i18n";
 import { useFlightById } from "./queries/useFlightById";
 
 export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onBack: () => void }) {
-  const { data: flightData } = useFlightById(flightId);
-  const flight = flightData ?? FALLBACK_FLIGHT;
+  const { data: flight, isLoading, isError } = useFlightById(flightId);
   const [bids, setBids] = useState(INITIAL_BIDS);
   const [filter, setFilter] = useState<FlightDetailFilter>("all");
   const [autoRan, setAutoRan] = useState(false);
@@ -69,10 +67,11 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
   const reject = (id: Bid["id"]) =>
     setBids((bs) => bs.map((b) => (b.id === id ? { ...b, state: "rejected" } : b)));
   const autoSelect = () => {
+    const availableSeats = flight?.bcFree ?? 0;
     const top = [...bids]
       .filter((b) => b.state === "pending")
       .sort((a, b) => weighted(b) - weighted(a))
-      .slice(0, flight.bcFree)
+      .slice(0, availableSeats)
       .map((b) => b.id);
     setBids((bs) => bs.map((b) => (top.includes(b.id) ? { ...b, state: "approved" } : b)));
     setAutoRan(true);
@@ -83,6 +82,83 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
     approved: bids.filter((b) => b.state === "approved").length,
     rejected: bids.filter((b) => b.state === "rejected").length,
   };
+
+  if (isLoading) {
+    return (
+      <div>
+        <button
+          type="button"
+          onClick={onBack}
+          style={{
+            padding: "6px 12px",
+            borderRadius: 7,
+            fontSize: 12,
+            fontWeight: 600,
+            cursor: "pointer",
+            background: "transparent",
+            border: `0.5px solid ${T.borderDefault}`,
+            color: T.textMuted,
+            marginBottom: 12,
+          }}
+        >
+          {TXT.flightDetail.backButton}
+        </button>
+        <div style={{ fontSize: 13, color: T.textMuted }}>{TXT.flightDetail.states.loading}</div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div>
+        <button
+          type="button"
+          onClick={onBack}
+          style={{
+            padding: "6px 12px",
+            borderRadius: 7,
+            fontSize: 12,
+            fontWeight: 600,
+            cursor: "pointer",
+            background: "transparent",
+            border: `0.5px solid ${T.borderDefault}`,
+            color: T.textMuted,
+            marginBottom: 12,
+          }}
+        >
+          {TXT.flightDetail.backButton}
+        </button>
+        <div style={{ fontSize: 13, color: T.statusDangerFg }}>
+          {TXT.flightDetail.states.loadError}
+        </div>
+      </div>
+    );
+  }
+
+  if (!flight) {
+    return (
+      <div>
+        <button
+          type="button"
+          onClick={onBack}
+          style={{
+            padding: "6px 12px",
+            borderRadius: 7,
+            fontSize: 12,
+            fontWeight: 600,
+            cursor: "pointer",
+            background: "transparent",
+            border: `0.5px solid ${T.borderDefault}`,
+            color: T.textMuted,
+            marginBottom: 12,
+          }}
+        >
+          {TXT.flightDetail.backButton}
+        </button>
+        <div style={{ fontSize: 13, color: T.textMuted }}>{TXT.flightDetail.states.notFound}</div>
+      </div>
+    );
+  }
 
   return (
     <div>
