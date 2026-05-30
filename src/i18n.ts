@@ -5,6 +5,10 @@ export const I18N = {
       activeFlightsSuffix: "активных",
       bidsSuffix: "заявок",
       emptyFlightPrompt: "Выберите рейс из списка",
+      states: {
+        loading: "Загрузка...",
+        loadError: "Ошибка",
+      },
     },
     nav: {
       flights: "Рейсы",
@@ -24,6 +28,10 @@ export const I18N = {
       free: "Свободно",
     },
     flightList: {
+      states: {
+        loading: "Загрузка списка рейсов...",
+        loadError: "Не удалось загрузить список рейсов.",
+      },
       statusFilters: {
         all: "Все",
         active: "Активные",

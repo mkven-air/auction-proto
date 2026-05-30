@@ -11,16 +11,16 @@ type NavItem = {
 type AdminHeaderProps = {
   navItems: NavItem[];
   activeTab: MainTab;
-  totalActive: number;
-  totalBids: number;
+  activeFlightsText: string;
+  bidsText: string;
   onSelectTab: (tab: MainTab) => void;
 };
 
 export function AdminHeader({
   navItems,
   activeTab,
-  totalActive,
-  totalBids,
+  activeFlightsText,
+  bidsText,
   onSelectTab,
 }: AdminHeaderProps) {
   return (
@@ -93,10 +93,10 @@ export function AdminHeader({
       ))}
       <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 10 }}>
         <Pill color={T.statusSuccessFg} bg={T.statusSuccessBg}>
-          {totalActive} {TXT.admin.activeFlightsSuffix}
+          {activeFlightsText}
         </Pill>
         <Pill color={T.brandPrimaryFg} bg={T.brandPrimaryBg}>
-          {totalBids} {TXT.admin.bidsSuffix}
+          {bidsText}
         </Pill>
         <div
           style={{

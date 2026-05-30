@@ -11,7 +11,7 @@ type FlightListProps = {
 };
 
 export function FlightList({ onSelect }: FlightListProps) {
-  const { data: flights = [] } = useFlights();
+  const { data: flights = [], isLoading, isError } = useFlights();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const search = searchParams.get("q") ?? "";
@@ -87,6 +87,16 @@ export function FlightList({ onSelect }: FlightListProps) {
   const totalBids = flights.reduce((s, f) => s + f.bids, 0);
   const totalRevenue = flights.reduce((s, f) => s + f.revenue, 0);
   const totalFree = flights.reduce((s, f) => s + f.bcFree, 0);
+
+  if (isLoading) {
+    return <div style={{ fontSize: 13, color: T.textMuted }}>{TXT.flightList.states.loading}</div>;
+  }
+
+  if (isError) {
+    return (
+      <div style={{ fontSize: 13, color: T.statusDangerFg }}>{TXT.flightList.states.loadError}</div>
+    );
+  }
 
   return (
     <div>

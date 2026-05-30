@@ -82,7 +82,7 @@ function EmailRoute() {
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { data: flights = [] } = useFlights();
+  const { data: flights = [], isLoading: isFlightsLoading, isError: isFlightsError } = useFlights();
   const tab = routeToTab(location.pathname);
   const selectedFlight = location.pathname.startsWith("/flights/")
     ? decodeURIComponent(location.pathname.replace("/flights/", ""))
@@ -90,6 +90,16 @@ export default function App() {
 
   const totalActive = flights.filter((f) => f.status === "active").length;
   const totalBids = flights.reduce((s, f) => s + f.bids, 0);
+  const activeFlightsText = isFlightsLoading
+    ? TXT.admin.states.loading
+    : isFlightsError
+      ? TXT.admin.states.loadError
+      : `${totalActive} ${TXT.admin.activeFlightsSuffix}`;
+  const bidsText = isFlightsLoading
+    ? TXT.admin.states.loading
+    : isFlightsError
+      ? TXT.admin.states.loadError
+      : `${totalBids} ${TXT.admin.bidsSuffix}`;
 
   const navItems = [
     { id: "flights", label: TXT.nav.flights },
@@ -113,8 +123,8 @@ export default function App() {
       <AdminHeader
         navItems={NAV}
         activeTab={tab}
-        totalActive={totalActive}
-        totalBids={totalBids}
+        activeFlightsText={activeFlightsText}
+        bidsText={bidsText}
         onSelectTab={(nextTab) => {
           if (nextTab === "flights") navigate("/flights");
           if (nextTab === "flight")
