@@ -1,5 +1,6 @@
 import { useState } from "react";
-import type { EmailTemplateType, Flight, MainTab } from "./types";
+import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom";
+import type { EmailTemplateType, MainTab } from "./types";
 import { F, T } from "./theme";
 import { FlightList } from "./FlightList";
 import { FlightDetail } from "./FlightDetail";
@@ -10,21 +11,49 @@ import { AdminHeader, EmailTemplateTabs, EmptyFlightState } from "./AdminShell";
 import { TXT } from "./i18n";
 import { useFlights } from "./queries/useFlights";
 
+function routeToTab(pathname: string): MainTab {
+  if (pathname === "/rules") return "rules";
+  if (pathname === "/email") return "email";
+  if (pathname === "/passenger") return "passenger";
+  if (pathname.startsWith("/flights/")) return "flight";
+  return "flights";
+}
+
+function FlightsRoute() {
+  const navigate = useNavigate();
+  return <FlightList onSelect={(id) => navigate(`/flights/${id}`)} />;
+}
+
+function FlightDetailRoute() {
+  const navigate = useNavigate();
+  const params = useParams<{ flightId: string }>();
+
+  if (!params.flightId) {
+    return <EmptyFlightState />;
+  }
+
+  return <FlightDetail flightId={params.flightId} onBack={() => navigate("/flights")} />;
+}
+
+function EmailRoute() {
+  const [emailTab, setEmailTab] = useState<EmailTemplateType>("pte");
+  return (
+    <>
+      <EmailTemplateTabs activeTab={emailTab} onChange={setEmailTab} />
+      <EmailPreview type={emailTab} />
+    </>
+  );
+}
+
 // ─── Root App ─────────────────────────────────────────────────
 export default function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { data: flights = [] } = useFlights();
-  const [tab, setTab] = useState<MainTab>("flights");
-  const [emailTab, setEmailTab] = useState<EmailTemplateType>("pte");
-  const [selectedFlight, setSelectedFlight] = useState<Flight["id"] | null>(null);
-
-  const handleSelectFlight = (id: Flight["id"]) => {
-    setSelectedFlight(id);
-    setTab("flight");
-  };
-  const handleBack = () => {
-    setSelectedFlight(null);
-    setTab("flights");
-  };
+  const tab = routeToTab(location.pathname);
+  const selectedFlight = location.pathname.startsWith("/flights/")
+    ? decodeURIComponent(location.pathname.replace("/flights/", ""))
+    : null;
 
   const totalActive = flights.filter((f) => f.status === "active").length;
   const totalBids = flights.reduce((s, f) => s + f.bids, 0);
@@ -54,25 +83,25 @@ export default function App() {
         totalActive={totalActive}
         totalBids={totalBids}
         onSelectTab={(nextTab) => {
-          setTab(nextTab);
-          if (nextTab !== "flight") setSelectedFlight(null);
+          if (nextTab === "flights") navigate("/flights");
+          if (nextTab === "flight")
+            navigate(selectedFlight ? `/flights/${selectedFlight}` : "/flights");
+          if (nextTab === "rules") navigate("/rules");
+          if (nextTab === "email") navigate("/email");
+          if (nextTab === "passenger") navigate("/passenger");
         }}
       />
 
       <div style={{ padding: "20px 24px" }}>
-        {tab === "flights" && <FlightList onSelect={handleSelectFlight} />}
-        {tab === "flight" && selectedFlight && (
-          <FlightDetail flightId={selectedFlight} onBack={handleBack} />
-        )}
-        {tab === "flight" && !selectedFlight && <EmptyFlightState />}
-        {tab === "rules" && <GlobalRules />}
-        {tab === "passenger" && <PassengerBidUI />}
-        {tab === "email" && (
-          <>
-            <EmailTemplateTabs activeTab={emailTab} onChange={setEmailTab} />
-            <EmailPreview type={emailTab} />
-          </>
-        )}
+        <Routes>
+          <Route path="/" element={<Navigate to="/flights" replace />} />
+          <Route path="/flights" element={<FlightsRoute />} />
+          <Route path="/flights/:flightId" element={<FlightDetailRoute />} />
+          <Route path="/rules" element={<GlobalRules />} />
+          <Route path="/email" element={<EmailRoute />} />
+          <Route path="/passenger" element={<PassengerBidUI />} />
+          <Route path="*" element={<Navigate to="/flights" replace />} />
+        </Routes>
       </div>
     </div>
   );
