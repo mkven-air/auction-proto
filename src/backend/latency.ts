@@ -1,5 +1,3 @@
-import type { BackendClient } from "./contracts";
-
 type LatencyRange = {
   minMs: number;
   maxMs: number;
@@ -50,6 +48,12 @@ type AsyncFn<TArgs extends unknown[] = unknown[], TResult = unknown> = (
   ...args: TArgs
 ) => Promise<TResult>;
 
+type AnyObject = Record<string, unknown>;
+
+function isPlainObject(value: unknown): value is AnyObject {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
 function withAsyncLatency<TArgs extends unknown[], TResult>(
   fn: AsyncFn<TArgs, TResult>,
   sleep: () => Promise<void>,
@@ -60,25 +64,19 @@ function withAsyncLatency<TArgs extends unknown[], TResult>(
   };
 }
 
-function withServiceLatency<TService extends Record<string, unknown>>(
-  service: TService,
+export function withLatency<TTarget extends AnyObject>(
+  target: TTarget,
   sleep: () => Promise<void>,
-): TService {
-  const wrappedEntries = Object.entries(service).map(([key, value]) => {
+): TTarget {
+  const wrappedEntries = Object.entries(target).map(([key, value]) => {
     if (typeof value === "function") {
       return [key, withAsyncLatency(value as AsyncFn, sleep)];
+    }
+    if (isPlainObject(value)) {
+      return [key, withLatency(value, sleep)];
     }
     return [key, value];
   });
 
-  return Object.fromEntries(wrappedEntries) as TService;
-}
-
-export function withBackendClientLatency(
-  client: BackendClient,
-  sleep: () => Promise<void>,
-): BackendClient {
-  return {
-    flights: withServiceLatency(client.flights, sleep),
-  };
+  return Object.fromEntries(wrappedEntries) as TTarget;
 }
