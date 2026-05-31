@@ -121,7 +121,7 @@ bash all-checks.sh # runs both scripts
 │   │   └── EntitiesPage.tsx           # auto-discovered DB tables view
 │   ├── primitives/                    # reusable UI primitives (Pill, MetricCard, ...)
 │   ├── components/                    # app-specific composed components
-│   ├── domain/                        # enum metadata (tier/state/status colors, ...)
+│   ├── domain/                        # color tokens + cross-entity helpers
 │   ├── data/<entity>.ts               # per-entity seed data (one file per table)
 │   ├── format/                        # display formatters (flight time, bid distribution)
 │   ├── lib/                           # small framework-agnostic utilities
@@ -155,7 +155,9 @@ bash all-checks.sh # runs both scripts
 The codebase is organized under `src/` with thin layered folders:
 - Each major UI panel lives in `src/pages/` as a self-contained module
 - Reusable atoms live in `src/primitives/` (`Pill`, `MetricCard`, `BarChart`, ...)
-- Enum metadata (color/bg tokens for tier, bid state, flight status, ...) lives in `src/domain/`
+- Color tokens live in `src/domain/color.ts`; enum dictionaries (tiers, bid states,
+  flight statuses, flight hauls) are full entities — seed rows in `src/data/<entity>.ts`
+  carry `name` (LocalizedString) and `colorId`/`bgId` token references
 - Per-entity seed data is split into `src/data/<entity>.ts`
 - Type definitions are centralized in `src/types.ts`
 
@@ -167,11 +169,13 @@ still reference them while the codebase migrates toward Tailwind/shadcn classes.
 
 ### Data & Mappings
 - Seed data lives in `src/data/<entity>.ts` — one file per table (countries, cities, airports, passengers, flights, bids)
-- Domain dictionary entries (e.g. country/city/airport `name`) carry `LocalizedString`
-  shapes resolved via `value[CURRENT_LOCALE]`
-- Enum-label maps (tier multipliers, bid states, flight statuses, hauls) live in
-  `src/i18n.ts` since they are pure UI text, not data rows
-- Color/bg token maps for those enums live in `src/domain/` (label-free)
+- Domain dictionary entries (e.g. country/city/airport `name`, tier/state/status `name`)
+  carry `LocalizedString` shapes resolved via `value[CURRENT_LOCALE]`
+- Enum dictionaries (tiers, bid states, flight statuses, flight hauls) are served
+  through their own backend services and consumed in pages via TanStack Query hooks
+  (`useTiersById`, `useBidStatesById`, `useFlightStatusesById`, `useFlightHaulsById`)
+  with `staleTime: Infinity`
+- `src/i18n.ts` only contains pure UI text (labels, headings); no per-entity data
 
 ### Backend Layering
 - The aggregate `BackendClient` contract lives in `src/backend/contracts.ts`
