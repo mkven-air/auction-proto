@@ -1,67 +1,21 @@
-import type { Airport, AirportWithLocation, Bid, City, Country, Flight } from "../types";
-import type { FlightListSortCol, SortDir } from "../types";
-import type { DbRow } from "./db/emulator";
+import type { DbRow } from "./db/contracts";
+import type { AirportsService } from "./services/airports/contracts";
+import type { BidsService } from "./services/bids/contracts";
+import type { CitiesService } from "./services/cities/contracts";
+import type { CountriesService } from "./services/countries/contracts";
+import type { FlightsService } from "./services/flights/contracts";
 
-export type FlightFilter = {
-  field: keyof Flight;
-  op: "eq" | "contains" | "in";
-  value: string | number | Array<string | number>;
-};
-
-export type FlightQuery = {
-  search?: string;
-  filters?: FlightFilter[];
-  sortBy?: FlightListSortCol;
-  sortDir?: SortDir;
-  page?: number;
-  pageSize?: number;
-};
-
-export type FlightsSummary = {
-  active: number;
-  bids: number;
-  revenue: number;
-  freeSeats: number;
-};
-
-export type FlightsPage = {
-  items: Flight[];
-  total: number;
-  page: number;
-  pageSize: number;
-  summary: FlightsSummary;
-};
-
-export type FlightsService = {
-  list: () => Promise<Flight[]>;
-  query: (query: FlightQuery) => Promise<FlightsPage>;
-  getSummary: () => Promise<FlightsSummary>;
-  findById: (flightId: Flight["id"]) => Promise<Flight | undefined>;
-};
-
-export type BidsService = {
-  list: (flightId: Flight["id"]) => Promise<Bid[]>;
-  approve: (flightId: Flight["id"], bidId: Bid["id"]) => Promise<Bid | undefined>;
-  reject: (flightId: Flight["id"], bidId: Bid["id"]) => Promise<Bid | undefined>;
-  autoSelect: (flightId: Flight["id"]) => Promise<Bid["id"][]>;
-};
-
-export type AirportsService = {
-  list: () => Promise<Airport[]>;
-  findByIds: (ids: Airport["id"][]) => Promise<Airport[]>;
-  listWithLocation: () => Promise<AirportWithLocation[]>;
-  findWithLocationByIds: (ids: Airport["id"][]) => Promise<AirportWithLocation[]>;
-};
-
-export type CitiesService = {
-  list: () => Promise<City[]>;
-  findByIds: (ids: City["id"][]) => Promise<City[]>;
-};
-
-export type CountriesService = {
-  list: () => Promise<Country[]>;
-  findByIds: (ids: Country["id"][]) => Promise<Country[]>;
-};
+export type {
+  FlightFilter,
+  FlightQuery,
+  FlightsPage,
+  FlightsService,
+  FlightsSummary,
+} from "./services/flights/contracts";
+export type { BidsService } from "./services/bids/contracts";
+export type { AirportsService } from "./services/airports/contracts";
+export type { CitiesService } from "./services/cities/contracts";
+export type { CountriesService } from "./services/countries/contracts";
 
 export type EntityTable = {
   name: string;

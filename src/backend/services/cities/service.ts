@@ -1,8 +1,7 @@
-import { CITIES_DATA } from "../data";
-import type { City } from "../types";
+import { CITIES_DATA } from "../../../data";
+import type { City } from "../../../types";
+import type { DbEmulator, EntitySeed } from "../../db/contracts";
 import type { CitiesService } from "./contracts";
-import type { DbEmulator } from "./db/emulator";
-import type { EntitySeed } from "./serviceUtils";
 
 export const citiesSeed: EntitySeed = {
   cities: CITIES_DATA,

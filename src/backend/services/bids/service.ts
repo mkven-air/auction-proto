@@ -1,8 +1,8 @@
-import { FLIGHTS_DATA, INITIAL_BIDS, weighted } from "../data";
-import type { Bid, BidState, Flight } from "../types";
+import { FLIGHTS_DATA, INITIAL_BIDS, weighted } from "../../../data";
+import type { Bid, BidState, Flight } from "../../../types";
+import type { DbEmulator, EntitySeed } from "../../db/contracts";
 import type { BidsService } from "./contracts";
-import type { DbEmulator } from "./db/emulator";
-import { type BidRow, type EntitySeed, bidRowsToBids, toBidRowFilters } from "./serviceUtils";
+import { type BidRow, bidRowsToBids, toBidRowFilters } from "./utils";
 
 export const bidsSeed: EntitySeed = {
   bids: FLIGHTS_DATA.flatMap((flight) =>

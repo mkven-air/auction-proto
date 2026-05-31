@@ -1,8 +1,7 @@
-import { AIRPORTS_DATA } from "../data";
-import type { Airport, AirportWithLocation, City, Country } from "../types";
+import { AIRPORTS_DATA } from "../../../data";
+import type { Airport, AirportWithLocation, City, Country } from "../../../types";
+import type { DbEmulator, EntitySeed } from "../../db/contracts";
 import type { AirportsService } from "./contracts";
-import type { DbEmulator } from "./db/emulator";
-import type { EntitySeed } from "./serviceUtils";
 
 export const airportsSeed: EntitySeed = {
   airports: AIRPORTS_DATA,

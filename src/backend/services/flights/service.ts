@@ -1,13 +1,8 @@
-import { FLIGHTS_DATA } from "../data";
-import type { Flight } from "../types";
+import { FLIGHTS_DATA } from "../../../data";
+import type { Flight } from "../../../types";
+import type { DbEmulator, EntitySeed } from "../../db/contracts";
 import type { FlightsService } from "./contracts";
-import type { DbEmulator } from "./db/emulator";
-import {
-  type EntitySeed,
-  toDbFilters,
-  toFlightQueryParams,
-  toFlightSummaryQueryParams,
-} from "./serviceUtils";
+import { toDbFilters, toFlightQueryParams, toFlightSummaryQueryParams } from "./utils";
 
 export const flightsSeed: EntitySeed = {
   flights: FLIGHTS_DATA,

@@ -1,10 +1,10 @@
-import { airportsSeed, createAirportsService } from "./airportsService";
-import { bidsSeed, createBidsService } from "./bidsService";
-import { citiesSeed, createCitiesService } from "./citiesService";
 import type { BackendClient, EntitiesService } from "./contracts";
-import { countriesSeed, createCountriesService } from "./countriesService";
 import { createDbEmulator, type DbEmulator } from "./db/emulator";
-import { flightsSeed, createFlightsService } from "./flightsService";
+import { airportsSeed, createAirportsService } from "./services/airports/service";
+import { bidsSeed, createBidsService } from "./services/bids/service";
+import { citiesSeed, createCitiesService } from "./services/cities/service";
+import { countriesSeed, createCountriesService } from "./services/countries/service";
+import { flightsSeed, createFlightsService } from "./services/flights/service";
 import {
   composeBeforeCall,
   createJitterSleeper,

@@ -1,8 +1,7 @@
-import { COUNTRIES_DATA } from "../data";
-import type { Country } from "../types";
+import { COUNTRIES_DATA } from "../../../data";
+import type { Country } from "../../../types";
+import type { DbEmulator, EntitySeed } from "../../db/contracts";
 import type { CountriesService } from "./contracts";
-import type { DbEmulator } from "./db/emulator";
-import type { EntitySeed } from "./serviceUtils";
 
 export const countriesSeed: EntitySeed = {
   countries: COUNTRIES_DATA,
