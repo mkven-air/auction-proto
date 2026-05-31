@@ -10,7 +10,10 @@ export const flightsSeed: EntitySeed = {
 
 function computeStats(db: DbEmulator, flight: Flight) {
   const bids = db.queryAll<Bid>("bids", {
-    filters: [{ field: "flightId", op: "eq", value: flight.id }],
+    filters: [
+      { field: "flightId", op: "eq", value: flight.id },
+      { field: "product", op: "eq", value: "businessClass" },
+    ],
   });
   const topBid = bids.reduce((max, row) => (row.bid > max ? row.bid : max), 0);
   return {

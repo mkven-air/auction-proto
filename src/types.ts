@@ -51,9 +51,12 @@ export type FlightStats = {
 
 export type FlightWithStats = Flight & FlightStats;
 
+export type BidProduct = "businessClass" | "exitRows";
+
 export type Bid = {
   id: number;
   flightId: Flight["id"];
+  product: BidProduct;
   name: string;
   tier: Tier;
   bid: number;

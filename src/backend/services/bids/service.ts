@@ -18,9 +18,12 @@ function selectWinningBidIds(rows: Bid[], availableSeats: number): Bid["id"][] {
 
 export function createBidsService(db: DbEmulator): BidsService {
   return {
-    async list(flightId) {
+    async list(flightId, product) {
       return db.queryAll<Bid>("bids", {
-        filters: [{ field: "flightId", op: "eq", value: flightId }],
+        filters: [
+          { field: "flightId", op: "eq", value: flightId },
+          { field: "product", op: "eq", value: product },
+        ],
       });
     },
 
@@ -38,7 +41,10 @@ export function createBidsService(db: DbEmulator): BidsService {
 
     async autoSelect(flightId) {
       const mutable = db.queryAll<Bid>("bids", {
-        filters: [{ field: "flightId", op: "eq", value: flightId }],
+        filters: [
+          { field: "flightId", op: "eq", value: flightId },
+          { field: "product", op: "eq", value: "businessClass" },
+        ],
       });
 
       const flight = db.findOne<Flight>("flights", [{ field: "id", op: "eq", value: flightId }]);
@@ -51,6 +57,7 @@ export function createBidsService(db: DbEmulator): BidsService {
           "bids",
           [
             { field: "flightId", op: "eq", value: flightId },
+            { field: "product", op: "eq", value: "businessClass" },
             { field: "id", op: "in", value: winners },
           ],
           { state: "approved" as BidState },

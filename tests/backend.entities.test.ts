@@ -13,7 +13,7 @@ describe("backend entities service", () => {
     );
     expect(byName.get("flights")?.length).toBe(8);
     expect(byName.get("airports")?.length).toBe(9);
-    expect(byName.get("bids")?.length).toBe(35);
+    expect(byName.get("bids")?.length).toBe(70);
     expect(byName.get("cities")?.length).toBe(9);
     expect(byName.get("countries")?.length).toBe(9);
   });

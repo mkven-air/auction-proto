@@ -2,16 +2,8 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Bid, Flight, FlightDetailFilter, FlightDetailSortCol, SortDir } from "./types";
 import { F, T } from "./theme";
-import {
-  CH_ICONS,
-  DIST_DATA,
-  EXIT_DATA,
-  HAUL_LABELS,
-  STATE_META,
-  TIER_META,
-  colorToken,
-  weighted,
-} from "./data";
+import { CH_ICONS, HAUL_LABELS, STATE_META, TIER_META, colorToken, weighted } from "./data";
+import { computeBidDistribution, BC_DIST_COLORS, EXIT_DIST_COLORS } from "./format/bidDistribution";
 import { BarChart, MetricCard, Pill, SeatMap, SectionLabel } from "./primitives";
 import { TXT } from "./i18n";
 import { useFlightById } from "./queries/useFlightById";
@@ -28,7 +20,8 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
     data: bids = [],
     isLoading: isBidsLoading,
     isError: isBidsError,
-  } = useFlightBids(flightId);
+  } = useFlightBids(flightId, "businessClass");
+  const { data: exitBids = [] } = useFlightBids(flightId, "exitRows");
   const airportIds = flight ? [flight.fromAirportId, flight.toAirportId] : [];
   const { data: airports = [] } = useAirportsWithLocationByIds(airportIds);
   const fromAirport = airports.find((a) => a.id === flight?.fromAirportId);
@@ -41,7 +34,9 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
   const [sortDir, setSortDir] = useState<SortDir>("desc");
 
   const refreshBids = () =>
-    queryClient.invalidateQueries({ queryKey: queryKeys.flightBids(flightId) });
+    queryClient.invalidateQueries({
+      queryKey: queryKeys.flightBids(flightId, "businessClass"),
+    });
   const approveMutation = useMutation({
     mutationFn: (bidId: Bid["id"]) => backendClient.bids.approve(flightId, bidId),
     onSuccess: refreshBids,
@@ -368,7 +363,12 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
           >
             {TXT.flightDetail.section.businessClass}
           </div>
-          <BarChart data={DIST_DATA.map((row) => ({ ...row, color: colorToken(row.colorId) }))} />
+          <BarChart
+            data={computeBidDistribution(bids, BC_DIST_COLORS).map((row) => ({
+              ...row,
+              color: colorToken(row.colorId),
+            }))}
+          />
           <div style={{ height: 1, background: T.borderDefault, margin: "12px 0" }} />
           <div
             style={{
@@ -382,7 +382,12 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
           >
             {TXT.flightDetail.section.exitRows}
           </div>
-          <BarChart data={EXIT_DATA.map((row) => ({ ...row, color: colorToken(row.colorId) }))} />
+          <BarChart
+            data={computeBidDistribution(exitBids, EXIT_DIST_COLORS).map((row) => ({
+              ...row,
+              color: colorToken(row.colorId),
+            }))}
+          />
         </div>
       </div>
       <div

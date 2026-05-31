@@ -223,11 +223,37 @@ export const FLIGHTS_DATA: Flight[] = [
 // Hand-authored seed. HY 602 keeps the curated 10 bids that drive the detail UI and
 // auto-select tests (top weighted: id 1 = 682, id 4 = 580). Other flights get a small
 // realistic spread so list-view aggregates aren't all zero.
+
+type ExitRowSeed = {
+  id: number;
+  name: string;
+  tier: Tier;
+  bid: number;
+  channel: Channel;
+  time: string;
+};
+
+function exitRowBids(flightId: Flight["id"], rows: ExitRowSeed[]): Bid[] {
+  return rows.map((r) => ({
+    flightId,
+    id: r.id,
+    product: "exitRows",
+    name: r.name,
+    tier: r.tier,
+    bid: r.bid,
+    mult: 1.0,
+    channel: r.channel,
+    time: r.time,
+    state: "pending",
+  }));
+}
+
 export const SEED_BIDS: Bid[] = [
   // HY 602 (bcFree 2 — auto-select picks ids 1 and 4)
   {
     flightId: "HY 602",
     id: 1,
+    product: "businessClass",
     name: "Иванов А.П.",
     tier: "Platinum",
     bid: 620,
@@ -239,6 +265,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 602",
     id: 2,
+    product: "businessClass",
     name: "Ли Вэй",
     tier: "Gold",
     bid: 520,
@@ -250,6 +277,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 602",
     id: 3,
+    product: "businessClass",
     name: "Петрова М.С.",
     tier: "Silver",
     bid: 490,
@@ -261,6 +289,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 602",
     id: 4,
+    product: "businessClass",
     name: "Smith J.",
     tier: "Standard",
     bid: 580,
@@ -272,6 +301,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 602",
     id: 5,
+    product: "businessClass",
     name: "Karimov B.",
     tier: "Platinum",
     bid: 400,
@@ -283,6 +313,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 602",
     id: 6,
+    product: "businessClass",
     name: "Ahmadov F.",
     tier: "Standard",
     bid: 470,
@@ -294,6 +325,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 602",
     id: 7,
+    product: "businessClass",
     name: "Brown T.",
     tier: "Gold",
     bid: 380,
@@ -305,6 +337,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 602",
     id: 8,
+    product: "businessClass",
     name: "Назаров О.",
     tier: "Standard",
     bid: 310,
@@ -316,6 +349,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 602",
     id: 9,
+    product: "businessClass",
     name: "Юсупова Д.",
     tier: "Silver",
     bid: 345,
@@ -327,6 +361,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 602",
     id: 10,
+    product: "businessClass",
     name: "Kim S.",
     tier: "Gold",
     bid: 430,
@@ -340,6 +375,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 814",
     id: 1,
+    product: "businessClass",
     name: "Tan W.",
     tier: "Gold",
     bid: 480,
@@ -351,6 +387,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 814",
     id: 2,
+    product: "businessClass",
     name: "Орлов И.",
     tier: "Standard",
     bid: 410,
@@ -362,6 +399,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 814",
     id: 3,
+    product: "businessClass",
     name: "Patel R.",
     tier: "Silver",
     bid: 360,
@@ -373,6 +411,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 814",
     id: 4,
+    product: "businessClass",
     name: "Khan A.",
     tier: "Standard",
     bid: 300,
@@ -386,6 +425,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 233",
     id: 1,
+    product: "businessClass",
     name: "Соколов В.",
     tier: "Platinum",
     bid: 390,
@@ -397,6 +437,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 233",
     id: 2,
+    product: "businessClass",
     name: "Юлдашев Б.",
     tier: "Gold",
     bid: 350,
@@ -408,6 +449,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 233",
     id: 3,
+    product: "businessClass",
     name: "Ким Д.",
     tier: "Standard",
     bid: 280,
@@ -419,6 +461,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 233",
     id: 4,
+    product: "businessClass",
     name: "Морозова Е.",
     tier: "Silver",
     bid: 260,
@@ -432,6 +475,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 177",
     id: 1,
+    product: "businessClass",
     name: "Müller K.",
     tier: "Gold",
     bid: 550,
@@ -443,6 +487,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 177",
     id: 2,
+    product: "businessClass",
     name: "Schmidt L.",
     tier: "Standard",
     bid: 480,
@@ -454,6 +499,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 177",
     id: 3,
+    product: "businessClass",
     name: "Усманов Р.",
     tier: "Silver",
     bid: 420,
@@ -467,6 +513,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 409",
     id: 1,
+    product: "businessClass",
     name: "Wang J.",
     tier: "Platinum",
     bid: 510,
@@ -478,6 +525,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 409",
     id: 2,
+    product: "businessClass",
     name: "Liu Y.",
     tier: "Gold",
     bid: 460,
@@ -489,6 +537,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 409",
     id: 3,
+    product: "businessClass",
     name: "Zhang H.",
     tier: "Standard",
     bid: 380,
@@ -500,6 +549,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 409",
     id: 4,
+    product: "businessClass",
     name: "Chen X.",
     tier: "Silver",
     bid: 340,
@@ -513,6 +563,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 551",
     id: 1,
+    product: "businessClass",
     name: "Park J.",
     tier: "Gold",
     bid: 540,
@@ -524,6 +575,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 551",
     id: 2,
+    product: "businessClass",
     name: "Lee H.",
     tier: "Platinum",
     bid: 500,
@@ -535,6 +587,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 551",
     id: 3,
+    product: "businessClass",
     name: "Choi S.",
     tier: "Standard",
     bid: 420,
@@ -546,6 +599,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 551",
     id: 4,
+    product: "businessClass",
     name: "Ким Н.",
     tier: "Silver",
     bid: 380,
@@ -557,6 +611,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 551",
     id: 5,
+    product: "businessClass",
     name: "Yoon T.",
     tier: "Standard",
     bid: 320,
@@ -570,6 +625,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 088",
     id: 1,
+    product: "businessClass",
     name: "Williams P.",
     tier: "Platinum",
     bid: 600,
@@ -581,6 +637,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 088",
     id: 2,
+    product: "businessClass",
     name: "Davies M.",
     tier: "Gold",
     bid: 540,
@@ -594,6 +651,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 312",
     id: 1,
+    product: "businessClass",
     name: "Aliev R.",
     tier: "Gold",
     bid: 95,
@@ -605,6 +663,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 312",
     id: 2,
+    product: "businessClass",
     name: "Назарбаев А.",
     tier: "Standard",
     bid: 80,
@@ -616,6 +675,7 @@ export const SEED_BIDS: Bid[] = [
   {
     flightId: "HY 312",
     id: 3,
+    product: "businessClass",
     name: "Tolegen B.",
     tier: "Silver",
     bid: 70,
@@ -624,6 +684,59 @@ export const SEED_BIDS: Bid[] = [
     time: "16:15",
     state: "pending",
   },
+  // ---- Exit-row bids ($32–$85) ----
+  // HY 602 (14 — drives the detail page chart)
+  ...exitRowBids("HY 602", [
+    { id: 11, name: "Khan A.", tier: "Gold", bid: 82, channel: "App", time: "07:42" },
+    { id: 12, name: "Park J.", tier: "Standard", bid: 78, channel: "Web", time: "08:11" },
+    { id: 13, name: "Орлов В.", tier: "Silver", bid: 75, channel: "Email", time: "09:03" },
+    { id: 14, name: "Müller K.", tier: "Standard", bid: 72, channel: "MMB", time: "09:48" },
+    { id: 15, name: "Сидорова Е.", tier: "Gold", bid: 68, channel: "App", time: "10:30" },
+    { id: 16, name: "Tanaka R.", tier: "Standard", bid: 64, channel: "Web", time: "11:05" },
+    { id: 17, name: "Назаров Б.", tier: "Silver", bid: 62, channel: "Email", time: "11:42" },
+    { id: 18, name: "Garcia L.", tier: "Standard", bid: 60, channel: "App", time: "12:15" },
+    { id: 19, name: "Choi H.", tier: "Standard", bid: 58, channel: "MMB", time: "13:00" },
+    { id: 20, name: "Романов И.", tier: "Silver", bid: 52, channel: "Web", time: "13:38" },
+    { id: 21, name: "Fischer T.", tier: "Standard", bid: 48, channel: "App", time: "14:20" },
+    { id: 22, name: "Алиев Р.", tier: "Standard", bid: 42, channel: "Email", time: "15:05" },
+    { id: 23, name: "Singh P.", tier: "Standard", bid: 38, channel: "Web", time: "15:44" },
+    { id: 24, name: "Чен Ю.", tier: "Standard", bid: 32, channel: "MMB", time: "16:22" },
+  ]),
+  ...exitRowBids("HY 814", [
+    { id: 5, name: "Ким А.", tier: "Gold", bid: 80, channel: "App", time: "10:11" },
+    { id: 6, name: "Brown D.", tier: "Standard", bid: 65, channel: "Web", time: "11:48" },
+    { id: 7, name: "Юлдашев Б.", tier: "Silver", bid: 50, channel: "Email", time: "12:30" },
+  ]),
+  ...exitRowBids("HY 233", [
+    { id: 5, name: "Назарова Г.", tier: "Gold", bid: 78, channel: "Email", time: "08:14" },
+    { id: 6, name: "Iqbal S.", tier: "Standard", bid: 60, channel: "App", time: "09:25" },
+    { id: 7, name: "Каримова З.", tier: "Standard", bid: 45, channel: "MMB", time: "10:50" },
+  ]),
+  ...exitRowBids("HY 177", [
+    { id: 4, name: "Rahimi K.", tier: "Silver", bid: 75, channel: "Web", time: "07:20" },
+    { id: 5, name: "Соколов Д.", tier: "Standard", bid: 55, channel: "App", time: "08:42" },
+    { id: 6, name: "Yamamoto T.", tier: "Standard", bid: 40, channel: "Email", time: "10:05" },
+  ]),
+  ...exitRowBids("HY 551", [
+    { id: 6, name: "Эргашев А.", tier: "Gold", bid: 72, channel: "App", time: "06:55" },
+    { id: 7, name: "Lopez M.", tier: "Standard", bid: 58, channel: "Web", time: "08:17" },
+    { id: 8, name: "Тимуров К.", tier: "Standard", bid: 42, channel: "MMB", time: "09:30" },
+  ]),
+  ...exitRowBids("HY 409", [
+    { id: 5, name: "Wang L.", tier: "Silver", bid: 70, channel: "Email", time: "11:08" },
+    { id: 6, name: "Захаров П.", tier: "Standard", bid: 55, channel: "App", time: "12:22" },
+    { id: 7, name: "Ahmed F.", tier: "Standard", bid: 38, channel: "Web", time: "13:45" },
+  ]),
+  ...exitRowBids("HY 088", [
+    { id: 3, name: "Юсупов Т.", tier: "Gold", bid: 68, channel: "MMB", time: "14:30" },
+    { id: 4, name: "Novak J.", tier: "Standard", bid: 52, channel: "App", time: "15:12" },
+    { id: 5, name: "Габидуллина М.", tier: "Standard", bid: 36, channel: "Web", time: "16:00" },
+  ]),
+  ...exitRowBids("HY 312", [
+    { id: 4, name: "Bekov S.", tier: "Silver", bid: 74, channel: "Email", time: "13:18" },
+    { id: 5, name: "Petrov K.", tier: "Standard", bid: 50, channel: "App", time: "14:40" },
+    { id: 6, name: "Хасанов Н.", tier: "Standard", bid: 34, channel: "Web", time: "15:55" },
+  ]),
 ];
 
 export const SEAT_MAP_BC: Array<Array<SeatCell | null>> = [
@@ -693,28 +806,6 @@ export const weighted = (b: Bid) => Math.round(b.bid * b.mult);
 export type ColorTokenId = keyof typeof T;
 
 export const colorToken = (id: ColorTokenId): string => T[id];
-
-export const DIST_DATA: Array<{
-  range: string;
-  count: number;
-  pct: number;
-  colorId: ColorTokenId;
-}> = [
-  { range: "$500–750", count: 7, pct: 25, colorId: "brandPrimary" },
-  { range: "$400–499", count: 10, pct: 36, colorId: "brandPrimarySoft" },
-  { range: "$300–399", count: 8, pct: 29, colorId: "brandPrimaryMuted" },
-  { range: "$262–299", count: 3, pct: 10, colorId: "brandPrimaryPale" },
-];
-
-export const EXIT_DATA: Array<{
-  range: string;
-  count: number;
-  pct: number;
-  colorId: ColorTokenId;
-}> = [
-  { range: "$60–85", count: 9, pct: 64, colorId: "statusSuccess" },
-  { range: "$32–59", count: 5, pct: 36, colorId: "statusSuccessSoft" },
-];
 
 export const TIER_META: Record<
   Tier,

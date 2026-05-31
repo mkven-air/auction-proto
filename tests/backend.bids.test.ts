@@ -5,7 +5,7 @@ describe("backend bids service", () => {
   it("lists, approves, rejects, and auto-selects bids", async () => {
     const client = createServiceClient();
 
-    const bids = await client.bids.list("HY 602");
+    const bids = await client.bids.list("HY 602", "businessClass");
     expect(bids).toHaveLength(10);
 
     const approved = await client.bids.approve("HY 602", 2);
@@ -17,7 +17,7 @@ describe("backend bids service", () => {
     const winners = await client.bids.autoSelect("HY 602");
     expect(winners).toEqual([1, 4]);
 
-    const refreshed = await client.bids.list("HY 602");
+    const refreshed = await client.bids.list("HY 602", "businessClass");
     expect(refreshed.find((bid) => bid.id === 1)?.state).toBe("approved");
     expect(refreshed.find((bid) => bid.id === 4)?.state).toBe("approved");
     expect(refreshed.find((bid) => bid.id === 3)?.state).toBe("rejected");
@@ -36,7 +36,7 @@ describe("backend bids service", () => {
     const winners = await client.bids.autoSelect("HY 233");
 
     expect(winners).toEqual([]);
-    const bids = await client.bids.list("HY 233");
+    const bids = await client.bids.list("HY 233", "businessClass");
     expect(bids.every((bid) => bid.state === "pending")).toBe(true);
   });
 });
