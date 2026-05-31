@@ -1,4 +1,4 @@
-import type { ProductActiveMap, ProductBidMap, ProductKey } from "./types";
+import type { ProductActiveMap, ProductBidMap, ProductKey } from "../types";
 
 type PassengerProductSpec = {
   icon: string;

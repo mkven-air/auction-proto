@@ -1,5 +1,5 @@
 import type { Bid } from "../types";
-import type { ColorTokenId } from "../data";
+import type { ColorTokenId } from "../domain/color";
 
 export type DistributionRow = {
   range: string;

@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { TIER_META, colorToken } from "./data";
-import { Pill, Toggle } from "./primitives";
-import { T } from "./theme";
-import { CURRENT_LOCALE, TXT } from "./i18n";
+import { TIER_META } from "../domain/tier";
+import { colorToken } from "../domain/color";
+import { Pill, Toggle } from "../primitives";
+import { T } from "../theme";
+import { CURRENT_LOCALE, TXT } from "../i18n";
 import {
   PASSENGER_DEFAULT_ACTIVE,
   PASSENGER_DEFAULT_BIDS,
@@ -11,10 +12,10 @@ import {
   PASSENGER_MULTIPLIER,
   PASSENGER_PRODUCT_SPECS,
 } from "./passengerConfig";
-import { useCurrentPassenger } from "./queries/useCurrentPassenger";
-import { useFlightDetail } from "./queries/useFlightDetail";
-import { formatFlightDep, formatFlightDuration } from "./format/flightTime";
-import type { ProductActiveMap, ProductBidMap, ProductConfig, ProductKey } from "./types";
+import { useCurrentPassenger } from "../queries/useCurrentPassenger";
+import { useFlightDetail } from "../queries/useFlightDetail";
+import { formatFlightDep, formatFlightDuration } from "../format/flightTime";
+import type { ProductActiveMap, ProductBidMap, ProductConfig, ProductKey } from "../types";
 
 export function PassengerBidUI() {
   const { data: passenger } = useCurrentPassenger();

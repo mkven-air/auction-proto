@@ -1,8 +1,8 @@
-import { EMAIL_TEMPLATE_TYPE } from "./types";
-import type { EmailTemplateType, MainTab } from "./types";
-import { T } from "./theme";
-import { Pill } from "./primitives";
-import { TXT } from "./i18n";
+import { EMAIL_TEMPLATE_TYPE } from "../types";
+import type { EmailTemplateType, MainTab } from "../types";
+import { T } from "../theme";
+import { Pill } from "../primitives";
+import { TXT } from "../i18n";
 
 type NavItem = {
   id: MainTab;

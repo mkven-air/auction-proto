@@ -11,11 +11,13 @@ import type {
   RuleSectionId,
   Tier,
   TimingRow,
-} from "./types";
-import { T } from "./theme";
-import { DEFAULT_RULES, TIER_META, colorToken } from "./data";
-import { TXT } from "./i18n";
-import { NumInput, Pill, SectionLabel, Toggle } from "./primitives";
+} from "../types";
+import { T } from "../theme";
+import { TIER_META } from "../domain/tier";
+import { DEFAULT_RULES } from "../domain/rules";
+import { colorToken } from "../domain/color";
+import { TXT } from "../i18n";
+import { NumInput, Pill, SectionLabel, Toggle } from "../primitives";
 
 type RuleSection = { id: RuleSectionId; l: string };
 type LabelDescRow<K extends string> = { key: K; label: string; desc: string };

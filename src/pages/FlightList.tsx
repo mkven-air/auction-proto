@@ -1,12 +1,13 @@
 import { useSearchParams } from "react-router-dom";
-import { STATUS_META, colorToken } from "./data";
-import { useFlightsQuery } from "./queries/useFlightsQuery";
-import { useAirportsWithLocationByIds } from "./queries/useAirportsWithLocationByIds";
-import { MetricCard, Pill } from "./primitives";
-import { F, T } from "./theme";
-import { TXT } from "./i18n";
-import { formatFlightDep, formatFlightDuration } from "./format/flightTime";
-import type { Flight, FlightListFilter, FlightListSortCol, SortDir } from "./types";
+import { STATUS_META } from "../domain/status";
+import { colorToken } from "../domain/color";
+import { useFlightsQuery } from "../queries/useFlightsQuery";
+import { useAirportsWithLocationByIds } from "../queries/useAirportsWithLocationByIds";
+import { MetricCard, Pill } from "../primitives";
+import { F, T } from "../theme";
+import { TXT } from "../i18n";
+import { formatFlightDep, formatFlightDuration } from "../format/flightTime";
+import type { Flight, FlightListFilter, FlightListSortCol, SortDir } from "../types";
 
 type FlightListProps = {
   onSelect: (flightId: Flight["id"]) => void;

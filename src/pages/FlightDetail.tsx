@@ -1,16 +1,25 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { Bid, Flight, FlightDetailFilter, FlightDetailSortCol, SortDir } from "./types";
-import { F, T } from "./theme";
-import { CH_ICONS, HAUL_LABELS, STATE_META, TIER_META, colorToken, weighted } from "./data";
-import { computeBidDistribution, BC_DIST_COLORS, EXIT_DIST_COLORS } from "./format/bidDistribution";
-import { BarChart, MetricCard, Pill, SeatMap, SectionLabel } from "./primitives";
-import { TXT } from "./i18n";
-import { useFlightDetail } from "./queries/useFlightDetail";
-import { useFlightBids } from "./queries/useFlightBids";
-import { queryKeys } from "./queries/keys";
-import { backendClient } from "./backend/client";
-import { formatFlightArr, formatFlightDep, formatFlightDuration } from "./format/flightTime";
+import type { Bid, Flight, FlightDetailFilter, FlightDetailSortCol, SortDir } from "../types";
+import { F, T } from "../theme";
+import { TIER_META } from "../domain/tier";
+import { STATE_META } from "../domain/state";
+import { HAUL_LABELS } from "../domain/haul";
+import { CH_ICONS } from "../domain/channel";
+import { colorToken } from "../domain/color";
+import { weighted } from "../domain/weighted";
+import {
+  computeBidDistribution,
+  BC_DIST_COLORS,
+  EXIT_DIST_COLORS,
+} from "../format/bidDistribution";
+import { BarChart, MetricCard, Pill, SeatMap, SectionLabel } from "../primitives";
+import { TXT } from "../i18n";
+import { useFlightDetail } from "../queries/useFlightDetail";
+import { useFlightBids } from "../queries/useFlightBids";
+import { queryKeys } from "../queries/keys";
+import { backendClient } from "../backend/client";
+import { formatFlightArr, formatFlightDep, formatFlightDuration } from "../format/flightTime";
 
 export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onBack: () => void }) {
   const queryClient = useQueryClient();

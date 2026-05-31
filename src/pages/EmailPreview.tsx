@@ -1,9 +1,9 @@
 import type { CSSProperties, ReactNode } from "react";
-import type { EmailTemplateConfig, EmailTemplateType } from "./types";
-import { F, T } from "./theme";
-import { Pill, SectionLabel } from "./primitives";
-import { CURRENT_LOCALE, TXT } from "./i18n";
-import { useAirportsWithLocationByIds } from "./queries/useAirportsWithLocationByIds";
+import type { EmailTemplateConfig, EmailTemplateType } from "../types";
+import { F, T } from "../theme";
+import { Pill, SectionLabel } from "../primitives";
+import { CURRENT_LOCALE, TXT } from "../i18n";
+import { useAirportsWithLocationByIds } from "../queries/useAirportsWithLocationByIds";
 
 const EMAIL_FROM_AIRPORT_ID = "TAS";
 const EMAIL_TO_AIRPORT_ID = "IST";

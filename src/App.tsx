@@ -10,13 +10,13 @@ import {
 import { EMAIL_TEMPLATE_TYPE, MAIN_TAB } from "./types";
 import type { EmailTemplateType, MainTab } from "./types";
 import { F, T } from "./theme";
-import { FlightList } from "./FlightList";
-import { FlightDetail } from "./FlightDetail";
-import { GlobalRules } from "./GlobalRules";
-import { EmailPreview } from "./EmailPreview";
-import { EntitiesPage } from "./EntitiesPage";
-import { PassengerBidUI } from "./PassengerBidUI";
-import { AdminHeader, EmailTemplateTabs, EmptyFlightState } from "./AdminShell";
+import { FlightList } from "./pages/FlightList";
+import { FlightDetail } from "./pages/FlightDetail";
+import { GlobalRules } from "./pages/GlobalRules";
+import { EmailPreview } from "./pages/EmailPreview";
+import { EntitiesPage } from "./pages/EntitiesPage";
+import { PassengerBidUI } from "./pages/PassengerBidUI";
+import { AdminHeader, EmailTemplateTabs, EmptyFlightState } from "./pages/AdminShell";
 import { TXT } from "./i18n";
 import { useFlightsSummary } from "./queries/useFlightsSummary";
 

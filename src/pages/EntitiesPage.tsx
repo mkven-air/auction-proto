@@ -1,6 +1,6 @@
-import { CURRENT_LOCALE, TXT } from "./i18n";
-import { F, T } from "./theme";
-import { useEntities } from "./queries/useEntities";
+import { CURRENT_LOCALE, TXT } from "../i18n";
+import { F, T } from "../theme";
+import { useEntities } from "../queries/useEntities";
 
 function isLocalizedString(value: unknown): value is Record<string, string> {
   return (
