@@ -4,10 +4,20 @@ export type FlightStatus = "active" | "sold" | "upcoming";
 export type FlightHaul = "ultra-short" | "short" | "medium" | "long" | "ultra";
 export type Channel = "Email" | "App" | "MMB" | "Web";
 
+export type LocaleCode = "en" | "ru";
+export type LocalizedString = Record<LocaleCode, string>;
+
+export type Airport = {
+  id: string;
+  name: LocalizedString;
+  city: LocalizedString;
+  country: LocalizedString;
+};
+
 export type Flight = {
   id: string;
-  from: string;
-  to: string;
+  fromAirportId: Airport["id"];
+  toAirportId: Airport["id"];
   dep: string;
   arr: string;
   duration: string;

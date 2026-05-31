@@ -259,7 +259,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span style={{ fontSize: 20, fontWeight: 800 }}>{flight.id}</span>
           <span style={{ fontSize: 13, color: T.textSecondary }}>
-            {flight.from} → {flight.to}
+            {flight.fromAirportId} → {flight.toAirportId}
           </span>
           <Pill color={T.statusSuccessFg} bg={T.statusSuccessBg}>
             {TXT.flightDetail.auctionOpen}

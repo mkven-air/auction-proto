@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { TIER_META, colorToken } from "./data";
+import { TIER_META, colorToken, getAirport } from "./data";
 import { Pill, Toggle } from "./primitives";
 import { T } from "./theme";
-import { TXT } from "./i18n";
+import { CURRENT_LOCALE, TXT } from "./i18n";
 import {
   PASSENGER_DEFAULT_ACTIVE,
   PASSENGER_DEFAULT_BIDS,
@@ -10,10 +10,14 @@ import {
   PASSENGER_MULTIPLIER,
   PASSENGER_PRODUCT_SPECS,
   PASSENGER_PROFILE,
+  passengerRouteLabel,
 } from "./passengerBidData";
 import type { ProductActiveMap, ProductBidMap, ProductConfig, ProductKey } from "./types";
 
 export function PassengerBidUI() {
+  const fromAirport = getAirport(PASSENGER_FLIGHT.fromAirportId);
+  const toAirport = getAirport(PASSENGER_FLIGHT.toAirportId);
+  const routeLabel = passengerRouteLabel(PASSENGER_FLIGHT);
   const PRODUCTS: Record<ProductKey, ProductConfig> = {
     bc: {
       label: TXT.passenger.products.bc.label,
@@ -143,7 +147,7 @@ export function PassengerBidUI() {
               }}
             >
               {[
-                [TXT.passenger.submitted.rows.flight, PASSENGER_FLIGHT.submittedRoute],
+                [TXT.passenger.submitted.rows.flight, routeLabel],
                 [TXT.passenger.submitted.rows.upgrades, prods.join(" + ") || "—"],
                 [TXT.passenger.submitted.rows.paymentStatus, TXT.passenger.submitted.paymentValue],
                 [TXT.passenger.submitted.rows.weightedBid, `$${wt}`],
@@ -279,10 +283,10 @@ export function PassengerBidUI() {
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <div style={{ textAlign: "center" }}>
               <div style={{ fontSize: 20, fontWeight: 700, color: T.textPrimary }}>
-                {PASSENGER_FLIGHT.fromIata}
+                {fromAirport.id}
               </div>
               <div style={{ fontSize: 10, color: T.textMuted }}>
-                {TXT.passenger.flightHeader.tashkent}
+                {fromAirport.city[CURRENT_LOCALE]}
               </div>
             </div>
             <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 4 }}>
@@ -292,10 +296,10 @@ export function PassengerBidUI() {
             </div>
             <div style={{ textAlign: "center" }}>
               <div style={{ fontSize: 20, fontWeight: 700, color: T.textPrimary }}>
-                {PASSENGER_FLIGHT.toIata}
+                {toAirport.id}
               </div>
               <div style={{ fontSize: 10, color: T.textMuted }}>
-                {TXT.passenger.flightHeader.istanbul}
+                {toAirport.city[CURRENT_LOCALE]}
               </div>
             </div>
           </div>

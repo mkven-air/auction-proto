@@ -265,9 +265,13 @@ export function FlightList({ onSelect }: FlightListProps) {
                         {f.id}
                       </div>
                       <div style={{ fontSize: 12, color: T.textMuted, marginTop: 2 }}>
-                        <span style={{ color: T.textSecondary, fontWeight: 600 }}>{f.from}</span>
+                        <span style={{ color: T.textSecondary, fontWeight: 600 }}>
+                          {f.fromAirportId}
+                        </span>
                         <span style={{ margin: "0 4px" }}>→</span>
-                        <span style={{ color: T.textSecondary, fontWeight: 600 }}>{f.to}</span>
+                        <span style={{ color: T.textSecondary, fontWeight: 600 }}>
+                          {f.toAirportId}
+                        </span>
                         <span style={{ marginLeft: 6 }}>{f.duration}</span>
                       </div>
                     </td>

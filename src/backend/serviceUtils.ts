@@ -30,7 +30,7 @@ export function toDbFilters(query: FlightQuery): DbFilter[] | undefined {
 
 export function toFlightQueryParams(query: FlightQuery, filters: DbFilter[] | undefined): DbQuery {
   return {
-    searchFields: ["id", "from", "to", "aircraft"],
+    searchFields: ["id", "fromAirportId", "toAirportId", "aircraft"],
     ...(query.search !== undefined ? { search: query.search } : {}),
     ...(filters !== undefined ? { filters } : {}),
     ...(query.sortBy !== undefined ? { sortBy: query.sortBy } : {}),
@@ -45,7 +45,7 @@ export function toFlightSummaryQueryParams(
   filters: DbFilter[] | undefined,
 ): Omit<DbQuery, "page" | "pageSize"> {
   return {
-    searchFields: ["id", "from", "to", "aircraft"],
+    searchFields: ["id", "fromAirportId", "toAirportId", "aircraft"],
     ...(query.search !== undefined ? { search: query.search } : {}),
     ...(filters !== undefined ? { filters } : {}),
     ...(query.sortBy !== undefined ? { sortBy: query.sortBy } : {}),

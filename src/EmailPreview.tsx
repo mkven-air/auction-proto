@@ -2,7 +2,11 @@ import type { CSSProperties, ReactNode } from "react";
 import type { EmailTemplateConfig, EmailTemplateType } from "./types";
 import { F, T } from "./theme";
 import { Pill, SectionLabel } from "./primitives";
-import { TXT } from "./i18n";
+import { CURRENT_LOCALE, TXT } from "./i18n";
+import { getAirport } from "./data";
+
+const EMAIL_FROM_AIRPORT = getAirport("TAS");
+const EMAIL_TO_AIRPORT = getAirport("IST");
 
 type MetaRow = [string, string];
 type MetadataRow = { key: string; label: string; value: ReactNode };
@@ -288,9 +292,11 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
             <div style={{ background: T.surfaceCard, padding: 14 }}>
               <div style={FLIGHT_STRIP_STYLE}>
                 <div style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: T.textPrimary }}>TAS</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: T.textPrimary }}>
+                    {EMAIL_FROM_AIRPORT.id}
+                  </div>
                   <div style={{ fontSize: 9, color: T.textMuted }}>
-                    {TXT.emailPreview.routeCities.tashkent}
+                    {EMAIL_FROM_AIRPORT.city[CURRENT_LOCALE]}
                   </div>
                 </div>
                 <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 3 }}>
@@ -299,9 +305,11 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
                   <div style={{ flex: 1, height: 1, background: T.borderDefault }} />
                 </div>
                 <div style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: T.textPrimary }}>IST</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: T.textPrimary }}>
+                    {EMAIL_TO_AIRPORT.id}
+                  </div>
                   <div style={{ fontSize: 9, color: T.textMuted }}>
-                    {TXT.emailPreview.routeCities.istanbul}
+                    {EMAIL_TO_AIRPORT.city[CURRENT_LOCALE]}
                   </div>
                 </div>
               </div>

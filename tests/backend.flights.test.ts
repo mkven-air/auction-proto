@@ -45,7 +45,7 @@ describe("backend flights service", () => {
     const client = createServiceClient();
 
     const flight = await client.flights.getFlightById("HY 602");
-    expect(flight?.from).toBe("TAS");
+    expect(flight?.fromAirportId).toBe("TAS");
   });
 
   it("returns undefined for missing flights", async () => {

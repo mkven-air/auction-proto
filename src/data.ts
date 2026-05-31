@@ -1,5 +1,6 @@
 import { T } from "./theme";
 import type {
+  Airport,
   Bid,
   BidState,
   Channel,
@@ -11,11 +12,78 @@ import type {
   Tier,
 } from "./types";
 
+export const AIRPORTS_DATA: Airport[] = [
+  {
+    id: "TAS",
+    name: { en: "Tashkent International Airport", ru: "Международный аэропорт Ташкент" },
+    city: { en: "Tashkent", ru: "Ташкент" },
+    country: { en: "Uzbekistan", ru: "Узбекистан" },
+  },
+  {
+    id: "IST",
+    name: { en: "Istanbul Airport", ru: "Аэропорт Стамбул" },
+    city: { en: "Istanbul", ru: "Стамбул" },
+    country: { en: "Turkey", ru: "Турция" },
+  },
+  {
+    id: "DXB",
+    name: { en: "Dubai International Airport", ru: "Международный аэропорт Дубай" },
+    city: { en: "Dubai", ru: "Дубай" },
+    country: { en: "United Arab Emirates", ru: "ОАЭ" },
+  },
+  {
+    id: "MOW",
+    name: { en: "Moscow Sheremetyevo Airport", ru: "Шереметьево" },
+    city: { en: "Moscow", ru: "Москва" },
+    country: { en: "Russia", ru: "Россия" },
+  },
+  {
+    id: "FRA",
+    name: { en: "Frankfurt Airport", ru: "Аэропорт Франкфурт" },
+    city: { en: "Frankfurt", ru: "Франкфурт" },
+    country: { en: "Germany", ru: "Германия" },
+  },
+  {
+    id: "PEK",
+    name: { en: "Beijing Capital International Airport", ru: "Пекин Столичный" },
+    city: { en: "Beijing", ru: "Пекин" },
+    country: { en: "China", ru: "Китай" },
+  },
+  {
+    id: "ICN",
+    name: { en: "Incheon International Airport", ru: "Аэропорт Инчхон" },
+    city: { en: "Seoul", ru: "Сеул" },
+    country: { en: "South Korea", ru: "Южная Корея" },
+  },
+  {
+    id: "LHR",
+    name: { en: "London Heathrow Airport", ru: "Хитроу" },
+    city: { en: "London", ru: "Лондон" },
+    country: { en: "United Kingdom", ru: "Великобритания" },
+  },
+  {
+    id: "ALA",
+    name: { en: "Almaty International Airport", ru: "Международный аэропорт Алматы" },
+    city: { en: "Almaty", ru: "Алматы" },
+    country: { en: "Kazakhstan", ru: "Казахстан" },
+  },
+];
+
+const AIRPORTS_BY_ID = new Map(AIRPORTS_DATA.map((airport) => [airport.id, airport]));
+
+export function getAirport(id: Airport["id"]): Airport {
+  const airport = AIRPORTS_BY_ID.get(id);
+  if (!airport) {
+    throw new Error(`Unknown airport id: ${id}`);
+  }
+  return airport;
+}
+
 export const FLIGHTS_DATA: Flight[] = [
   {
     id: "HY 602",
-    from: "TAS",
-    to: "IST",
+    fromAirportId: "TAS",
+    toAirportId: "IST",
     dep: "15 июн 08:45",
     arr: "11:20",
     duration: "5ч 35м",
@@ -30,8 +98,8 @@ export const FLIGHTS_DATA: Flight[] = [
   },
   {
     id: "HY 814",
-    from: "TAS",
-    to: "DXB",
+    fromAirportId: "TAS",
+    toAirportId: "DXB",
     dep: "15 июн 14:30",
     arr: "17:15",
     duration: "4ч 45м",
@@ -46,8 +114,8 @@ export const FLIGHTS_DATA: Flight[] = [
   },
   {
     id: "HY 233",
-    from: "TAS",
-    to: "MOW",
+    fromAirportId: "TAS",
+    toAirportId: "MOW",
     dep: "15 июн 11:15",
     arr: "13:30",
     duration: "3ч 15м",
@@ -62,8 +130,8 @@ export const FLIGHTS_DATA: Flight[] = [
   },
   {
     id: "HY 177",
-    from: "TAS",
-    to: "FRA",
+    fromAirportId: "TAS",
+    toAirportId: "FRA",
     dep: "16 июн 06:00",
     arr: "09:45",
     duration: "7ч 45м",
@@ -78,8 +146,8 @@ export const FLIGHTS_DATA: Flight[] = [
   },
   {
     id: "HY 409",
-    from: "TAS",
-    to: "PEK",
+    fromAirportId: "TAS",
+    toAirportId: "PEK",
     dep: "16 июн 09:20",
     arr: "15:50",
     duration: "5ч 30м",
@@ -94,8 +162,8 @@ export const FLIGHTS_DATA: Flight[] = [
   },
   {
     id: "HY 551",
-    from: "TAS",
-    to: "ICN",
+    fromAirportId: "TAS",
+    toAirportId: "ICN",
     dep: "16 июн 13:00",
     arr: "22:15",
     duration: "6ч 15м",
@@ -110,8 +178,8 @@ export const FLIGHTS_DATA: Flight[] = [
   },
   {
     id: "HY 088",
-    from: "TAS",
-    to: "LHR",
+    fromAirportId: "TAS",
+    toAirportId: "LHR",
     dep: "17 июн 00:30",
     arr: "05:20",
     duration: "8ч 50м",
@@ -126,8 +194,8 @@ export const FLIGHTS_DATA: Flight[] = [
   },
   {
     id: "HY 312",
-    from: "TAS",
-    to: "ALA",
+    fromAirportId: "TAS",
+    toAirportId: "ALA",
     dep: "15 июн 16:45",
     arr: "17:35",
     duration: "1ч 05м",

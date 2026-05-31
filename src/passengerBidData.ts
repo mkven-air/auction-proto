@@ -1,4 +1,4 @@
-import type { ProductActiveMap, ProductBidMap, ProductKey, Tier } from "./types";
+import type { Airport, ProductActiveMap, ProductBidMap, ProductKey, Tier } from "./types";
 
 type PassengerProfile = {
   name: string;
@@ -16,13 +16,11 @@ type PassengerProductSpec = {
 type PassengerFlightInfo = {
   number: string;
   departureLabel: string;
-  fromIata: string;
-  toIata: string;
-  routeLabel: string;
+  fromAirportId: Airport["id"];
+  toAirportId: Airport["id"];
   aircraftLine: string;
   statusBarTime: string;
   statusBarHost: string;
-  submittedRoute: string;
   closingIn: string;
 };
 
@@ -70,12 +68,14 @@ export const PASSENGER_DEFAULT_ACTIVE: ProductActiveMap = {
 export const PASSENGER_FLIGHT: PassengerFlightInfo = {
   number: "HY 602",
   departureLabel: "15 июн · 08:45",
-  fromIata: "TAS",
-  toIata: "IST",
-  routeLabel: "HY 602 · TAS → IST",
+  fromAirportId: "TAS",
+  toAirportId: "IST",
   aircraftLine: "Airbus A321 · 5ч 35м · Эконом → Бизнес",
   statusBarTime: "09:41",
   statusBarHost: "uzbekistanairways.uz",
-  submittedRoute: "HY 602 · TAS → IST",
   closingIn: "3ч 20м",
 };
+
+export function passengerRouteLabel(flight: PassengerFlightInfo): string {
+  return `${flight.number} · ${flight.fromAirportId} → ${flight.toAirportId}`;
+}

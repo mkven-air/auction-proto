@@ -244,8 +244,6 @@ export const I18N = {
         editButton: "← Изменить заявку",
       },
       flightHeader: {
-        tashkent: "Ташкент",
-        istanbul: "Стамбул",
         planeLine: "Airbus A321 · 5ч 35м · Эконом → Бизнес",
       },
       loyaltyProgram: "Программа лояльности",
@@ -267,7 +265,6 @@ export const I18N = {
       channelMetrics: { title: "Метрики канала" },
       browserHost: "mail.uzbekistanairways.uz",
       airlineBrand: "Uzbekistan Airways",
-      routeCities: { tashkent: "Ташкент", istanbul: "Стамбул" },
       fromLabel: "от",
       urgencyTitle: "Аукцион закрывается через 14 часов",
       urgencyMeta: "HY 602 · 15 июня · 08:45",
@@ -339,6 +336,6 @@ export const I18N = {
 
 export type Locale = keyof typeof I18N;
 
-const CURRENT_LOCALE: Locale = "ru";
+export const CURRENT_LOCALE: Locale = "ru";
 
 export const TXT = I18N[CURRENT_LOCALE];
