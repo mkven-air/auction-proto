@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTiersById } from "../queries/useTiers";
 import { colorToken } from "../domain/color";
+import { DEFAULT_RULES } from "../domain/rules";
 import { Pill, Toggle } from "../primitives";
 import { T } from "../theme";
 import { CURRENT_LOCALE, TXT } from "../i18n";
@@ -69,7 +70,9 @@ export function PassengerBidUI() {
   const [bids, setBids] = useState<ProductBidMap>(PASSENGER_DEFAULT_BIDS);
   const [active, setActive] = useState<ProductActiveMap>(PASSENGER_DEFAULT_ACTIVE);
   const [submitted, setSubmitted] = useState(false);
-  const productEntries = Object.entries(PRODUCTS) as Array<[ProductKey, ProductConfig]>;
+  const productEntries = (Object.entries(PRODUCTS) as Array<[ProductKey, ProductConfig]>).filter(
+    ([key]) => !DEFAULT_RULES.onlyUpgrade || key === "bc",
+  );
 
   const calcChance = (prod: ProductKey, val: number) => {
     const p = PRODUCTS[prod];
@@ -79,10 +82,7 @@ export function PassengerBidUI() {
   const chanceColor = (p: number) =>
     p >= 65 ? T.statusSuccess : p >= 40 ? T.statusWarning : T.statusDanger;
 
-  const base = (Object.keys(active) as ProductKey[]).reduce(
-    (sum, key) => sum + (active[key] ? bids[key] : 0),
-    0,
-  );
+  const base = productEntries.reduce((sum, [key]) => sum + (active[key] ? bids[key] : 0), 0);
   const wt = Math.round(base * PASSENGER_MULTIPLIER);
 
   const sliderBg = (prod: ProductKey) => {
@@ -95,9 +95,7 @@ export function PassengerBidUI() {
   const tierMeta = passenger ? tiersById[passenger.tier] : undefined;
 
   if (submitted) {
-    const prods = (Object.keys(active) as ProductKey[])
-      .filter((key) => active[key])
-      .map((key) => PRODUCTS[key].label);
+    const prods = productEntries.filter(([key]) => active[key]).map(([, prod]) => prod.label);
     return (
       <div style={{ display: "flex", justifyContent: "center", padding: "24px 16px" }}>
         <div

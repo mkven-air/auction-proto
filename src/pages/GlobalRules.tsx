@@ -29,7 +29,8 @@ type FeatureStatusKey =
   | "crossAirlineUpgrades"
   | "continuousPricing"
   | "autoFulfillment"
-  | "blindBids";
+  | "blindBids"
+  | "onlyUpgrade";
 
 const RULE_SECTIONS: RuleSection[] = [
   { id: "timing", l: TXT.globalRules.sections.timing },
@@ -200,6 +201,11 @@ const FEATURE_ROWS: LabelDescRow<RulesBooleanKey>[] = [
     label: TXT.globalRules.features.blindBids.label,
     desc: TXT.globalRules.features.blindBids.desc,
   },
+  {
+    key: "onlyUpgrade",
+    label: TXT.globalRules.features.onlyUpgrade.label,
+    desc: TXT.globalRules.features.onlyUpgrade.desc,
+  },
 ];
 
 const FEATURE_STATUS_LABELS: Record<FeatureStatusKey, string> = {
@@ -209,6 +215,7 @@ const FEATURE_STATUS_LABELS: Record<FeatureStatusKey, string> = {
   continuousPricing: "Continuous Pricing",
   autoFulfillment: TXT.globalRules.features.autoFulfillment.label,
   blindBids: TXT.globalRules.features.blindBids.label,
+  onlyUpgrade: TXT.globalRules.features.onlyUpgrade.label,
 };
 
 export function GlobalRules() {

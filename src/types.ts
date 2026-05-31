@@ -198,6 +198,7 @@ export type Rules = {
   crossAirlineUpgrades: boolean;
   payWithPoints: boolean;
   seatBlocker: boolean;
+  onlyUpgrade: boolean;
 };
 
 export type RulesBooleanKey = {

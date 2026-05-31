@@ -29,4 +29,5 @@ export const DEFAULT_RULES: Rules = {
   crossAirlineUpgrades: false,
   payWithPoints: false,
   seatBlocker: true,
+  onlyUpgrade: false,
 };
