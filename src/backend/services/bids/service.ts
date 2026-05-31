@@ -1,5 +1,5 @@
 import { SEED_BIDS, weighted } from "../../../data";
-import type { Bid, BidState, Flight } from "../../../types";
+import type { Bid, BidState, BidWithPassenger, Flight, Passenger } from "../../../types";
 import type { DbEmulator, EntitySeed } from "../../db/contracts";
 import type { BidsService } from "./contracts";
 import { toBidFilters } from "./utils";
@@ -7,6 +7,20 @@ import { toBidFilters } from "./utils";
 export const bidsSeed: EntitySeed = {
   bids: SEED_BIDS,
 };
+
+function joinPassenger(db: DbEmulator, bids: Bid[]): BidWithPassenger[] {
+  if (bids.length === 0) return [];
+  const ids = Array.from(new Set(bids.map((b) => b.passengerId)));
+  const passengers = db.queryAll<Passenger>("passengers", {
+    filters: [{ field: "id", op: "in", value: ids }],
+  });
+  const byId = new Map(passengers.map((p) => [p.id, p]));
+  return bids.flatMap((bid) => {
+    const passenger = byId.get(bid.passengerId);
+    if (!passenger) return [];
+    return [{ ...bid, passenger }];
+  });
+}
 
 function selectWinningBidIds(rows: Bid[], availableSeats: number): Bid["id"][] {
   return [...rows]
@@ -19,24 +33,29 @@ function selectWinningBidIds(rows: Bid[], availableSeats: number): Bid["id"][] {
 export function createBidsService(db: DbEmulator): BidsService {
   return {
     async list(flightId, product) {
-      return db.queryAll<Bid>("bids", {
+      const rows = db.queryAll<Bid>("bids", {
         filters: [
           { field: "flightId", op: "eq", value: flightId },
           { field: "product", op: "eq", value: product },
         ],
       });
+      return joinPassenger(db, rows);
     },
 
     async approve(flightId, bidId) {
-      return db.updateOne<Bid>("bids", toBidFilters(flightId, bidId), {
+      const updated = db.updateOne<Bid>("bids", toBidFilters(flightId, bidId), {
         state: "approved",
       });
+      if (!updated) return undefined;
+      return joinPassenger(db, [updated])[0];
     },
 
     async reject(flightId, bidId) {
-      return db.updateOne<Bid>("bids", toBidFilters(flightId, bidId), {
+      const updated = db.updateOne<Bid>("bids", toBidFilters(flightId, bidId), {
         state: "rejected",
       });
+      if (!updated) return undefined;
+      return joinPassenger(db, [updated])[0];
     },
 
     async autoSelect(flightId) {

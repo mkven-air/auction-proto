@@ -62,4 +62,14 @@ describe("backend bids service", () => {
     const exitBids = await client.bids.list("HY 602", "exitRows");
     expect(exitBids.every((bid) => bid.state === "pending")).toBe(true);
   });
+
+  it("joins passenger profile onto each bid", async () => {
+    const client = createServiceClient();
+    const bids = await client.bids.list("HY 602", "businessClass");
+
+    expect(bids.every((b) => b.passenger.id === b.passengerId)).toBe(true);
+    const top = bids.find((b) => b.id === 1);
+    expect(top?.passenger.tier).toBe("Platinum");
+    expect(top?.passenger.name.length).toBeGreaterThan(0);
+  });
 });

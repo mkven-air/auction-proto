@@ -64,14 +64,15 @@ export type Bid = {
   id: number;
   flightId: Flight["id"];
   product: BidProduct;
-  name: string;
-  tier: Tier;
+  passengerId: Passenger["id"];
   bid: number;
   mult: number;
   channel: Channel;
   time: string;
   state: BidState;
 };
+
+export type BidWithPassenger = Bid & { passenger: Passenger };
 
 export type ProductKey = "bc" | "ex" | "sb";
 

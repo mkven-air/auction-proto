@@ -16,6 +16,7 @@ describe("backend entities service", () => {
     expect(byName.get("bids")?.length).toBe(70);
     expect(byName.get("cities")?.length).toBe(9);
     expect(byName.get("countries")?.length).toBe(9);
+    expect(byName.get("passengers")?.length).toBe(70);
   });
 
   it("returns rows containing the expected fields", async () => {
