@@ -83,6 +83,9 @@ export function EntitiesPage() {
               }}
             >
               <span style={{ fontSize: 14, fontWeight: 700, color: T.textPrimary }}>
+                {(TXT.entities.tableTitles as Record<string, string>)[entity.name] ?? entity.name}
+              </span>
+              <span style={{ fontSize: 11, fontFamily: F.mono, color: T.textMuted }}>
                 {entity.name}
               </span>
               <span style={{ fontSize: 12, color: T.textMuted }}>

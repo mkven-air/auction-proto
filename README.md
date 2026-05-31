@@ -106,21 +106,30 @@ bash all-checks.sh # runs both scripts
 .
 ├── src/
 │   ├── App.tsx                        # main app orchestration
-│   ├── AdminShell.tsx                 # shell header + tab layout
-│   ├── FlightList.tsx                 # flight table view
-│   ├── FlightDetail.tsx               # flight detail panel
-│   ├── GlobalRules.tsx                # rules configuration
-│   ├── EmailPreview.tsx               # email template previews
-│   ├── PassengerBidUI.tsx             # passenger bid mockup
-│   ├── theme.ts                       # palette + semantic design tokens
-│   ├── data.ts                        # domain data + UI mappings
-│   ├── types.ts                       # type definitions
-│   ├── primitives.tsx                 # reusable UI primitives
 │   ├── main.tsx                       # React entry point
-│   └── index.css                      # global styles
+│   ├── index.css                      # global styles
+│   ├── theme.ts                       # palette + semantic design tokens
+│   ├── types.ts                       # type definitions
+│   ├── i18n.ts                        # locale dictionary (ru) + TXT export
+│   ├── pages/                         # top-level page components
+│   │   ├── AdminShell.tsx             # shell header + tab layout
+│   │   ├── FlightList.tsx             # flight table view
+│   │   ├── FlightDetail.tsx           # flight detail panel
+│   │   ├── GlobalRules.tsx            # rules configuration
+│   │   ├── EmailPreview.tsx           # email template previews
+│   │   ├── PassengerBidUI.tsx         # passenger bid mockup
+│   │   └── EntitiesPage.tsx           # auto-discovered DB tables view
+│   ├── primitives/                    # reusable UI primitives (Pill, MetricCard, ...)
+│   ├── components/                    # app-specific composed components
+│   ├── domain/                        # enum metadata (tier/state/status colors, ...)
+│   ├── data/<entity>.ts               # per-entity seed data (one file per table)
 │   ├── format/                        # display formatters (flight time, bid distribution)
+│   ├── lib/                           # small framework-agnostic utilities
 │   ├── queries/                       # TanStack Query hooks and keys
 │   └── backend/                       # in-memory backend service + db emulator
+│       ├── contracts.ts               # aggregate BackendClient contract
+│       ├── serviceClient.ts           # builds db, services, latency wrapper
+│       ├── latency.ts                 # latency + failure injection
 │       ├── db/                        # generic DB emulator + contracts
 │       └── services/<entity>/         # per-entity contracts.ts, service.ts, utils.ts
 │           ├── airports/
@@ -129,9 +138,11 @@ bash all-checks.sh # runs both scripts
 │           ├── countries/
 │           ├── flights/
 │           └── passengers/
+├── tests/                             # vitest suites (db emulator + per-service)
 ├── index.html                         # app shell
 ├── vite.config.ts                     # Vite config
 ├── tsconfig.json                      # strict TS config
+├── tsconfig.check.json                # typecheck config including tests
 ├── biome.json                         # Biome config (format + lint)
 ├── check.sh                           # quality checks
 ├── health.sh                          # security/dependency checks
@@ -141,10 +152,12 @@ bash all-checks.sh # runs both scripts
 ## Architecture Notes
 
 ### Modular Features
-The codebase is flattened under `src/` for prototype speed, while keeping modular files:  
-- Each major UI panel is a self-contained module (FlightList, FlightDetail, GlobalRules, etc.)
-- Shared UI primitives are isolated in `primitives.tsx`
-- Type definitions are centralized in `types.ts`
+The codebase is organized under `src/` with thin layered folders:
+- Each major UI panel lives in `src/pages/` as a self-contained module
+- Reusable atoms live in `src/primitives/` (`Pill`, `MetricCard`, `BarChart`, ...)
+- Enum metadata (color/bg tokens for tier, bid state, flight status, ...) lives in `src/domain/`
+- Per-entity seed data is split into `src/data/<entity>.ts`
+- Type definitions are centralized in `src/types.ts`
 
 ### Design Tokens
 The color palette is owned by CSS custom properties on `:root` in `src/index.css`
@@ -153,11 +166,12 @@ bridge that maps semantic names to `var(--token)` strings so inline styles can
 still reference them while the codebase migrates toward Tailwind/shadcn classes.
 
 ### Data & Mappings
-`data.ts` contains:
-- Domain data (flights, bids, airports dictionary, distributions)
-- UI mapping records (state metadata, color IDs, icons)
-- `colorToken()` resolver for semantic token lookup
-- `getAirport(id)` lookup helper
+- Seed data lives in `src/data/<entity>.ts` — one file per table (countries, cities, airports, passengers, flights, bids)
+- Domain dictionary entries (e.g. country/city/airport `name`) carry `LocalizedString`
+  shapes resolved via `value[CURRENT_LOCALE]`
+- Enum-label maps (tier multipliers, bid states, flight statuses, hauls) live in
+  `src/i18n.ts` since they are pure UI text, not data rows
+- Color/bg token maps for those enums live in `src/domain/` (label-free)
 
 ### Backend Layering
 - The aggregate `BackendClient` contract lives in `src/backend/contracts.ts`
@@ -176,12 +190,13 @@ still reference them while the codebase migrates toward Tailwind/shadcn classes.
   airports + cities + countries via `airports/utils.ts`
 
 ### Adding a New Entity
-1. Add the type to `src/types.ts` and seed data to `src/data.ts`.
+1. Add the type to `src/types.ts` and seed data to `src/data/<name>.ts`.
 2. Create `src/backend/services/<name>/{contracts,service}.ts` (and `utils.ts` if needed),
    exporting `<name>Seed` and a `create<Name>Service` factory.
 3. Add the service to the `BackendClient` type in `src/backend/contracts.ts`.
 4. Spread the seed and register the service in `src/backend/serviceClient.ts`.
-5. The new table appears automatically on the `/entities` page.
+5. Add a localized title under `entities.tableTitles` in `src/i18n.ts`.
+6. The new table appears automatically on the `/entities` page.
 
 ### Text & Localization Prep
 - User-facing shared labels are centralized in `src/i18n.ts` under a locale

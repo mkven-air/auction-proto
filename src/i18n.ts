@@ -42,6 +42,14 @@ export const I18N = {
       empty: "Нет записей",
       tableHeader: "Таблица",
       countSuffix: "записей",
+      tableTitles: {
+        flights: "Рейсы",
+        bids: "Заявки",
+        airports: "Аэропорты",
+        cities: "Города",
+        countries: "Страны",
+        passengers: "Пассажиры",
+      },
       states: {
         loading: "Загрузка сущностей...",
         loadError: "Не удалось загрузить сущности.",
