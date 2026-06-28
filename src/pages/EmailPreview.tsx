@@ -1,6 +1,6 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import type { EmailTemplateConfig, EmailTemplateType } from "../types";
-import { F, T } from "../theme";
+import { T } from "../theme";
 import { Pill, SectionLabel } from "../primitives";
 import { CURRENT_LOCALE, TXT } from "../i18n";
 import { useAirportsWithLocationByIds } from "../queries/useAirportsWithLocationByIds";
@@ -11,63 +11,8 @@ const EMAIL_TO_AIRPORT_ID = "IST";
 type MetaRow = [string, string];
 type MetadataRow = { key: string; label: string; value: ReactNode };
 
-const SIDE_PANEL_CARD_STYLE: CSSProperties = {
-  background: T.surfaceCard,
-  border: `0.5px solid ${T.borderDefault}`,
-  borderRadius: 10,
-  padding: "14px 16px",
-};
-
-const META_ROW_STYLE: CSSProperties = {
-  display: "flex",
-  alignItems: "flex-start",
-  gap: 12,
-  padding: "7px 0",
-  borderBottom: `0.5px solid ${T.borderDefault}`,
-};
-
-const METRIC_TILE_STYLE: CSSProperties = {
-  background: T.surfacePage,
-  borderRadius: 7,
-  padding: "9px 11px",
-};
-
-const PREVIEW_FRAME_STYLE: CSSProperties = {
-  background: T.surfaceCard,
-  border: `0.5px solid ${T.borderDefault}`,
-  borderRadius: 12,
-  overflow: "hidden",
-};
-
-const PREVIEW_TOPBAR_STYLE: CSSProperties = {
-  background: T.surfaceElevated,
-  borderBottom: `0.5px solid ${T.borderDefault}`,
-  padding: "7px 12px",
-  display: "flex",
-  alignItems: "center",
-  gap: 6,
-};
-
-const FLIGHT_STRIP_STYLE: CSSProperties = {
-  background: T.surfaceElevated,
-  border: `0.5px solid ${T.borderDefault}`,
-  borderRadius: 6,
-  padding: "8px 10px",
-  marginBottom: 10,
-  display: "flex",
-  alignItems: "center",
-  gap: 10,
-};
-
-const OFFER_ROW_STYLE: CSSProperties = {
-  border: `0.5px solid ${T.borderDefault}`,
-  borderRadius: 5,
-  padding: "6px 9px",
-  marginBottom: 5,
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-};
+const SIDE_PANEL_CARD_CLASS =
+  "rounded-[10px] border-[0.5px] border-border-default bg-surface-card px-4 py-3.5";
 
 const TEMPLATE_CONFIGS: Record<EmailTemplateType, EmailTemplateConfig> = {
   pte: {
@@ -178,62 +123,36 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
     {
       key: "to",
       label: TXT.emailPreview.metadata.to,
-      value: <span style={{ fontSize: 12, color: T.textSecondary }}>{c.to}</span>,
+      value: <span className="text-xs text-text-secondary">{c.to}</span>,
     },
     {
       key: "subject",
       label: TXT.emailPreview.metadata.subject,
-      value: <span style={{ fontSize: 12, color: T.textPrimary }}>{c.subject}</span>,
+      value: <span className="text-xs text-text-primary">{c.subject}</span>,
     },
   ];
   return (
-    <div
-      style={{ display: "grid", gridTemplateColumns: "1fr 330px", gap: 20, alignItems: "start" }}
-    >
-      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <div style={SIDE_PANEL_CARD_STYLE}>
+    <div className="grid items-start gap-5" style={{ gridTemplateColumns: "1fr 330px" }}>
+      <div className="flex flex-col gap-3">
+        <div className={SIDE_PANEL_CARD_CLASS}>
           <SectionLabel>{TXT.emailPreview.metadata.title}</SectionLabel>
           {metadataRows.map((row) => (
-            <div key={row.key} style={META_ROW_STYLE}>
-              <div
-                style={{
-                  width: 44,
-                  fontSize: 11,
-                  color: T.textMuted,
-                  flexShrink: 0,
-                  paddingTop: 2,
-                }}
-              >
-                {row.label}
-              </div>
+            <div
+              key={row.key}
+              className="flex items-start gap-3 border-b-[0.5px] border-border-default py-[7px]"
+            >
+              <div className="w-11 shrink-0 pt-0.5 text-[11px] text-text-muted">{row.label}</div>
               <div>{row.value}</div>
             </div>
           ))}
         </div>
-        <div style={SIDE_PANEL_CARD_STYLE}>
+        <div className={SIDE_PANEL_CARD_CLASS}>
           <SectionLabel>{TXT.emailPreview.channelMetrics.title}</SectionLabel>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+          <div className="grid grid-cols-2 gap-2">
             {metaRows.map(([k, v]) => (
-              <div key={k} style={METRIC_TILE_STYLE}>
-                <div
-                  style={{
-                    fontSize: 10,
-                    color: T.textMuted,
-                    textTransform: "uppercase",
-                    letterSpacing: 0.8,
-                  }}
-                >
-                  {k}
-                </div>
-                <div
-                  style={{
-                    fontSize: 17,
-                    fontWeight: 700,
-                    color: T.textPrimary,
-                    marginTop: 3,
-                    fontFamily: F.mono,
-                  }}
-                >
+              <div key={k} className="rounded-[7px] bg-surface-page px-[11px] py-[9px]">
+                <div className="text-[10px] tracking-[0.8px] text-text-muted uppercase">{k}</div>
+                <div className="mt-[3px] font-mono text-[17px] font-bold text-text-primary">
                   {v}
                 </div>
               </div>
@@ -241,180 +160,104 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
           </div>
         </div>
       </div>
-      <div style={PREVIEW_FRAME_STYLE}>
-        <div style={PREVIEW_TOPBAR_STYLE}>
+      <div className="overflow-hidden rounded-[12px] border-[0.5px] border-border-default bg-surface-card">
+        <div className="flex items-center gap-1.5 border-b-[0.5px] border-border-default bg-surface-elevated px-3 py-[7px]">
           {[T.windowControlRed, T.windowControlAmber, T.windowControlGreen].map((col) => (
-            <div key={col} style={{ width: 9, height: 9, borderRadius: "50%", background: col }} />
+            <div key={col} className="h-[9px] w-[9px] rounded-full" style={{ background: col }} />
           ))}
-          <div
-            style={{
-              flex: 1,
-              background: T.surfacePage,
-              borderRadius: 4,
-              height: 17,
-              marginLeft: 8,
-              display: "flex",
-              alignItems: "center",
-              paddingLeft: 8,
-            }}
-          >
-            <span style={{ fontSize: 10, color: T.textMuted }}>{TXT.emailPreview.browserHost}</span>
+          <div className="ml-2 flex h-[17px] flex-1 items-center rounded-[4px] bg-surface-page pl-2">
+            <span className="text-[10px] text-text-muted">{TXT.emailPreview.browserHost}</span>
           </div>
         </div>
-        <div style={{ padding: 12 }}>
-          <div
-            style={{
-              borderRadius: 7,
-              overflow: "hidden",
-              border: `0.5px solid ${T.borderDefault}`,
-            }}
-          >
+        <div className="p-3">
+          <div className="overflow-hidden rounded-[7px] border-[0.5px] border-border-default">
             <div
-              style={{
-                background: c.hBg,
-                borderBottom: `2px solid ${c.hLine}`,
-                padding: "11px 14px",
-                display: "flex",
-                alignItems: "center",
-                gap: 8,
-              }}
+              className="flex items-center gap-2 px-3.5 py-[11px]"
+              style={{ background: c.hBg, borderBottom: `2px solid ${c.hLine}` }}
             >
               <div
-                style={{
-                  background: c.hLine,
-                  borderRadius: 4,
-                  width: 24,
-                  height: 16,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+                className="flex h-4 w-6 items-center justify-center rounded-[4px]"
+                style={{ background: c.hLine }}
               >
-                <span style={{ fontSize: 8, fontWeight: 800, color: T.onBrandPrimary }}>HY</span>
+                <span className="text-[8px] font-extrabold text-on-brand-primary">HY</span>
               </div>
-              <span style={{ color: T.textPrimary, fontWeight: 600, fontSize: 12 }}>
+              <span className="text-xs font-semibold text-text-primary">
                 {TXT.emailPreview.airlineBrand}
               </span>
             </div>
-            <div style={{ background: T.surfaceCard, padding: 14 }}>
-              <div style={FLIGHT_STRIP_STYLE}>
-                <div style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: T.textPrimary }}>
+            <div className="bg-surface-card p-3.5">
+              <div className="mb-2.5 flex items-center gap-2.5 rounded-[6px] border-[0.5px] border-border-default bg-surface-elevated px-2.5 py-2">
+                <div className="text-center">
+                  <div className="text-[15px] font-bold text-text-primary">
                     {fromAirport?.id ?? EMAIL_FROM_AIRPORT_ID}
                   </div>
-                  <div style={{ fontSize: 9, color: T.textMuted }}>{fromCityName}</div>
+                  <div className="text-[9px] text-text-muted">{fromCityName}</div>
                 </div>
-                <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 3 }}>
-                  <div style={{ flex: 1, height: 1, background: T.borderDefault }} />
-                  <span style={{ fontSize: 10, color: T.textMuted }}>✈</span>
-                  <div style={{ flex: 1, height: 1, background: T.borderDefault }} />
+                <div className="flex flex-1 items-center gap-[3px]">
+                  <div className="h-px flex-1 bg-border-default" />
+                  <span className="text-[10px] text-text-muted">✈</span>
+                  <div className="h-px flex-1 bg-border-default" />
                 </div>
-                <div style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: T.textPrimary }}>
+                <div className="text-center">
+                  <div className="text-[15px] font-bold text-text-primary">
                     {toAirport?.id ?? EMAIL_TO_AIRPORT_ID}
                   </div>
-                  <div style={{ fontSize: 9, color: T.textMuted }}>{toCityName}</div>
+                  <div className="text-[9px] text-text-muted">{toCityName}</div>
                 </div>
               </div>
               {c.urgency && (
-                <div
-                  style={{
-                    background: T.statusWarningBg,
-                    border: `0.5px solid ${T.statusWarning}`,
-                    borderRadius: 5,
-                    padding: "6px 9px",
-                    marginBottom: 9,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6,
-                  }}
-                >
-                  <span style={{ fontSize: 12 }}>⏳</span>
+                <div className="mb-[9px] flex items-center gap-1.5 rounded-[5px] border-[0.5px] border-status-warning bg-status-warning-bg px-[9px] py-1.5">
+                  <span className="text-xs">⏳</span>
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 600, color: T.statusWarningFg }}>
+                    <div className="text-[11px] font-semibold text-status-warning-fg">
                       {TXT.emailPreview.urgencyTitle}
                     </div>
-                    <div style={{ fontSize: 10, color: T.statusWarning }}>
+                    <div className="text-[10px] text-status-warning">
                       {TXT.emailPreview.urgencyMeta}
                     </div>
                   </div>
                 </div>
               )}
-              <div style={{ fontSize: 13, fontWeight: 600, color: T.textPrimary, marginBottom: 4 }}>
-                {c.title}
-              </div>
-              <div
-                style={{ fontSize: 11, color: T.textSecondary, lineHeight: 1.6, marginBottom: 9 }}
-              >
-                {c.body}
-              </div>
+              <div className="mb-1 text-[13px] font-semibold text-text-primary">{c.title}</div>
+              <div className="mb-[9px] text-[11px] leading-[1.6] text-text-secondary">{c.body}</div>
               {c.offers?.map((o) => (
-                <div key={o.name} style={OFFER_ROW_STYLE}>
+                <div
+                  key={o.name}
+                  className="mb-[5px] flex items-center justify-between rounded-[5px] border-[0.5px] border-border-default px-[9px] py-1.5"
+                >
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 600, color: T.textPrimary }}>
-                      {o.name}
-                    </div>
-                    <div style={{ fontSize: 10, color: T.textMuted }}>{o.desc}</div>
+                    <div className="text-[11px] font-semibold text-text-primary">{o.name}</div>
+                    <div className="text-[10px] text-text-muted">{o.desc}</div>
                   </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: 9, color: T.textMuted }}>
-                      {TXT.emailPreview.fromLabel}
+                  <div className="text-right">
+                    <div className="text-[9px] text-text-muted">{TXT.emailPreview.fromLabel}</div>
+                    <div className="text-sm font-bold" style={{ color: c.tagC }}>
+                      {o.from}
                     </div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: c.tagC }}>{o.from}</div>
                   </div>
                 </div>
               ))}
               {c.booking && (
-                <div
-                  style={{
-                    background: T.statusSuccessBg,
-                    border: `0.5px solid ${T.statusSuccess}`,
-                    borderRadius: 5,
-                    padding: "8px 9px",
-                    marginBottom: 9,
-                  }}
-                >
+                <div className="mb-[9px] rounded-[5px] border-[0.5px] border-status-success bg-status-success-bg px-[9px] py-2">
                   {Object.entries(c.booking).map(([k, v]) => (
                     <div
                       key={k}
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        fontSize: 11,
-                        padding: "2px 0",
-                        borderBottom: `0.5px solid ${T.dividerSuccess}`,
-                      }}
+                      className="flex justify-between py-0.5 text-[11px]"
+                      style={{ borderBottom: `0.5px solid ${T.dividerSuccess}` }}
                     >
-                      <span style={{ color: T.statusSuccessFg }}>{k}</span>
-                      <span style={{ fontWeight: 600, color: T.statusSuccessFg }}>{v}</span>
+                      <span className="text-status-success-fg">{k}</span>
+                      <span className="font-semibold text-status-success-fg">{v}</span>
                     </div>
                   ))}
                 </div>
               )}
               <div
-                style={{
-                  background: c.ctaBg,
-                  borderRadius: 5,
-                  padding: "8px",
-                  textAlign: "center",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  color: T.onBrandPrimary,
-                  marginBottom: 7,
-                  cursor: "pointer",
-                }}
+                className="mb-[7px] cursor-pointer rounded-[5px] py-2 text-center text-[11px] font-bold text-on-brand-primary"
+                style={{ background: c.ctaBg }}
               >
                 {c.ctaLabel}
               </div>
-              <div
-                style={{
-                  fontSize: 10,
-                  color: T.textMuted,
-                  borderTop: `0.5px solid ${T.borderDefault}`,
-                  paddingTop: 7,
-                  lineHeight: 1.6,
-                }}
-              >
+              <div className="border-t-[0.5px] border-border-default pt-[7px] text-[10px] leading-[1.6] text-text-muted">
                 {c.footer}
               </div>
             </div>
