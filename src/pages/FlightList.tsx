@@ -171,16 +171,12 @@ export function FlightList({ onSelect }: FlightListProps) {
                   next.set("page", "1");
                   setSearchParams(next, { replace: true });
                 }}
+                className="rounded-[20px] px-3 py-1.5 text-[11px] font-semibold whitespace-nowrap"
                 style={{
-                  padding: "6px 12px",
-                  borderRadius: 20,
-                  fontSize: 11,
-                  fontWeight: 600,
                   cursor: "pointer",
                   border: `0.5px solid ${isActive ? accent : T.borderDefault}`,
                   background: isActive ? accentBg : "transparent",
                   color: isActive ? accent : T.textMuted,
-                  whiteSpace: "nowrap",
                 }}
               >
                 {l}
@@ -196,7 +192,7 @@ export function FlightList({ onSelect }: FlightListProps) {
         <div className="overflow-x-auto">
           <table className="w-full table-fixed border-collapse text-xs">
             <thead>
-              <tr style={{ borderBottom: `0.5px solid ${T.borderDefault}` }}>
+              <tr className="border-b-[0.5px] border-border-default">
                 {headerCols.map(([col, lbl, w]) => (
                   <th
                     key={lbl}
@@ -245,12 +241,7 @@ export function FlightList({ onSelect }: FlightListProps) {
                       {formatFlightDep(f.depAt, airportTzById.get(f.fromAirportId) ?? "UTC")}
                     </td>
                     <td className="px-[14px] py-[11px]">
-                      <span
-                        className="rounded-[4px] border-[0.5px] border-border-default bg-surface-elevated px-1.5 py-0.5 text-[11px] text-text-muted"
-                        style={{
-                          color: T.textMuted,
-                        }}
-                      >
+                      <span className="rounded-[4px] border-[0.5px] border-border-default bg-surface-elevated px-1.5 py-0.5 text-[11px] text-text-muted">
                         {f.aircraft}
                       </span>
                     </td>

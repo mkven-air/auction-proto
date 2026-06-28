@@ -26,8 +26,7 @@ function BackButton({ onBack }: { onBack: () => void }) {
     <button
       type="button"
       onClick={onBack}
-      className="mb-3 rounded-[7px] border-[0.5px] border-border-default bg-transparent px-3 py-1.5 text-xs font-semibold text-text-muted"
-      style={{ cursor: "pointer" }}
+      className="mb-3 cursor-pointer rounded-[7px] border-[0.5px] border-border-default bg-transparent px-3 py-1.5 text-xs font-semibold text-text-muted"
     >
       {TXT.flightDetail.backButton}
     </button>
@@ -176,7 +175,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
         <button
           type="button"
           onClick={onBack}
-          className="rounded-[7px] border-[0.5px] border-border-default bg-transparent px-3 py-1.5 text-xs font-semibold text-text-muted"
+          className="cursor-pointer rounded-[7px] border-[0.5px] border-border-default bg-transparent px-3 py-1.5 text-xs font-semibold text-text-muted"
           style={{
             cursor: "pointer",
           }}
@@ -198,10 +197,9 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
               type="button"
               onClick={autoSelect}
               disabled={autoSelectMutation.isPending}
-              className="rounded-lg px-4 py-[9px] text-[13px] font-semibold"
+              className="rounded-lg border-none px-4 py-[9px] text-[13px] font-semibold"
               style={{
                 background: T.brandPrimary,
-                border: "none",
                 color: T.onBrandPrimarySoft,
                 cursor: autoSelectMutation.isPending ? "not-allowed" : "pointer",
                 opacity: autoSelectMutation.isPending ? 0.7 : 1,
@@ -286,11 +284,8 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                 type="button"
                 key={k}
                 onClick={() => setFilter(k)}
+                className="rounded-[20px] px-2.5 py-1 text-[11px] font-semibold"
                 style={{
-                  padding: "4px 10px",
-                  borderRadius: 20,
-                  fontSize: 11,
-                  fontWeight: 600,
                   cursor: "pointer",
                   border: `0.5px solid ${filter === k ? T.brandPrimary : T.borderDefault}`,
                   background: filter === k ? T.brandPrimaryBg : "transparent",
@@ -320,18 +315,11 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                           }
                         : undefined
                     }
+                    className="border-b-[0.5px] border-border-default px-2.5 py-[9px] text-left text-[11px] font-semibold tracking-[0.7px] uppercase select-none"
                     style={{
                       width: w,
-                      textAlign: "left",
-                      padding: "9px 10px",
-                      fontSize: 11,
-                      fontWeight: 600,
                       color: col && sortCol === col ? T.brandPrimaryFg : T.textMuted,
-                      textTransform: "uppercase",
-                      letterSpacing: 0.7,
-                      borderBottom: `0.5px solid ${T.borderDefault}`,
                       cursor: col ? "pointer" : "default",
-                      userSelect: "none",
                     }}
                   >
                     {lbl}
@@ -348,42 +336,27 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                 const sm = bidStatesById[b.state] ?? bidStatesById.pending;
                 return (
                   <tr key={b.id} style={{ background: isTop ? T.overlayBrand : "transparent" }}>
-                    <td
-                      style={{
-                        padding: "10px 10px",
-                        borderBottom: `0.5px solid ${T.borderDefault}`,
-                      }}
-                    >
-                      <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+                    <td className="border-b-[0.5px] border-border-default px-2.5 py-2.5">
+                      <div className="flex items-center gap-[7px]">
                         {isTop && (
                           <div
+                            className="h-7 w-[3px] shrink-0 rounded-[2px]"
                             style={{
-                              width: 3,
-                              height: 28,
                               background: T.brandPrimary,
-                              borderRadius: 2,
-                              flexShrink: 0,
                             }}
                           />
                         )}
                         <div>
-                          <div style={{ fontWeight: 600, color: T.textPrimary }}>
-                            {b.passenger.name}
-                          </div>
+                          <div className="font-semibold text-text-primary">{b.passenger.name}</div>
                           {isTop && (
-                            <div style={{ fontSize: 10, color: T.brandPrimaryFg }}>
+                            <div className="text-[10px]" style={{ color: T.brandPrimaryFg }}>
                               {TXT.flightDetail.topCandidate}
                             </div>
                           )}
                         </div>
                       </div>
                     </td>
-                    <td
-                      style={{
-                        padding: "10px 10px",
-                        borderBottom: `0.5px solid ${T.borderDefault}`,
-                      }}
-                    >
+                    <td className="border-b-[0.5px] border-border-default px-2.5 py-2.5">
                       <Pill
                         color={colorToken(tm?.colorId ?? "textMuted")}
                         bg={colorToken(tm?.bgId ?? "neutralBgSoft")}
@@ -391,25 +364,21 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                       >
                         {b.passenger.tier}
                       </Pill>
-                      <div style={{ fontSize: 10, color: T.textMuted, marginTop: 2 }}>
+                      <div className="mt-0.5 text-[10px] text-text-muted">
                         {tm?.multLabel[CURRENT_LOCALE] ?? ""}
                       </div>
                     </td>
                     <td
+                      className="border-b-[0.5px] border-border-default px-2.5 py-2.5 font-mono font-bold"
                       style={{
-                        padding: "10px 10px",
-                        borderBottom: `0.5px solid ${T.borderDefault}`,
-                        fontWeight: 700,
                         fontFamily: F.mono,
                       }}
                     >
                       ${b.bid}
                     </td>
                     <td
+                      className="border-b-[0.5px] border-border-default px-2.5 py-2.5 font-mono font-bold"
                       style={{
-                        padding: "10px 10px",
-                        borderBottom: `0.5px solid ${T.borderDefault}`,
-                        fontWeight: 700,
                         color: T.brandPrimaryFg,
                         fontFamily: F.mono,
                       }}
@@ -417,32 +386,23 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                       ${w}
                     </td>
                     <td
+                      className="border-b-[0.5px] border-border-default px-2.5 py-2.5 text-xs"
                       style={{
-                        padding: "10px 10px",
-                        borderBottom: `0.5px solid ${T.borderDefault}`,
                         color: T.textMuted,
-                        fontSize: 12,
                       }}
                     >
                       {CH_ICONS[b.channel]} {b.channel}
                     </td>
                     <td
+                      className="border-b-[0.5px] border-border-default px-2.5 py-2.5 font-mono text-xs"
                       style={{
-                        padding: "10px 10px",
-                        borderBottom: `0.5px solid ${T.borderDefault}`,
                         color: T.textMuted,
                         fontFamily: F.mono,
-                        fontSize: 12,
                       }}
                     >
                       {b.time}
                     </td>
-                    <td
-                      style={{
-                        padding: "10px 10px",
-                        borderBottom: `0.5px solid ${T.borderDefault}`,
-                      }}
-                    >
+                    <td className="border-b-[0.5px] border-border-default px-2.5 py-2.5">
                       <Pill
                         color={colorToken(sm?.colorId ?? "textMuted")}
                         bg={colorToken(sm?.bgId ?? "neutralBgSoft")}
@@ -451,23 +411,15 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                         {bidStatesById[b.state]?.name[CURRENT_LOCALE] ?? b.state}
                       </Pill>
                     </td>
-                    <td
-                      style={{
-                        padding: "10px 10px",
-                        borderBottom: `0.5px solid ${T.borderDefault}`,
-                      }}
-                    >
+                    <td className="border-b-[0.5px] border-border-default px-2.5 py-2.5">
                       {b.state === "pending" && (
-                        <div style={{ display: "flex", gap: 5 }}>
+                        <div className="flex gap-[5px]">
                           <button
                             type="button"
                             onClick={() => approve(b.id)}
                             disabled={approveMutation.isPending || rejectMutation.isPending}
+                            className="rounded-[5px] px-[9px] py-1 text-[11px] font-semibold"
                             style={{
-                              padding: "4px 9px",
-                              fontSize: 11,
-                              fontWeight: 600,
-                              borderRadius: 5,
                               cursor:
                                 approveMutation.isPending || rejectMutation.isPending
                                   ? "not-allowed"
@@ -485,11 +437,8 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                             type="button"
                             onClick={() => reject(b.id)}
                             disabled={approveMutation.isPending || rejectMutation.isPending}
+                            className="rounded-[5px] px-2 py-1 text-[11px] font-semibold"
                             style={{
-                              padding: "4px 8px",
-                              fontSize: 11,
-                              fontWeight: 600,
-                              borderRadius: 5,
                               cursor:
                                 approveMutation.isPending || rejectMutation.isPending
                                   ? "not-allowed"
