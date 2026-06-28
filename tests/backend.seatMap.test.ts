@@ -38,19 +38,29 @@ describe("backend seatMap service", () => {
     expect(layout.length).toBeGreaterThan(0);
   });
 
-  it("returns independent clones so mutations do not affect stored layout", async () => {
+  it("returns frozen objects that cannot be mutated", async () => {
     const client = createServiceClient();
-    const first = await client.seatMap.getBusinessClass("HY 602");
-    const originalTaken = first[0]?.[0]?.taken;
+    const layout = await client.seatMap.getBusinessClass("HY 602");
 
-    // mutate the returned clone directly
-    const firstSeat = first[0]?.[0];
-    if (firstSeat) {
-      (firstSeat as { taken: boolean }).taken = !firstSeat.taken;
-    }
+    // layout, each row, and each seat cell are all frozen
+    expect(Object.isFrozen(layout)).toBe(true);
+    expect(Object.isFrozen(layout[0])).toBe(true);
+    const firstSeat = layout[0]?.[0];
+    if (firstSeat) expect(Object.isFrozen(firstSeat)).toBe(true);
 
-    // re-fetch should still have the original value
-    const second = await client.seatMap.getBusinessClass("HY 602");
-    expect(second[0]?.[0]?.taken).toBe(originalTaken);
+    // mutation attempt must throw in strict mode
+    expect(() => {
+      (firstSeat as { taken: boolean }).taken = false;
+    }).toThrow();
+  });
+
+  it("two fetches return equal but distinct objects", async () => {
+    const client = createServiceClient();
+    const a = await client.seatMap.getBusinessClass("HY 602");
+    const b = await client.seatMap.getBusinessClass("HY 602");
+
+    expect(a).not.toBe(b);
+    expect(a[0]?.[0]).not.toBe(b[0]?.[0]);
+    expect(a[0]?.[0]?.taken).toBe(b[0]?.[0]?.taken);
   });
 });

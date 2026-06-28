@@ -33,11 +33,11 @@ const DEFAULT_SEAT_MAP_BC: SeatMapLayout = [
 ];
 
 function cloneSeat(seat: SeatCell | null): SeatCell | null {
-  return seat ? { ...seat } : null;
+  return seat ? Object.freeze({ ...seat }) : null;
 }
 
 function cloneLayout(layout: SeatMapLayout): SeatMapLayout {
-  return layout.map((row) => row.map(cloneSeat));
+  return Object.freeze(layout.map((row) => Object.freeze(row.map(cloneSeat))));
 }
 
 export function createSeatMapService(

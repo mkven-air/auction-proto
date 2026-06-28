@@ -144,13 +144,13 @@ export type PassengerConfig = {
   defaultActive: ProductActiveMap;
 };
 
-export type SeatCell = {
+export type SeatCell = Readonly<{
   id: string;
   taken: boolean;
   bid?: boolean;
-};
+}>;
 
-export type SeatMapLayout = Array<Array<SeatCell | null>>;
+export type SeatMapLayout = ReadonlyArray<ReadonlyArray<SeatCell | null>>;
 
 export type RuleSectionId = "timing" | "pricing" | "loyalty" | "channels" | "payment" | "features";
 
