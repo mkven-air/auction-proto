@@ -110,16 +110,38 @@ export function PassengerBidUI() {
 
   const tierMeta = passenger ? tiersById[passenger.tier] : undefined;
 
+  const localeSwitcher = (
+    <div className="flex items-center gap-[3px] rounded-md border-[0.5px] border-border-default bg-surface-card px-1 py-[2px]">
+      {(["en", "ru", "uz"] as const).map((code) => (
+        <button
+          key={code}
+          type="button"
+          onClick={() => setLocale(code)}
+          className={cn(
+            "rounded-[4px] px-[6px] py-[2px] text-[10px] font-bold cursor-pointer border-none",
+            locale === code
+              ? "bg-brand-primary text-on-brand-primary-soft"
+              : "bg-transparent text-text-muted",
+          )}
+        >
+          {code.toUpperCase()}
+        </button>
+      ))}
+    </div>
+  );
+
   if (submitted) {
     const prods = productEntries.filter(([key]) => active[key]).map(([, prod]) => prod.label);
     return (
       <div className="flex justify-center px-4 py-6">
         <div className="w-[390px] overflow-hidden rounded-2xl border-[0.5px] border-border-default bg-surface-card">
           {/* Status bar */}
-          <div className="flex justify-between bg-surface-elevated px-4 pb-[7px] pt-[9px]">
+          <div className="flex items-center justify-between gap-2 bg-surface-elevated px-4 pb-[7px] pt-[9px]">
             <span className="text-[11px] text-text-muted">{config.frame.statusBarTime}</span>
-            <span className="text-[11px] text-text-muted">{config.frame.statusBarHost}</span>
-            <span className="text-[11px] text-text-muted">●●●</span>
+            <div className="ml-auto flex items-center gap-2">
+              <span className="text-[11px] text-text-muted">{config.frame.statusBarHost}</span>
+              {localeSwitcher}
+            </div>
           </div>
           <div className="px-5 pb-6 pt-8 text-center">
             <div
@@ -198,29 +220,14 @@ export function PassengerBidUI() {
 
   return (
     <div className="flex flex-col items-center gap-3 px-4 py-6">
-      <div className="flex gap-[3px] rounded-lg border-[0.5px] border-border-default bg-surface-elevated px-1 py-[3px]">
-        {(["en", "ru", "uz"] as const).map((code) => (
-          <button
-            key={code}
-            type="button"
-            onClick={() => setLocale(code)}
-            className={cn(
-              "rounded-[5px] px-[7px] py-[3px] text-[11px] font-bold cursor-pointer border-none",
-              locale === code
-                ? "bg-brand-primary text-on-brand-primary-soft"
-                : "bg-transparent text-text-muted",
-            )}
-          >
-            {code.toUpperCase()}
-          </button>
-        ))}
-      </div>
       <div className="w-[390px] overflow-hidden rounded-2xl border-[0.5px] border-border-default bg-surface-card">
         {/* Status bar */}
-        <div className="flex justify-between bg-surface-elevated px-4 pb-[7px] pt-[9px]">
+        <div className="flex items-center justify-between gap-2 bg-surface-elevated px-4 pb-[7px] pt-[9px]">
           <span className="text-[11px] text-text-muted">{config.frame.statusBarTime}</span>
-          <span className="text-[11px] text-text-muted">{config.frame.statusBarHost}</span>
-          <span className="text-[11px] text-text-muted">●●●</span>
+          <div className="ml-auto flex items-center gap-2">
+            <span className="text-[11px] text-text-muted">{config.frame.statusBarHost}</span>
+            {localeSwitcher}
+          </div>
         </div>
 
         {/* Flight header */}
