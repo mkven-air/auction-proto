@@ -1,7 +1,8 @@
-import { CURRENT_LOCALE, TXT } from "../i18n";
+import { useLocale } from "../locale";
 import { useEntities } from "../queries/useEntities";
+import type { LocaleCode, LocalizedString } from "../types";
 
-function isLocalizedString(value: unknown): value is Record<string, string> {
+function isLocalizedString(value: unknown): value is LocalizedString {
   return (
     typeof value === "object" &&
     value !== null &&
@@ -10,13 +11,17 @@ function isLocalizedString(value: unknown): value is Record<string, string> {
   );
 }
 
-function renderCell(value: unknown): string {
+function resolveLocalizedString(value: LocalizedString, locale: LocaleCode): string {
+  return value[locale] ?? value.en ?? value.ru ?? Object.values(value)[0] ?? "";
+}
+
+function renderCell(value: unknown, locale: LocaleCode): string {
   if (value === null || value === undefined) return "—";
   if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
     return String(value);
   }
   if (isLocalizedString(value)) {
-    return value[CURRENT_LOCALE] ?? value.en ?? Object.values(value)[0] ?? "";
+    return resolveLocalizedString(value, locale);
   }
   try {
     return JSON.stringify(value);
@@ -40,20 +45,21 @@ function collectColumns(rows: ReadonlyArray<Record<string, unknown>>): string[] 
 }
 
 export function EntitiesPage() {
+  const { txt, locale } = useLocale();
   const { data, isLoading, isError } = useEntities();
 
   if (isLoading) {
-    return <div className="text-text-muted">{TXT.entities.states.loading}</div>;
+    return <div className="text-text-muted">{txt.entities.states.loading}</div>;
   }
   if (isError || !data) {
-    return <div className="text-status-danger-fg">{TXT.entities.states.loadError}</div>;
+    return <div className="text-status-danger-fg">{txt.entities.states.loadError}</div>;
   }
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <div className="text-[22px] font-bold text-text-primary">{TXT.entities.title}</div>
-        <div className="mt-1 text-[13px] text-text-muted">{TXT.entities.subtitle}</div>
+        <div className="text-[22px] font-bold text-text-primary">{txt.entities.title}</div>
+        <div className="mt-1 text-[13px] text-text-muted">{txt.entities.subtitle}</div>
       </div>
       {data.map((entity) => {
         const columns = collectColumns(entity.rows);
@@ -64,15 +70,15 @@ export function EntitiesPage() {
           >
             <div className="flex items-center gap-2.5 border-b-[0.5px] border-border-default bg-surface-elevated px-3.5 py-2.5">
               <span className="text-sm font-bold text-text-primary">
-                {entity.title[CURRENT_LOCALE] ?? entity.name}
+                {resolveLocalizedString(entity.title, locale as LocaleCode) || entity.name}
               </span>
               <span className="font-mono text-[11px] text-text-muted">{entity.name}</span>
               <span className="text-xs text-text-muted">
-                {entity.rows.length} {TXT.entities.countSuffix}
+                {entity.rows.length} {txt.entities.countSuffix}
               </span>
             </div>
             {entity.rows.length === 0 ? (
-              <div className="p-3.5 text-xs text-text-muted">{TXT.entities.empty}</div>
+              <div className="p-3.5 text-xs text-text-muted">{txt.entities.empty}</div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse font-mono text-xs">
@@ -100,7 +106,7 @@ export function EntitiesPage() {
                             key={col}
                             className="max-w-[320px] overflow-hidden px-3 py-[7px] align-top whitespace-nowrap text-ellipsis text-text-primary"
                           >
-                            {renderCell((row as Record<string, unknown>)[col])}
+                            {renderCell((row as Record<string, unknown>)[col], locale)}
                           </td>
                         ))}
                       </tr>

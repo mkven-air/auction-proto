@@ -11,7 +11,7 @@ import {
   EXIT_DIST_COLORS,
 } from "../format/bidDistribution";
 import { BarChart, MetricCard, Pill, SeatMap, SectionLabel } from "../primitives";
-import { CURRENT_LOCALE, TXT } from "../i18n";
+import { useLocale } from "../locale";
 import { useTiersById } from "../queries/useTiers";
 import { useBidStatesById } from "../queries/useBidStates";
 import { useFlightHaulsById } from "../queries/useFlightHauls";
@@ -22,18 +22,20 @@ import { backendClient } from "../backend/client";
 import { formatFlightArr, formatFlightDep, formatFlightDuration } from "../format/flightTime";
 
 function BackButton({ onBack }: { onBack: () => void }) {
+  const { txt } = useLocale();
   return (
     <button
       type="button"
       onClick={onBack}
       className="mb-3 cursor-pointer rounded-[7px] border-[0.5px] border-border-default bg-transparent px-3 py-1.5 text-xs font-semibold text-text-muted"
     >
-      {TXT.flightDetail.backButton}
+      {txt.flightDetail.backButton}
     </button>
   );
 }
 
 export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onBack: () => void }) {
+  const { txt, locale } = useLocale();
   const queryClient = useQueryClient();
   const { data: flight, isLoading, isError } = useFlightDetail(flightId);
   const {
@@ -74,20 +76,20 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
     },
   });
   const detailFilters: Array<[FlightDetailFilter, string]> = [
-    ["all", TXT.flightDetail.filters.all],
-    ["pending", TXT.flightDetail.filters.pending],
-    ["approved", TXT.flightDetail.filters.approved],
-    ["rejected", TXT.flightDetail.filters.rejected],
+    ["all", txt.flightDetail.filters.all],
+    ["pending", txt.flightDetail.filters.pending],
+    ["approved", txt.flightDetail.filters.approved],
+    ["rejected", txt.flightDetail.filters.rejected],
   ];
   const detailHeaderCols: Array<[FlightDetailSortCol | null, string, string]> = [
-    ["name", TXT.flightDetail.headers.passenger, "22%"],
-    ["tier", TXT.flightDetail.headers.tier, "11%"],
-    ["bid", TXT.flightDetail.headers.bid, "10%"],
-    ["weighted", TXT.flightDetail.headers.weighted, "11%"],
-    ["channel", TXT.flightDetail.headers.channel, "9%"],
-    ["time", TXT.flightDetail.headers.time, "9%"],
-    [null, TXT.flightDetail.headers.status, "11%"],
-    [null, TXT.flightDetail.headers.action, "17%"],
+    ["name", txt.flightDetail.headers.passenger, "22%"],
+    ["tier", txt.flightDetail.headers.tier, "11%"],
+    ["bid", txt.flightDetail.headers.bid, "10%"],
+    ["weighted", txt.flightDetail.headers.weighted, "11%"],
+    ["channel", txt.flightDetail.headers.channel, "9%"],
+    ["time", txt.flightDetail.headers.time, "9%"],
+    [null, txt.flightDetail.headers.status, "11%"],
+    [null, txt.flightDetail.headers.action, "17%"],
   ];
 
   const sorted = [...bids]
@@ -126,7 +128,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
     return (
       <div>
         <BackButton onBack={onBack} />
-        <div className="text-[13px] text-text-muted">{TXT.flightDetail.states.loading}</div>
+        <div className="text-[13px] text-text-muted">{txt.flightDetail.states.loading}</div>
       </div>
     );
   }
@@ -135,7 +137,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
     return (
       <div>
         <BackButton onBack={onBack} />
-        <div className="text-[13px] text-status-danger-fg">{TXT.flightDetail.states.loadError}</div>
+        <div className="text-[13px] text-status-danger-fg">{txt.flightDetail.states.loadError}</div>
       </div>
     );
   }
@@ -144,7 +146,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
     return (
       <div>
         <BackButton onBack={onBack} />
-        <div className="text-[13px] text-text-muted">{TXT.flightDetail.states.notFound}</div>
+        <div className="text-[13px] text-text-muted">{txt.flightDetail.states.notFound}</div>
       </div>
     );
   }
@@ -153,7 +155,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
     return (
       <div>
         <BackButton onBack={onBack} />
-        <div className="text-[13px] text-text-muted">{TXT.flightDetail.states.bidsLoading}</div>
+        <div className="text-[13px] text-text-muted">{txt.flightDetail.states.bidsLoading}</div>
       </div>
     );
   }
@@ -163,7 +165,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
       <div>
         <BackButton onBack={onBack} />
         <div className="text-[13px] text-status-danger-fg">
-          {TXT.flightDetail.states.bidsLoadError}
+          {txt.flightDetail.states.bidsLoadError}
         </div>
       </div>
     );
@@ -180,7 +182,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
             cursor: "pointer",
           }}
         >
-          {TXT.flightDetail.backButton}
+          {txt.flightDetail.backButton}
         </button>
         <div className="flex items-center gap-2.5">
           <span className="text-xl font-extrabold">{flight.id}</span>
@@ -188,7 +190,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
             {flight.fromAirportId} → {flight.toAirportId}
           </span>
           <Pill color={T.statusSuccessFg} bg={T.statusSuccessBg}>
-            {TXT.flightDetail.auctionOpen}
+            {txt.flightDetail.auctionOpen}
           </Pill>
         </div>
         <div className="ml-auto flex gap-2">
@@ -205,11 +207,11 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                 opacity: autoSelectMutation.isPending ? 0.7 : 1,
               }}
             >
-              {TXT.flightDetail.autoSelect}
+              {txt.flightDetail.autoSelect}
             </button>
           ) : (
             <Pill color={T.statusSuccessFg} bg={T.statusSuccessBg}>
-              {TXT.flightDetail.amadeusUpdated}
+              {txt.flightDetail.amadeusUpdated}
             </Pill>
           )}
         </div>
@@ -217,45 +219,45 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
       <div className="mb-[18px] text-xs text-text-muted">
         {formatFlightDep(flight.depAt, fromTz)} — {formatFlightArr(flight.arrAt, toTz)} ·{" "}
         {flight.aircraft} · {formatFlightDuration(flight.depAt, flight.arrAt)} ·{" "}
-        {haulsById[flight.haul]?.name[CURRENT_LOCALE] ?? flight.haul}
+        {haulsById[flight.haul]?.name[locale] ?? flight.haul}
       </div>
       <div className="mb-[18px] grid grid-cols-4 gap-3">
         <MetricCard
-          label={TXT.flightDetail.metrics.bcSeats.label}
+          label={txt.flightDetail.metrics.bcSeats.label}
           value={`${flight.bcFree} / ${flight.bcTotal}`}
           accent={flight.bcFree < 4 ? T.statusDangerFg : T.statusSuccessFg}
-          sub={TXT.flightDetail.metrics.bcSeats.sub}
+          sub={txt.flightDetail.metrics.bcSeats.sub}
         />
         <MetricCard
-          label={TXT.flightDetail.metrics.bcBidsLabel}
+          label={txt.flightDetail.metrics.bcBidsLabel}
           value={String(bids.length)}
-          sub={`${counts.pending} ${TXT.flightDetail.metrics.pendingSuffix}`}
+          sub={`${counts.pending} ${txt.flightDetail.metrics.pendingSuffix}`}
         />
         <MetricCard
-          label={TXT.flightDetail.metrics.topBidLabel}
+          label={txt.flightDetail.metrics.topBidLabel}
           value={`$${flight.topBid}`}
           accent={T.brandPrimaryFg}
-          sub={`${TXT.flightDetail.metrics.weightedPrefix}${Math.round(flight.topBid * 1.1)}`}
+          sub={`${txt.flightDetail.metrics.weightedPrefix}${Math.round(flight.topBid * 1.1)}`}
         />
         <MetricCard
-          label={TXT.flightDetail.metrics.revenueLabel}
+          label={txt.flightDetail.metrics.revenueLabel}
           value={`$${flight.revenue.toLocaleString()}`}
           accent={T.statusSuccessFg}
-          sub={`${flight.bcFree} ${TXT.flightDetail.metrics.winnersSuffix}`}
+          sub={`${flight.bcFree} ${txt.flightDetail.metrics.winnersSuffix}`}
         />
       </div>
       <div className="mb-[18px] grid grid-cols-2 gap-4">
         <div className="rounded-xl border-[0.5px] border-border-default bg-surface-card px-[18px] py-4">
-          <SectionLabel>{TXT.flightDetail.section.seatMap}</SectionLabel>
+          <SectionLabel>{txt.flightDetail.section.seatMap}</SectionLabel>
           <SeatMap flightId={flight.id} />
           <div className="mt-2.5 text-[11px] text-text-muted">
             {flight.bcFree} свободных · {bids.length} заявок
           </div>
         </div>
         <div className="rounded-xl border-[0.5px] border-border-default bg-surface-card px-[18px] py-4">
-          <SectionLabel>{TXT.flightDetail.section.bidDistribution}</SectionLabel>
+          <SectionLabel>{txt.flightDetail.section.bidDistribution}</SectionLabel>
           <div className="mb-2 text-[10px] font-semibold tracking-[0.8px] text-text-muted uppercase">
-            {TXT.flightDetail.section.businessClass}
+            {txt.flightDetail.section.businessClass}
           </div>
           <BarChart
             data={computeBidDistribution(bids, BC_DIST_COLORS).map((row) => ({
@@ -265,7 +267,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
           />
           <div className="my-3 h-px bg-border-default" />
           <div className="mb-2 text-[10px] font-semibold tracking-[0.8px] text-text-muted uppercase">
-            {TXT.flightDetail.section.exitRows}
+            {txt.flightDetail.section.exitRows}
           </div>
           <BarChart
             data={computeBidDistribution(exitBids, EXIT_DIST_COLORS).map((row) => ({
@@ -277,7 +279,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
       </div>
       <div className="rounded-xl border-[0.5px] border-border-default bg-surface-card px-[18px] py-4">
         <div className="mb-[14px] flex flex-wrap items-center justify-between gap-2">
-          <SectionLabel>{TXT.flightDetail.section.bidsTable}</SectionLabel>
+          <SectionLabel>{txt.flightDetail.section.bidsTable}</SectionLabel>
           <div className="flex flex-wrap gap-[5px]">
             {detailFilters.map(([k, lbl]) => (
               <button
@@ -350,7 +352,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                           <div className="font-semibold text-text-primary">{b.passenger.name}</div>
                           {isTop && (
                             <div className="text-[10px]" style={{ color: T.brandPrimaryFg }}>
-                              {TXT.flightDetail.topCandidate}
+                              {txt.flightDetail.topCandidate}
                             </div>
                           )}
                         </div>
@@ -365,7 +367,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                         {b.passenger.tier}
                       </Pill>
                       <div className="mt-0.5 text-[10px] text-text-muted">
-                        {tm?.multLabel[CURRENT_LOCALE] ?? ""}
+                        {tm?.multLabel[locale] ?? ""}
                       </div>
                     </td>
                     <td
@@ -408,7 +410,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                         bg={colorToken(sm?.bgId ?? "neutralBgSoft")}
                         size={10}
                       >
-                        {bidStatesById[b.state]?.name[CURRENT_LOCALE] ?? b.state}
+                        {bidStatesById[b.state]?.name[locale] ?? b.state}
                       </Pill>
                     </td>
                     <td className="border-b-[0.5px] border-border-default px-2.5 py-2.5">
@@ -431,7 +433,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
                                 approveMutation.isPending || rejectMutation.isPending ? 0.7 : 1,
                             }}
                           >
-                            {TXT.flightDetail.acceptButton}
+                            {txt.flightDetail.acceptButton}
                           </button>
                           <button
                             type="button"
@@ -461,7 +463,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
             </tbody>
           </table>
         </div>
-        <div className="mt-2.5 text-[11px] text-text-muted">{TXT.flightDetail.footerHint}</div>
+        <div className="mt-2.5 text-[11px] text-text-muted">{txt.flightDetail.footerHint}</div>
       </div>
     </div>
   );

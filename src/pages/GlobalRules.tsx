@@ -16,7 +16,7 @@ import type {
 import { T } from "../theme";
 import { useTiersById } from "../queries/useTiers";
 import { colorToken } from "../domain/color";
-import { TXT } from "../i18n";
+import { useLocale } from "../locale";
 import { NumInput, Pill, SectionLabel, Toggle } from "../primitives";
 import { backendClient } from "../backend/client";
 import { queryKeys } from "../queries/keys";
@@ -35,199 +35,229 @@ type FeatureStatusKey =
   | "blindBids"
   | "onlyUpgrade";
 
-const RULE_SECTIONS: RuleSection[] = [
-  { id: "timing", l: TXT.globalRules.sections.timing },
-  { id: "pricing", l: TXT.globalRules.sections.pricing },
-  { id: "loyalty", l: TXT.globalRules.sections.loyalty },
-  { id: "channels", l: TXT.globalRules.sections.channels },
-  { id: "payment", l: TXT.globalRules.sections.payment },
-  { id: "features", l: TXT.globalRules.sections.features },
-];
+type Txt = ReturnType<typeof useLocale>["txt"];
 
-const HAUL_COLS: HaulColumn[] = [
-  { k: "UltraShort", lbl: TXT.globalRules.haulCols.ultraShort },
-  { k: "Short", lbl: TXT.globalRules.haulCols.short },
-  { k: "Medium", lbl: TXT.globalRules.haulCols.medium },
-  { k: "Long", lbl: TXT.globalRules.haulCols.long },
-  { k: "UltraLong", lbl: TXT.globalRules.haulCols.ultraLong },
-];
+function buildRuleCopy(txt: Txt) {
+  const ruleSections: RuleSection[] = [
+    { id: "timing", l: txt.globalRules.sections.timing },
+    { id: "pricing", l: txt.globalRules.sections.pricing },
+    { id: "loyalty", l: txt.globalRules.sections.loyalty },
+    { id: "channels", l: txt.globalRules.sections.channels },
+    { id: "payment", l: txt.globalRules.sections.payment },
+    { id: "features", l: txt.globalRules.sections.features },
+  ];
 
-const PRICING_ROWS: PricingRow[] = [
-  {
-    product: TXT.globalRules.pricingProducts.business,
-    keys: {
-      UltraShort: "minBcUltraShort",
-      Short: "minBcShort",
-      Medium: "minBcMedium",
-      Long: "minBcLong",
-      UltraLong: "minBcUltraLong",
+  const haulCols: HaulColumn[] = [
+    { k: "UltraShort", lbl: txt.globalRules.haulCols.ultraShort },
+    { k: "Short", lbl: txt.globalRules.haulCols.short },
+    { k: "Medium", lbl: txt.globalRules.haulCols.medium },
+    { k: "Long", lbl: txt.globalRules.haulCols.long },
+    { k: "UltraLong", lbl: txt.globalRules.haulCols.ultraLong },
+  ];
+
+  const pricingRows: PricingRow[] = [
+    {
+      product: txt.globalRules.pricingProducts.business,
+      keys: {
+        UltraShort: "minBcUltraShort",
+        Short: "minBcShort",
+        Medium: "minBcMedium",
+        Long: "minBcLong",
+        UltraLong: "minBcUltraLong",
+      },
     },
-  },
-  {
-    product: TXT.globalRules.pricingProducts.exitRows,
-    keys: {
-      UltraShort: "minExitShort",
-      Short: "minExitShort",
-      Medium: "minExitMedium",
-      Long: "minExitLong",
-      UltraLong: "minExitLong",
+    {
+      product: txt.globalRules.pricingProducts.exitRows,
+      keys: {
+        UltraShort: "minExitShort",
+        Short: "minExitShort",
+        Medium: "minExitMedium",
+        Long: "minExitLong",
+        UltraLong: "minExitLong",
+      },
     },
-  },
-  {
-    product: TXT.globalRules.pricingProducts.seatBlock,
-    keys: {
-      UltraShort: "minSeatBlockShort",
-      Short: "minSeatBlockShort",
-      Medium: "minSeatBlockMedium",
-      Long: "minSeatBlockLong",
-      UltraLong: "minSeatBlockLong",
+    {
+      product: txt.globalRules.pricingProducts.seatBlock,
+      keys: {
+        UltraShort: "minSeatBlockShort",
+        Short: "minSeatBlockShort",
+        Medium: "minSeatBlockMedium",
+        Long: "minSeatBlockLong",
+        UltraLong: "minSeatBlockLong",
+      },
     },
-  },
-];
+  ];
 
-const TIMING_ROWS: TimingRow[] = [
-  {
-    key: "inviteDaysBefore",
-    label: TXT.globalRules.timingRows.invite.label,
-    desc: TXT.globalRules.timingRows.invite.desc,
-    min: 1,
-    max: 60,
-    unit: TXT.globalRules.timingRows.invite.unit,
-  },
-  {
-    key: "chaserHoursBefore",
-    label: TXT.globalRules.timingRows.chaser.label,
-    desc: TXT.globalRules.timingRows.chaser.desc,
-    min: 12,
-    max: 168,
-    unit: TXT.globalRules.timingRows.chaser.unit,
-  },
-  {
-    key: "closureHoursBefore",
-    label: TXT.globalRules.timingRows.closure.label,
-    desc: TXT.globalRules.timingRows.closure.desc,
-    min: 1,
-    max: 48,
-    unit: TXT.globalRules.timingRows.closure.unit,
-  },
-];
+  const timingRows: TimingRow[] = [
+    {
+      key: "inviteDaysBefore",
+      label: txt.globalRules.timingRows.invite.label,
+      desc: txt.globalRules.timingRows.invite.desc,
+      min: 1,
+      max: 60,
+      unit: txt.globalRules.timingRows.invite.unit,
+    },
+    {
+      key: "chaserHoursBefore",
+      label: txt.globalRules.timingRows.chaser.label,
+      desc: txt.globalRules.timingRows.chaser.desc,
+      min: 12,
+      max: 168,
+      unit: txt.globalRules.timingRows.chaser.unit,
+    },
+    {
+      key: "closureHoursBefore",
+      label: txt.globalRules.timingRows.closure.label,
+      desc: txt.globalRules.timingRows.closure.desc,
+      min: 1,
+      max: 48,
+      unit: txt.globalRules.timingRows.closure.unit,
+    },
+  ];
 
-const TIMING_TOGGLE_ROWS: LabelDescRow<RulesBooleanKey>[] = [
-  {
-    key: "autoFulfillment",
-    label: TXT.globalRules.timingToggles.autoFulfillment.label,
-    desc: TXT.globalRules.timingToggles.autoFulfillment.desc,
-  },
-  {
-    key: "requirePurchased",
-    label: TXT.globalRules.timingToggles.requirePurchased.label,
-    desc: TXT.globalRules.timingToggles.requirePurchased.desc,
-  },
-  {
-    key: "blindBids",
-    label: TXT.globalRules.timingToggles.blindBids.label,
-    desc: TXT.globalRules.timingToggles.blindBids.desc,
-  },
-];
+  const timingToggleRows: LabelDescRow<RulesBooleanKey>[] = [
+    {
+      key: "autoFulfillment",
+      label: txt.globalRules.timingToggles.autoFulfillment.label,
+      desc: txt.globalRules.timingToggles.autoFulfillment.desc,
+    },
+    {
+      key: "requirePurchased",
+      label: txt.globalRules.timingToggles.requirePurchased.label,
+      desc: txt.globalRules.timingToggles.requirePurchased.desc,
+    },
+    {
+      key: "blindBids",
+      label: txt.globalRules.timingToggles.blindBids.label,
+      desc: txt.globalRules.timingToggles.blindBids.desc,
+    },
+  ];
 
-const LOYALTY_ROWS: LoyaltyRow[] = [
-  { key: "multiplierPlatinum", tier: "Platinum", color: T.statusWarning, bg: T.statusWarningBg },
-  { key: "multiplierGold", tier: "Gold", color: T.brandPrimary, bg: T.brandPrimaryBg },
-  { key: "multiplierSilver", tier: "Silver", color: T.textSecondary, bg: T.neutralBgSoft },
-];
+  const loyaltyRows: LoyaltyRow[] = [
+    { key: "multiplierPlatinum", tier: "Platinum", color: T.statusWarning, bg: T.statusWarningBg },
+    { key: "multiplierGold", tier: "Gold", color: T.brandPrimary, bg: T.brandPrimaryBg },
+    { key: "multiplierSilver", tier: "Silver", color: T.textSecondary, bg: T.neutralBgSoft },
+  ];
 
-const CHANNEL_ROWS: LabelDescRow<ChannelRuleKey>[] = [
-  {
-    key: "email",
-    label: "Email (PTE + Chaser + Confirm)",
-    desc: "30%+ всех заявок. Базовый канал",
-  },
-  { key: "mmb", label: "Manage My Booking", desc: "+25% к объёму. Средняя ставка выше на 77%" },
-  {
-    key: "app",
-    label: TXT.globalRules.channels.app.label,
-    desc: TXT.globalRules.channels.app.desc,
-  },
-  {
-    key: "web",
-    label: TXT.globalRules.channels.web.label,
-    desc: TXT.globalRules.channels.web.desc,
-  },
-  {
-    key: "webcheckin",
-    label: TXT.globalRules.channels.webcheckin.label,
-    desc: TXT.globalRules.channels.webcheckin.desc,
-  },
-  {
-    key: "pushNotif",
-    label: TXT.globalRules.channels.pushNotif.label,
-    desc: TXT.globalRules.channels.pushNotif.desc,
-  },
-];
+  const channelRows: LabelDescRow<ChannelRuleKey>[] = [
+    {
+      key: "email",
+      label: "Email (PTE + Chaser + Confirm)",
+      desc: "30%+ всех заявок. Базовый канал",
+    },
+    { key: "mmb", label: "Manage My Booking", desc: "+25% к объёму. Средняя ставка выше на 77%" },
+    {
+      key: "app",
+      label: txt.globalRules.channels.app.label,
+      desc: txt.globalRules.channels.app.desc,
+    },
+    {
+      key: "web",
+      label: txt.globalRules.channels.web.label,
+      desc: txt.globalRules.channels.web.desc,
+    },
+    {
+      key: "webcheckin",
+      label: txt.globalRules.channels.webcheckin.label,
+      desc: txt.globalRules.channels.webcheckin.desc,
+    },
+    {
+      key: "pushNotif",
+      label: txt.globalRules.channels.pushNotif.label,
+      desc: txt.globalRules.channels.pushNotif.desc,
+    },
+  ];
 
-const PAYMENT_ROWS: LabelDescRow<PaymentMethodKey>[] = [
-  { key: "visa", label: "Visa", desc: TXT.globalRules.payments.visa },
-  { key: "mastercard", label: "Mastercard", desc: TXT.globalRules.payments.mastercard },
-  { key: "amex", label: "American Express", desc: TXT.globalRules.payments.amex },
-  { key: "jcb", label: "JCB", desc: TXT.globalRules.payments.jcb },
-  { key: "diners", label: "Diners Club", desc: TXT.globalRules.payments.diners },
-];
+  const paymentRows: LabelDescRow<PaymentMethodKey>[] = [
+    { key: "visa", label: "Visa", desc: txt.globalRules.payments.visa },
+    { key: "mastercard", label: "Mastercard", desc: txt.globalRules.payments.mastercard },
+    { key: "amex", label: "American Express", desc: txt.globalRules.payments.amex },
+    { key: "jcb", label: "JCB", desc: txt.globalRules.payments.jcb },
+    { key: "diners", label: "Diners Club", desc: txt.globalRules.payments.diners },
+  ];
 
-const FEATURE_ROWS: LabelDescRow<RulesBooleanKey>[] = [
-  {
-    key: "seatBlocker",
-    label: "Seat Blocker",
-    desc: "+10–20% выручки. Блокировка соседнего места",
-  },
-  {
-    key: "payWithPoints",
-    label: "Pay with Points",
-    desc: TXT.globalRules.features.payWithPoints,
-  },
-  {
-    key: "crossAirlineUpgrades",
-    label: "Cross Airline Upgrades",
-    desc: "+21% заявок через альянс/кодшер",
-  },
-  {
-    key: "continuousPricing",
-    label: "Continuous Pricing (AI)",
-    desc: "+12% выручки по A/B-тесту",
-  },
-  {
-    key: "autoFulfillment",
-    label: TXT.globalRules.features.autoFulfillment.label,
-    desc: TXT.globalRules.features.autoFulfillment.desc,
-  },
-  {
-    key: "blindBids",
-    label: TXT.globalRules.features.blindBids.label,
-    desc: TXT.globalRules.features.blindBids.desc,
-  },
-  {
-    key: "onlyUpgrade",
-    label: TXT.globalRules.features.onlyUpgrade.label,
-    desc: TXT.globalRules.features.onlyUpgrade.desc,
-  },
-];
+  const featureRows: LabelDescRow<RulesBooleanKey>[] = [
+    {
+      key: "seatBlocker",
+      label: "Seat Blocker",
+      desc: "+10–20% выручки. Блокировка соседнего места",
+    },
+    {
+      key: "payWithPoints",
+      label: "Pay with Points",
+      desc: txt.globalRules.features.payWithPoints,
+    },
+    {
+      key: "crossAirlineUpgrades",
+      label: "Cross Airline Upgrades",
+      desc: "+21% заявок через альянс/кодшер",
+    },
+    {
+      key: "continuousPricing",
+      label: "Continuous Pricing (AI)",
+      desc: "+12% выручки по A/B-тесту",
+    },
+    {
+      key: "autoFulfillment",
+      label: txt.globalRules.features.autoFulfillment.label,
+      desc: txt.globalRules.features.autoFulfillment.desc,
+    },
+    {
+      key: "blindBids",
+      label: txt.globalRules.features.blindBids.label,
+      desc: txt.globalRules.features.blindBids.desc,
+    },
+    {
+      key: "onlyUpgrade",
+      label: txt.globalRules.features.onlyUpgrade.label,
+      desc: txt.globalRules.features.onlyUpgrade.desc,
+    },
+  ];
 
-const FEATURE_STATUS_LABELS: Record<FeatureStatusKey, string> = {
-  seatBlocker: TXT.passenger.products.sb.label,
-  payWithPoints: "Pay with Points",
-  crossAirlineUpgrades: "Cross Airline",
-  continuousPricing: "Continuous Pricing",
-  autoFulfillment: TXT.globalRules.features.autoFulfillment.label,
-  blindBids: TXT.globalRules.features.blindBids.label,
-  onlyUpgrade: TXT.globalRules.features.onlyUpgrade.label,
-};
+  const featureStatusLabels: Record<FeatureStatusKey, string> = {
+    seatBlocker: txt.passenger.products.sb.label,
+    payWithPoints: "Pay with Points",
+    crossAirlineUpgrades: "Cross Airline",
+    continuousPricing: "Continuous Pricing",
+    autoFulfillment: txt.globalRules.features.autoFulfillment.label,
+    blindBids: txt.globalRules.features.blindBids.label,
+    onlyUpgrade: txt.globalRules.features.onlyUpgrade.label,
+  };
+
+  return {
+    ruleSections,
+    haulCols,
+    pricingRows,
+    timingRows,
+    timingToggleRows,
+    loyaltyRows,
+    channelRows,
+    paymentRows,
+    featureRows,
+    featureStatusLabels,
+  };
+}
 
 export function GlobalRules() {
+  const { txt } = useLocale();
   const queryClient = useQueryClient();
   const { byId: tiersById } = useTiersById();
   const { data: loadedRules, isLoading: isRulesLoading, isError: isRulesError } = useRules();
   const [rules, setRules] = useState<Rules | null>(null);
   const [saved, setSaved] = useState(true);
   const [activeSection, setActiveSection] = useState<RuleSectionId>("timing");
+  const {
+    ruleSections,
+    haulCols,
+    pricingRows,
+    timingRows,
+    timingToggleRows,
+    loyaltyRows,
+    channelRows,
+    paymentRows,
+    featureRows,
+    featureStatusLabels,
+  } = buildRuleCopy(txt);
 
   const saveMutation = useMutation({
     mutationFn: (nextRules: Rules) => backendClient.rules.update(nextRules),
@@ -244,12 +274,12 @@ export function GlobalRules() {
   }, [loadedRules, rules]);
 
   if (isRulesLoading || !rules) {
-    return <div style={{ fontSize: 13, color: T.textMuted }}>{TXT.admin.states.loading}</div>;
+    return <div style={{ fontSize: 13, color: T.textMuted }}>{txt.admin.states.loading}</div>;
   }
 
   if (isRulesError) {
     return (
-      <div style={{ fontSize: 13, color: T.statusDangerFg }}>{TXT.admin.states.loadError}</div>
+      <div style={{ fontSize: 13, color: T.statusDangerFg }}>{txt.admin.states.loadError}</div>
     );
   }
 
@@ -326,13 +356,13 @@ export function GlobalRules() {
               color: T.textMuted,
             }}
           >
-            {TXT.globalRules.side.title}
+            {txt.globalRules.side.title}
           </div>
           <div style={{ fontSize: 11, color: T.textMuted, marginTop: 4, lineHeight: 1.5 }}>
-            {TXT.globalRules.side.desc}
+            {txt.globalRules.side.desc}
           </div>
         </div>
-        {RULE_SECTIONS.map((s, i) => (
+        {ruleSections.map((s, i) => (
           <button
             type="button"
             key={s.id}
@@ -348,8 +378,7 @@ export function GlobalRules() {
               background: activeSection === s.id ? T.brandPrimaryBg : "transparent",
               border: "none",
               cursor: "pointer",
-              borderBottom:
-                i < RULE_SECTIONS.length - 1 ? `0.5px solid ${T.borderDefault}` : "none",
+              borderBottom: i < ruleSections.length - 1 ? `0.5px solid ${T.borderDefault}` : "none",
             }}
           >
             {s.l}
@@ -375,16 +404,16 @@ export function GlobalRules() {
             }}
           >
             {saveMutation.isPending
-              ? `${TXT.globalRules.side.save}...`
+              ? `${txt.globalRules.side.save}...`
               : saved
-                ? TXT.globalRules.side.saved
-                : TXT.globalRules.side.save}
+                ? txt.globalRules.side.saved
+                : txt.globalRules.side.save}
           </button>
           {!saved && (
             <div
               style={{ fontSize: 10, color: T.statusWarning, marginTop: 5, textAlign: "center" }}
             >
-              {TXT.globalRules.side.unsaved}
+              {txt.globalRules.side.unsaved}
             </div>
           )}
         </div>
@@ -404,7 +433,7 @@ export function GlobalRules() {
             <div style={{ fontSize: 12, color: T.textMuted, marginBottom: 14, lineHeight: 1.6 }}>
               Управляет жизненным циклом коммуникаций и автоматическими процессами.
             </div>
-            {TIMING_ROWS.map((row) => (
+            {timingRows.map((row) => (
               <RuleRow key={row.key} label={row.label} desc={row.desc}>
                 <NumInput
                   value={rules[row.key]}
@@ -415,30 +444,30 @@ export function GlobalRules() {
                 />
               </RuleRow>
             ))}
-            {TIMING_TOGGLE_ROWS.map((row) => (
+            {timingToggleRows.map((row) => (
               <RuleRow key={row.key} label={row.label} desc={row.desc}>
                 <Toggle checked={rules[row.key]} onChange={(v) => setRule(row.key, v)} />
               </RuleRow>
             ))}
             <RuleRow
-              label={TXT.globalRules.labels.maxUpgrades}
-              desc={TXT.globalRules.labels.maxUpgradesDesc}
+              label={txt.globalRules.labels.maxUpgrades}
+              desc={txt.globalRules.labels.maxUpgradesDesc}
             >
               <NumInput
                 value={rules.maxUpgradesPerFlight}
                 onChange={(v) => setRule("maxUpgradesPerFlight", v)}
                 min={0}
                 max={50}
-                unit={TXT.globalRules.labels.maxUpgradesUnit}
+                unit={txt.globalRules.labels.maxUpgradesUnit}
               />
             </RuleRow>
           </div>
         )}
         {activeSection === "pricing" && (
           <div>
-            <SectionLabel>{TXT.globalRules.labels.pricingSection}</SectionLabel>
+            <SectionLabel>{txt.globalRules.labels.pricingSection}</SectionLabel>
             <div style={{ fontSize: 12, color: T.textMuted, marginBottom: 14, lineHeight: 1.6 }}>
-              {TXT.globalRules.labels.pricingSectionDesc}
+              {txt.globalRules.labels.pricingSectionDesc}
             </div>
             <div style={{ overflowX: "auto" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
@@ -457,9 +486,9 @@ export function GlobalRules() {
                         background: T.surfaceElevated,
                       }}
                     >
-                      {TXT.globalRules.labels.product}
+                      {txt.globalRules.labels.product}
                     </th>
-                    {HAUL_COLS.map((c) => (
+                    {haulCols.map((c) => (
                       <th
                         key={c.k}
                         style={{
@@ -480,7 +509,7 @@ export function GlobalRules() {
                   </tr>
                 </thead>
                 <tbody>
-                  {PRICING_ROWS.map((row) => (
+                  {pricingRows.map((row) => (
                     <tr
                       key={row.product}
                       style={{ borderBottom: `0.5px solid ${T.borderDefault}` }}
@@ -488,7 +517,7 @@ export function GlobalRules() {
                       <td style={{ padding: "9px 10px", fontWeight: 600, color: T.textPrimary }}>
                         {row.product}
                       </td>
-                      {HAUL_COLS.map((c) => (
+                      {haulCols.map((c) => (
                         <td key={c.k} style={{ padding: "9px 10px", textAlign: "center" }}>
                           <input
                             type="number"
@@ -527,11 +556,11 @@ export function GlobalRules() {
         )}
         {activeSection === "loyalty" && (
           <div>
-            <SectionLabel>{TXT.globalRules.labels.loyaltySection}</SectionLabel>
+            <SectionLabel>{txt.globalRules.labels.loyaltySection}</SectionLabel>
             <div style={{ fontSize: 12, color: T.textMuted, marginBottom: 14, lineHeight: 1.6 }}>
-              {TXT.globalRules.labels.loyaltySectionDesc}
+              {txt.globalRules.labels.loyaltySectionDesc}
             </div>
-            {LOYALTY_ROWS.map((row) => (
+            {loyaltyRows.map((row) => (
               <RuleRow
                 key={row.key}
                 label={
@@ -573,7 +602,7 @@ export function GlobalRules() {
                   marginBottom: 10,
                 }}
               >
-                {TXT.globalRules.labels.previewBase}
+                {txt.globalRules.labels.previewBase}
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 8 }}>
                 {loyaltyPreview.map((row) => {
@@ -617,8 +646,8 @@ export function GlobalRules() {
         )}
         {activeSection === "channels" && (
           <div>
-            <SectionLabel>{TXT.globalRules.labels.channelsSection}</SectionLabel>
-            {CHANNEL_ROWS.map((row) => (
+            <SectionLabel>{txt.globalRules.labels.channelsSection}</SectionLabel>
+            {channelRows.map((row) => (
               <RuleRow key={row.key} label={row.label} desc={row.desc}>
                 <Toggle
                   checked={rules.channels[row.key]}
@@ -630,8 +659,8 @@ export function GlobalRules() {
         )}
         {activeSection === "payment" && (
           <div>
-            <SectionLabel>{TXT.globalRules.labels.paymentSection}</SectionLabel>
-            {PAYMENT_ROWS.map((row) => (
+            <SectionLabel>{txt.globalRules.labels.paymentSection}</SectionLabel>
+            {paymentRows.map((row) => (
               <RuleRow key={row.key} label={row.label} desc={row.desc}>
                 <Toggle
                   checked={rules.paymentMethods[row.key]}
@@ -640,8 +669,8 @@ export function GlobalRules() {
               </RuleRow>
             ))}
             <RuleRow
-              label={TXT.globalRules.labels.auth3ds}
-              desc={TXT.globalRules.labels.auth3dsDesc}
+              label={txt.globalRules.labels.auth3ds}
+              desc={txt.globalRules.labels.auth3dsDesc}
             >
               <Toggle checked={rules.use3ds} onChange={(v) => setRule("use3ds", v)} />
             </RuleRow>
@@ -663,10 +692,10 @@ export function GlobalRules() {
                     marginBottom: 2,
                   }}
                 >
-                  {TXT.globalRules.labels.auth3dsEnabled}
+                  {txt.globalRules.labels.auth3dsEnabled}
                 </div>
                 <div style={{ fontSize: 11, color: T.statusWarning, lineHeight: 1.5 }}>
-                  {TXT.globalRules.labels.auth3dsEnabledDesc}
+                  {txt.globalRules.labels.auth3dsEnabledDesc}
                 </div>
               </div>
             )}
@@ -674,8 +703,8 @@ export function GlobalRules() {
         )}
         {activeSection === "features" && (
           <div>
-            <SectionLabel>{TXT.globalRules.labels.featuresSection}</SectionLabel>
-            {FEATURE_ROWS.map((row) => (
+            <SectionLabel>{txt.globalRules.labels.featuresSection}</SectionLabel>
+            {featureRows.map((row) => (
               <RuleRow key={row.key} label={row.label} desc={row.desc}>
                 <Toggle checked={rules[row.key]} onChange={(v) => setRule(row.key, v)} />
               </RuleRow>
@@ -698,39 +727,39 @@ export function GlobalRules() {
                   marginBottom: 10,
                 }}
               >
-                {TXT.globalRules.labels.featuresStatus}
+                {txt.globalRules.labels.featuresStatus}
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(2,1fr)", gap: 7 }}>
-                {(
-                  Object.keys(FEATURE_STATUS_LABELS) as Array<keyof typeof FEATURE_STATUS_LABELS>
-                ).map((k) => {
-                  return (
-                    <div
-                      key={k}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        background: T.surfacePage,
-                        borderRadius: 7,
-                        padding: "7px 11px",
-                      }}
-                    >
-                      <span style={{ fontSize: 12, color: T.textSecondary }}>
-                        {FEATURE_STATUS_LABELS[k]}
-                      </span>
-                      <Pill
-                        color={rules[k] ? T.statusSuccessFg : T.textMuted}
-                        bg={rules[k] ? T.statusSuccessBg : T.neutralBgSoft}
-                        size={10}
+                {(Object.keys(featureStatusLabels) as Array<keyof typeof featureStatusLabels>).map(
+                  (k) => {
+                    return (
+                      <div
+                        key={k}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          background: T.surfacePage,
+                          borderRadius: 7,
+                          padding: "7px 11px",
+                        }}
                       >
-                        {rules[k]
-                          ? TXT.globalRules.featureStatus.enabled
-                          : TXT.globalRules.featureStatus.disabled}
-                      </Pill>
-                    </div>
-                  );
-                })}
+                        <span style={{ fontSize: 12, color: T.textSecondary }}>
+                          {featureStatusLabels[k]}
+                        </span>
+                        <Pill
+                          color={rules[k] ? T.statusSuccessFg : T.textMuted}
+                          bg={rules[k] ? T.statusSuccessBg : T.neutralBgSoft}
+                          size={10}
+                        >
+                          {rules[k]
+                            ? txt.globalRules.featureStatus.enabled
+                            : txt.globalRules.featureStatus.disabled}
+                        </Pill>
+                      </div>
+                    );
+                  },
+                )}
               </div>
             </div>
           </div>

@@ -4,7 +4,7 @@ import { useFlightsQuery } from "../queries/useFlightsQuery";
 import { useAirportsWithLocationByIds } from "../queries/useAirportsWithLocationByIds";
 import { MetricCard, Pill } from "../primitives";
 import { T } from "../theme";
-import { CURRENT_LOCALE, TXT } from "../i18n";
+import { useLocale } from "../locale";
 import { useFlightStatusesById } from "../queries/useFlightStatuses";
 import { formatFlightDep, formatFlightDuration } from "../format/flightTime";
 import type { Flight, FlightListFilter, FlightListSortCol, SortDir } from "../types";
@@ -14,6 +14,7 @@ type FlightListProps = {
 };
 
 export function FlightList({ onSelect }: FlightListProps) {
+  const { txt, locale } = useLocale();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const search = searchParams.get("q") ?? "";
@@ -71,20 +72,20 @@ export function FlightList({ onSelect }: FlightListProps) {
   const airportTzById = new Map(flightAirports.map((a) => [a.id, a.city.timezone]));
 
   const statusFilters: Array<[FlightListFilter, string]> = [
-    ["all", TXT.flightList.statusFilters.all],
-    ["active", TXT.flightList.statusFilters.active],
-    ["upcoming", TXT.flightList.statusFilters.upcoming],
-    ["sold", TXT.flightList.statusFilters.sold],
+    ["all", txt.flightList.statusFilters.all],
+    ["active", txt.flightList.statusFilters.active],
+    ["upcoming", txt.flightList.statusFilters.upcoming],
+    ["sold", txt.flightList.statusFilters.sold],
   ];
   const headerCols: Array<[FlightListSortCol | null, string, string]> = [
-    ["depAt", TXT.flightList.headers.depRoute, "24%"],
-    [null, TXT.flightList.headers.dep, "13%"],
-    [null, TXT.flightList.headers.aircraft, "8%"],
-    ["bids", TXT.flightList.headers.bids, "9%"],
-    [null, TXT.flightList.headers.seatsBc, "9%"],
-    ["topBid", TXT.flightList.headers.topBid, "10%"],
-    ["revenue", TXT.flightList.headers.forecast, "10%"],
-    [null, TXT.flightList.headers.status, "9%"],
+    ["depAt", txt.flightList.headers.depRoute, "24%"],
+    [null, txt.flightList.headers.dep, "13%"],
+    [null, txt.flightList.headers.aircraft, "8%"],
+    ["bids", txt.flightList.headers.bids, "9%"],
+    [null, txt.flightList.headers.seatsBc, "9%"],
+    ["topBid", txt.flightList.headers.topBid, "10%"],
+    ["revenue", txt.flightList.headers.forecast, "10%"],
+    [null, txt.flightList.headers.status, "9%"],
     [null, "", "8%"],
   ];
 
@@ -106,12 +107,12 @@ export function FlightList({ onSelect }: FlightListProps) {
   const totalFree = data?.summary.freeSeats ?? 0;
 
   if (isLoading) {
-    return <div className="text-[13px] text-text-muted">{TXT.flightList.states.loading}</div>;
+    return <div className="text-[13px] text-text-muted">{txt.flightList.states.loading}</div>;
   }
 
   if (isError) {
     return (
-      <div className="text-[13px] text-status-danger-fg">{TXT.flightList.states.loadError}</div>
+      <div className="text-[13px] text-status-danger-fg">{txt.flightList.states.loadError}</div>
     );
   }
 
@@ -119,31 +120,31 @@ export function FlightList({ onSelect }: FlightListProps) {
     <div>
       <div className="mb-5 grid grid-cols-4 gap-3">
         <MetricCard
-          label={TXT.flightList.metrics.activeAuctions.label}
+          label={txt.flightList.metrics.activeAuctions.label}
           value={String(totalActive)}
-          sub={TXT.flightList.metrics.activeAuctions.sub}
+          sub={txt.flightList.metrics.activeAuctions.sub}
         />
         <MetricCard
-          label={TXT.flightList.metrics.totalBids.label}
+          label={txt.flightList.metrics.totalBids.label}
           value={String(totalBids)}
-          sub={TXT.flightList.metrics.totalBids.sub}
+          sub={txt.flightList.metrics.totalBids.sub}
         />
         <MetricCard
-          label={TXT.flightList.metrics.freeBcSeats.label}
+          label={txt.flightList.metrics.freeBcSeats.label}
           value={String(totalFree)}
           accent={totalFree < 10 ? T.statusDangerFg : T.statusSuccessFg}
-          sub={TXT.flightList.metrics.freeBcSeats.sub}
+          sub={txt.flightList.metrics.freeBcSeats.sub}
         />
         <MetricCard
-          label={TXT.flightList.metrics.revenueForecast.label}
+          label={txt.flightList.metrics.revenueForecast.label}
           value={`$${Math.round(totalRevenue / 1000)}K`}
           accent={T.statusSuccessFg}
-          sub={TXT.flightList.metrics.revenueForecast.sub}
+          sub={txt.flightList.metrics.revenueForecast.sub}
         />
       </div>
       <div className="mb-4 flex flex-wrap items-center gap-2.5">
         <input
-          placeholder={TXT.flightList.searchPlaceholder}
+          placeholder={txt.flightList.searchPlaceholder}
           value={search}
           onChange={(e) => {
             const next = new URLSearchParams(searchParams);
@@ -185,7 +186,7 @@ export function FlightList({ onSelect }: FlightListProps) {
           })}
         </div>
         <div className="ml-auto text-xs text-text-muted">
-          {total} {TXT.flightList.flightsSuffix}
+          {total} {txt.flightList.flightsSuffix}
         </div>
       </div>
       <div className="overflow-hidden rounded-xl border-[0.5px] border-border-default bg-surface-card">
@@ -273,7 +274,7 @@ export function FlightList({ onSelect }: FlightListProps) {
                         color={colorToken(sm?.colorId ?? "textMuted")}
                         bg={colorToken(sm?.bgId ?? "neutralBgSoft")}
                       >
-                        {flightStatusesById[f.status]?.name[CURRENT_LOCALE] ?? f.status}
+                        {flightStatusesById[f.status]?.name[locale] ?? f.status}
                       </Pill>
                     </td>
                     <td className="px-[14px] py-[11px] pr-8">
@@ -288,7 +289,7 @@ export function FlightList({ onSelect }: FlightListProps) {
                           color: T.brandPrimaryFg,
                         }}
                       >
-                        {TXT.flightList.openButton}
+                        {txt.flightList.openButton}
                       </button>
                     </td>
                   </tr>
@@ -300,7 +301,7 @@ export function FlightList({ onSelect }: FlightListProps) {
       </div>
       <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2.5">
         <div className="text-[11px] text-text-muted">
-          {TXT.flightList.pagination.pageOf
+          {txt.flightList.pagination.pageOf
             .replace("{page}", String(page))
             .replace("{totalPages}", String(totalPages))}
         </div>
@@ -319,7 +320,7 @@ export function FlightList({ onSelect }: FlightListProps) {
               opacity: page <= 1 ? 0.6 : 1,
             }}
           >
-            {TXT.flightList.pagination.prev}
+            {txt.flightList.pagination.prev}
           </button>
           <button
             type="button"
@@ -335,11 +336,11 @@ export function FlightList({ onSelect }: FlightListProps) {
               opacity: page >= totalPages ? 0.6 : 1,
             }}
           >
-            {TXT.flightList.pagination.next}
+            {txt.flightList.pagination.next}
           </button>
         </div>
       </div>
-      <div className="mt-2.5 text-[11px] text-text-muted">{TXT.flightList.footerHint}</div>
+      <div className="mt-2.5 text-[11px] text-text-muted">{txt.flightList.footerHint}</div>
     </div>
   );
 }

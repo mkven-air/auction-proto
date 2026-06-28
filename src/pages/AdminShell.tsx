@@ -2,8 +2,16 @@ import { EMAIL_TEMPLATE_TYPE } from "../types";
 import type { EmailTemplateType, MainTab } from "../types";
 import { T } from "../theme";
 import { Pill } from "../primitives";
-import { TXT } from "../i18n";
+import { useLocale } from "../locale";
+import { I18N } from "../i18n";
+import type { Locale } from "../i18n";
 import { cn } from "../lib/utils";
+
+const LOCALES: Array<{ code: Locale; label: string }> = [
+  { code: "en", label: "EN" },
+  { code: "ru", label: "RU" },
+  { code: "uz", label: "UZ" },
+];
 
 type NavItem = {
   id: MainTab;
@@ -25,6 +33,7 @@ export function AdminHeader({
   bidsText,
   onSelectTab,
 }: AdminHeaderProps) {
+  const { locale, setLocale } = useLocale();
   return (
     <div className="flex flex-wrap items-center border-b-[0.5px] border-border-default px-6">
       <div className="mr-6 flex items-center gap-[9px] py-[13px]">
@@ -36,7 +45,7 @@ export function AdminHeader({
           className="block rounded"
         />
         <span className="text-xs font-bold tracking-[0.5px] text-text-primary">
-          {TXT.admin.title}
+          {I18N[locale].admin.title}
         </span>
       </div>
       {navItems.map((tab) => (
@@ -61,6 +70,23 @@ export function AdminHeader({
         <Pill color={T.brandPrimaryFg} bg={T.brandPrimaryBg}>
           {bidsText}
         </Pill>
+        <div className="flex items-center gap-[3px] rounded-lg border-[0.5px] border-border-default bg-surface-elevated px-1 py-[3px]">
+          {LOCALES.map(({ code, label }) => (
+            <button
+              key={code}
+              type="button"
+              onClick={() => setLocale(code)}
+              className={cn(
+                "rounded-[5px] px-[7px] py-[3px] text-[11px] font-bold cursor-pointer border-none",
+                locale === code
+                  ? "bg-brand-primary text-on-brand-primary-soft"
+                  : "bg-transparent text-text-muted",
+              )}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
         <div className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-primary-bg text-[11px] font-bold text-brand-primary-fg">
           OP
         </div>
@@ -74,16 +100,18 @@ type EmailTemplateTabsProps = {
   onChange: (tab: EmailTemplateType) => void;
 };
 
-const EMAIL_TABS: Array<[EmailTemplateType, string]> = [
-  [EMAIL_TEMPLATE_TYPE.pte, TXT.emailTemplates.pte],
-  [EMAIL_TEMPLATE_TYPE.chaser, TXT.emailTemplates.chaser],
-  [EMAIL_TEMPLATE_TYPE.win, TXT.emailTemplates.win],
+const EMAIL_TABS_FOR = (txt: (typeof I18N)[Locale]): Array<[EmailTemplateType, string]> => [
+  [EMAIL_TEMPLATE_TYPE.pte, txt.emailTemplates.pte],
+  [EMAIL_TEMPLATE_TYPE.chaser, txt.emailTemplates.chaser],
+  [EMAIL_TEMPLATE_TYPE.win, txt.emailTemplates.win],
 ];
 
 export function EmailTemplateTabs({ activeTab, onChange }: EmailTemplateTabsProps) {
+  const { txt } = useLocale();
+  const emailTabs = EMAIL_TABS_FOR(txt);
   return (
     <div className="mb-5 flex gap-1 border-b-[0.5px] border-border-default">
-      {EMAIL_TABS.map(([id, label]) => (
+      {emailTabs.map(([id, label]) => (
         <button
           type="button"
           key={id}
@@ -103,10 +131,11 @@ export function EmailTemplateTabs({ activeTab, onChange }: EmailTemplateTabsProp
 }
 
 export function EmptyFlightState() {
+  const { txt } = useLocale();
   return (
     <div className="py-[60px] text-center text-text-muted">
       <div className="mb-2.5 text-[28px]">✈</div>
-      <div className="text-sm">{TXT.admin.emptyFlightPrompt}</div>
+      <div className="text-sm">{txt.admin.emptyFlightPrompt}</div>
     </div>
   );
 }

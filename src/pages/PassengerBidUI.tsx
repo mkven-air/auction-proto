@@ -3,7 +3,8 @@ import { useTiersById } from "../queries/useTiers";
 import { colorToken } from "../domain/color";
 import { Pill, Toggle } from "../primitives";
 import { T } from "../theme";
-import { CURRENT_LOCALE, TXT } from "../i18n";
+import { useLocale } from "../locale";
+import { cn } from "../lib/utils";
 import { usePassengerConfig } from "../queries/usePassengerConfig";
 import { useCurrentPassenger } from "../queries/useCurrentPassenger";
 import { useFlightDetail } from "../queries/useFlightDetail";
@@ -11,6 +12,7 @@ import { formatFlightDep, formatFlightDuration } from "../format/flightTime";
 import type { ProductActiveMap, ProductBidMap, ProductConfig, ProductKey } from "../types";
 
 export function PassengerBidUI() {
+  const { txt, locale, setLocale } = useLocale();
   const { data: passenger } = useCurrentPassenger();
   const { data: config, isLoading: configLoading } = usePassengerConfig();
   const { data: flight } = useFlightDetail(config?.flightId);
@@ -33,28 +35,28 @@ export function PassengerBidUI() {
   if (configLoading || !config || !bids || !active) {
     return (
       <div className="flex justify-center px-4 py-6">
-        <div className="text-[13px] text-text-muted">{TXT.admin.states.loading}</div>
+        <div className="text-[13px] text-text-muted">{txt.admin.states.loading}</div>
       </div>
     );
   }
 
   const fromAirport = flight?.fromAirport;
   const toAirport = flight?.toAirport;
-  const fromCityName = fromAirport?.city.name[CURRENT_LOCALE] ?? "";
-  const toCityName = toAirport?.city.name[CURRENT_LOCALE] ?? "";
+  const fromCityName = fromAirport?.city.name[locale] ?? "";
+  const toCityName = toAirport?.city.name[locale] ?? "";
   const departureLabel = flight
     ? formatFlightDep(flight.depAt, fromAirport?.city.timezone ?? "UTC")
     : "";
   const flightDuration = flight ? formatFlightDuration(flight.depAt, flight.arrAt) : "";
   const aircraftLine = flight
-    ? `${flight.aircraft} · ${flightDuration} · ${TXT.passenger.flightHeader.classTransition}`
+    ? `${flight.aircraft} · ${flightDuration} · ${txt.passenger.flightHeader.classTransition}`
     : "";
   const routeLabel = flight ? `${flight.id} · ${flight.fromAirportId} → ${flight.toAirportId}` : "";
 
   const PRODUCTS: Record<ProductKey, ProductConfig> = {
     bc: {
-      label: TXT.passenger.products.bc.label,
-      desc: TXT.passenger.products.bc.desc,
+      label: txt.passenger.products.bc.label,
+      desc: txt.passenger.products.bc.desc,
       icon: config.productSpecs.bc.icon,
       min: config.productSpecs.bc.min,
       max: config.productSpecs.bc.max,
@@ -63,8 +65,8 @@ export function PassengerBidUI() {
       trackColor: T.brandPrimary,
     },
     ex: {
-      label: TXT.passenger.products.ex.label,
-      desc: TXT.passenger.products.ex.desc,
+      label: txt.passenger.products.ex.label,
+      desc: txt.passenger.products.ex.desc,
       icon: config.productSpecs.ex.icon,
       min: config.productSpecs.ex.min,
       max: config.productSpecs.ex.max,
@@ -73,8 +75,8 @@ export function PassengerBidUI() {
       trackColor: T.statusSuccess,
     },
     sb: {
-      label: TXT.passenger.products.sb.label,
-      desc: TXT.passenger.products.sb.desc,
+      label: txt.passenger.products.sb.label,
+      desc: txt.passenger.products.sb.desc,
       icon: config.productSpecs.sb.icon,
       min: config.productSpecs.sb.min,
       max: config.productSpecs.sb.max,
@@ -130,12 +132,12 @@ export function PassengerBidUI() {
               ✓
             </div>
             <div className="mb-1 text-lg font-bold text-text-primary">
-              {TXT.passenger.submitted.title}
+              {txt.passenger.submitted.title}
             </div>
             <div className="mb-[22px] text-xs leading-[1.7] text-text-muted">
-              {TXT.passenger.submitted.desc1}
+              {txt.passenger.submitted.desc1}
               <br />
-              {TXT.passenger.submitted.desc2}
+              {txt.passenger.submitted.desc2}
             </div>
             <div
               className="mb-4 rounded-[10px] px-[14px] py-3 text-left"
@@ -145,13 +147,13 @@ export function PassengerBidUI() {
               }}
             >
               {[
-                [TXT.passenger.submitted.rows.flight, routeLabel],
-                [TXT.passenger.submitted.rows.upgrades, prods.join(" + ") || "—"],
-                [TXT.passenger.submitted.rows.paymentStatus, TXT.passenger.submitted.paymentValue],
-                [TXT.passenger.submitted.rows.weightedBid, `$${wt}`],
+                [txt.passenger.submitted.rows.flight, routeLabel],
+                [txt.passenger.submitted.rows.upgrades, prods.join(" + ") || "—"],
+                [txt.passenger.submitted.rows.paymentStatus, txt.passenger.submitted.paymentValue],
+                [txt.passenger.submitted.rows.weightedBid, `$${wt}`],
                 [
-                  TXT.passenger.submitted.rows.notification,
-                  TXT.passenger.submitted.notificationValue,
+                  txt.passenger.submitted.rows.notification,
+                  txt.passenger.submitted.notificationValue,
                 ],
               ].map(([k, v], i, arr) => (
                 <div
@@ -166,9 +168,9 @@ export function PassengerBidUI() {
                     className="font-mono text-[13px] font-semibold"
                     style={{
                       color:
-                        k === TXT.passenger.submitted.rows.paymentStatus
+                        k === txt.passenger.submitted.rows.paymentStatus
                           ? T.statusSuccessFg
-                          : k === TXT.passenger.submitted.rows.weightedBid
+                          : k === txt.passenger.submitted.rows.weightedBid
                             ? T.brandPrimaryFg
                             : T.textPrimary,
                     }}
@@ -179,14 +181,14 @@ export function PassengerBidUI() {
               ))}
             </div>
             <div className="mb-4 text-[11px] leading-[1.6] text-text-muted">
-              {TXT.passenger.submitted.editHint}
+              {txt.passenger.submitted.editHint}
             </div>
             <button
               type="button"
               onClick={() => setSubmitted(false)}
               className="cursor-pointer rounded-lg border-[0.5px] border-border-default bg-transparent px-[18px] py-[9px] text-[13px] text-text-muted"
             >
-              {TXT.passenger.submitted.editButton}
+              {txt.passenger.submitted.editButton}
             </button>
           </div>
         </div>
@@ -195,7 +197,24 @@ export function PassengerBidUI() {
   }
 
   return (
-    <div className="flex justify-center px-4 py-6">
+    <div className="flex flex-col items-center gap-3 px-4 py-6">
+      <div className="flex gap-[3px] rounded-lg border-[0.5px] border-border-default bg-surface-elevated px-1 py-[3px]">
+        {(["en", "ru", "uz"] as const).map((code) => (
+          <button
+            key={code}
+            type="button"
+            onClick={() => setLocale(code)}
+            className={cn(
+              "rounded-[5px] px-[7px] py-[3px] text-[11px] font-bold cursor-pointer border-none",
+              locale === code
+                ? "bg-brand-primary text-on-brand-primary-soft"
+                : "bg-transparent text-text-muted",
+            )}
+          >
+            {code.toUpperCase()}
+          </button>
+        ))}
+      </div>
       <div className="w-[390px] overflow-hidden rounded-2xl border-[0.5px] border-border-default bg-surface-card">
         {/* Status bar */}
         <div className="flex justify-between bg-surface-elevated px-4 pb-[7px] pt-[9px]">
@@ -251,7 +270,7 @@ export function PassengerBidUI() {
               <div className="text-[13px] font-semibold text-text-primary">
                 {passenger?.name ?? ""}
               </div>
-              <div className="text-[10px] text-text-muted">{TXT.passenger.loyaltyProgram}</div>
+              <div className="text-[10px] text-text-muted">{txt.passenger.loyaltyProgram}</div>
             </div>
             {passenger && tierMeta && (
               <Pill color={colorToken(tierMeta.colorId)} bg={colorToken(tierMeta.bgId)} size={10}>
@@ -261,7 +280,7 @@ export function PassengerBidUI() {
           </div>
 
           <div className="mb-2.5 text-[10px] font-bold tracking-[1.5px] text-text-muted uppercase">
-            {TXT.passenger.chooseUpgrades}
+            {txt.passenger.chooseUpgrades}
           </div>
 
           {/* Product cards */}
@@ -352,7 +371,7 @@ export function PassengerBidUI() {
                   <div>
                     <div className="mb-1 flex items-center justify-between">
                       <span className="text-[11px] text-text-muted">
-                        {TXT.passenger.chanceLabel}
+                        {txt.passenger.chanceLabel}
                       </span>
                       <span
                         className="font-mono text-[13px] font-bold"
@@ -390,7 +409,7 @@ export function PassengerBidUI() {
 
           {/* Summary */}
           <div className="mb-2.5 text-[10px] font-bold tracking-[1.5px] text-text-muted uppercase">
-            {TXT.passenger.totalTitle}
+            {txt.passenger.totalTitle}
           </div>
           <div className="mb-[11px] rounded-[10px] border-[0.5px] border-border-default bg-surface-elevated px-[13px] py-[11px]">
             {productEntries.map(
@@ -412,7 +431,7 @@ export function PassengerBidUI() {
             )}
             <div className="flex justify-between pb-[3px] pt-[7px]">
               <span className="text-[13px] font-semibold text-text-primary">
-                {TXT.passenger.weightedTotal}
+                {txt.passenger.weightedTotal}
               </span>
               <span
                 className="font-mono text-base font-bold"
@@ -424,9 +443,9 @@ export function PassengerBidUI() {
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-[10px] text-text-muted">{TXT.passenger.platinumBonus}</span>
+              <span className="text-[10px] text-text-muted">{txt.passenger.platinumBonus}</span>
               <span className="font-mono text-[11px] text-text-muted">
-                {TXT.passenger.basePrefix}
+                {txt.passenger.basePrefix}
                 {base}
               </span>
             </div>
@@ -436,9 +455,9 @@ export function PassengerBidUI() {
           <div className="mb-[11px] flex gap-2 rounded-lg border-[0.5px] border-brand-primary bg-brand-primary-bg px-3 py-[9px]">
             <span className="shrink-0 text-[13px] leading-[1.5] text-brand-primary-fg">ℹ</span>
             <div className="text-[11px] leading-[1.6] text-brand-primary-fg">
-              {TXT.passenger.infoTextStart}{" "}
-              <strong className="text-on-brand-primary-soft">{TXT.passenger.infoTextStrong}</strong>{" "}
-              {TXT.passenger.infoTextEnd}
+              {txt.passenger.infoTextStart}{" "}
+              <strong className="text-on-brand-primary-soft">{txt.passenger.infoTextStrong}</strong>{" "}
+              {txt.passenger.infoTextEnd}
             </div>
           </div>
 
@@ -454,10 +473,10 @@ export function PassengerBidUI() {
               color: base === 0 ? T.textMuted : T.onBrandPrimarySoft,
             }}
           >
-            {base === 0 ? TXT.passenger.submitEmpty : `${TXT.passenger.submitPrefix}${base}`}
+            {base === 0 ? txt.passenger.submitEmpty : `${txt.passenger.submitPrefix}${base}`}
           </button>
           <div className="pb-1 text-center text-[10px] text-text-muted">
-            {TXT.passenger.auctionClosesIn}{" "}
+            {txt.passenger.auctionClosesIn}{" "}
             <strong className="text-status-warning">{config.frame.closingIn}</strong>
           </div>
         </div>

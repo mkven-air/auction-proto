@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type { EmailTemplateConfig, EmailTemplateType } from "../types";
 import { T } from "../theme";
 import { Pill, SectionLabel } from "../primitives";
-import { CURRENT_LOCALE, TXT } from "../i18n";
+import { useLocale } from "../locale";
 import { useAirportsWithLocationByIds } from "../queries/useAirportsWithLocationByIds";
 
 const EMAIL_FROM_AIRPORT_ID = "TAS";
@@ -14,106 +14,113 @@ type MetadataRow = { key: string; label: string; value: ReactNode };
 const SIDE_PANEL_CARD_CLASS =
   "rounded-[10px] border-[0.5px] border-border-default bg-surface-card px-4 py-3.5";
 
-const TEMPLATE_CONFIGS: Record<EmailTemplateType, EmailTemplateConfig> = {
-  pte: {
-    subject: TXT.emailPreview.templates.pte.subject,
-    to: TXT.emailPreview.templates.pte.to,
-    tag: TXT.emailPreview.templates.pte.tag,
-    tagC: T.brandPrimary,
-    tagBg: T.brandPrimaryBg,
-    hBg: T.emailPteHeaderBg,
-    hLine: T.brandPrimary,
-    title: TXT.emailPreview.templates.pte.title,
-    body: TXT.emailPreview.templates.pte.body,
-    ctaLabel: TXT.emailPreview.templates.pte.ctaLabel,
-    ctaBg: T.brandPrimary,
-    offers: [
-      {
-        name: TXT.emailPreview.templates.pte.offers.bc.name,
-        desc: TXT.emailPreview.templates.pte.offers.bc.desc,
-        from: TXT.emailPreview.templates.pte.offers.bc.from,
-      },
-      {
-        name: TXT.emailPreview.templates.pte.offers.ex.name,
-        desc: TXT.emailPreview.templates.pte.offers.ex.desc,
-        from: TXT.emailPreview.templates.pte.offers.ex.from,
-      },
-    ],
-    footer: TXT.emailPreview.templates.pte.footer,
-  },
-  chaser: {
-    subject: TXT.emailPreview.templates.chaser.subject,
-    to: TXT.emailPreview.templates.chaser.to,
-    tag: TXT.emailPreview.templates.chaser.tag,
-    tagC: T.statusWarning,
-    tagBg: T.statusWarningBg,
-    hBg: T.emailChaserHeaderBg,
-    hLine: T.statusWarning,
-    title: TXT.emailPreview.templates.chaser.title,
-    body: TXT.emailPreview.templates.chaser.body,
-    ctaLabel: TXT.emailPreview.templates.chaser.ctaLabel,
-    ctaBg: T.statusWarning,
-    urgency: true,
-    footer: TXT.emailPreview.templates.chaser.footer,
-  },
-  win: {
-    subject: TXT.emailPreview.templates.win.subject,
-    to: TXT.emailPreview.templates.win.to,
-    tag: TXT.emailPreview.templates.win.tag,
-    tagC: T.statusSuccess,
-    tagBg: T.statusSuccessBg,
-    hBg: T.emailWinHeaderBg,
-    hLine: T.statusSuccess,
-    title: TXT.emailPreview.templates.win.title,
-    body: TXT.emailPreview.templates.win.body,
-    ctaLabel: TXT.emailPreview.templates.win.ctaLabel,
-    ctaBg: T.statusSuccess,
-    booking: {
-      [TXT.emailPreview.templates.win.booking.flight]: "HY 602",
-      [TXT.emailPreview.templates.win.booking.route]: TXT.emailPreview.templates.win.routeValue,
-      [TXT.emailPreview.templates.win.booking.seat]: "4A · Бизнес-класс",
-      [TXT.emailPreview.templates.win.booking.departure]: "15 июня · 08:45",
-      [TXT.emailPreview.templates.win.booking.charged]: "$580",
-    },
-    footer: TXT.emailPreview.templates.win.footer,
-  },
-};
+type Txt = ReturnType<typeof useLocale>["txt"];
 
-const META_ROWS_BY_TYPE: Record<EmailTemplateType, MetaRow[]> = {
-  pte: [
-    [TXT.emailPreview.metaRows.pte.openRate, "~35%"],
-    [TXT.emailPreview.metaRows.pte.conversion, "18.4%"],
-    [TXT.emailPreview.metaRows.pte.share, "30%+"],
-    [TXT.emailPreview.metaRows.pte.unsub, "0.4%"],
-  ],
-  chaser: [
-    [TXT.emailPreview.metaRows.chaser.openRate, "~42%"],
-    [TXT.emailPreview.metaRows.chaser.conversion, "11.2%"],
-    [TXT.emailPreview.metaRows.chaser.urgency, TXT.emailPreview.templates.chaser.urgencyValue],
-    [TXT.emailPreview.metaRows.chaser.abTest, "2 варианта"],
-  ],
-  win: [
-    [TXT.emailPreview.metaRows.win.delivered, "100%"],
-    [TXT.emailPreview.metaRows.win.opened, "~88%"],
-    [TXT.emailPreview.metaRows.win.complaints, "0"],
-    [TXT.emailPreview.metaRows.win.npsImpact, "+12"],
-  ],
-};
+function buildTemplateConfigs(txt: Txt): Record<EmailTemplateType, EmailTemplateConfig> {
+  return {
+    pte: {
+      subject: txt.emailPreview.templates.pte.subject,
+      to: txt.emailPreview.templates.pte.to,
+      tag: txt.emailPreview.templates.pte.tag,
+      tagC: T.brandPrimary,
+      tagBg: T.brandPrimaryBg,
+      hBg: T.emailPteHeaderBg,
+      hLine: T.brandPrimary,
+      title: txt.emailPreview.templates.pte.title,
+      body: txt.emailPreview.templates.pte.body,
+      ctaLabel: txt.emailPreview.templates.pte.ctaLabel,
+      ctaBg: T.brandPrimary,
+      offers: [
+        {
+          name: txt.emailPreview.templates.pte.offers.bc.name,
+          desc: txt.emailPreview.templates.pte.offers.bc.desc,
+          from: txt.emailPreview.templates.pte.offers.bc.from,
+        },
+        {
+          name: txt.emailPreview.templates.pte.offers.ex.name,
+          desc: txt.emailPreview.templates.pte.offers.ex.desc,
+          from: txt.emailPreview.templates.pte.offers.ex.from,
+        },
+      ],
+      footer: txt.emailPreview.templates.pte.footer,
+    },
+    chaser: {
+      subject: txt.emailPreview.templates.chaser.subject,
+      to: txt.emailPreview.templates.chaser.to,
+      tag: txt.emailPreview.templates.chaser.tag,
+      tagC: T.statusWarning,
+      tagBg: T.statusWarningBg,
+      hBg: T.emailChaserHeaderBg,
+      hLine: T.statusWarning,
+      title: txt.emailPreview.templates.chaser.title,
+      body: txt.emailPreview.templates.chaser.body,
+      ctaLabel: txt.emailPreview.templates.chaser.ctaLabel,
+      ctaBg: T.statusWarning,
+      urgency: true,
+      footer: txt.emailPreview.templates.chaser.footer,
+    },
+    win: {
+      subject: txt.emailPreview.templates.win.subject,
+      to: txt.emailPreview.templates.win.to,
+      tag: txt.emailPreview.templates.win.tag,
+      tagC: T.statusSuccess,
+      tagBg: T.statusSuccessBg,
+      hBg: T.emailWinHeaderBg,
+      hLine: T.statusSuccess,
+      title: txt.emailPreview.templates.win.title,
+      body: txt.emailPreview.templates.win.body,
+      ctaLabel: txt.emailPreview.templates.win.ctaLabel,
+      ctaBg: T.statusSuccess,
+      booking: {
+        [txt.emailPreview.templates.win.booking.flight]: "HY 602",
+        [txt.emailPreview.templates.win.booking.route]: txt.emailPreview.templates.win.routeValue,
+        [txt.emailPreview.templates.win.booking.seat]: "4A · Бизнес-класс",
+        [txt.emailPreview.templates.win.booking.departure]: "15 июня · 08:45",
+        [txt.emailPreview.templates.win.booking.charged]: "$580",
+      },
+      footer: txt.emailPreview.templates.win.footer,
+    },
+  };
+}
+
+function buildMetaRows(txt: Txt): Record<EmailTemplateType, MetaRow[]> {
+  return {
+    pte: [
+      [txt.emailPreview.metaRows.pte.openRate, "~35%"],
+      [txt.emailPreview.metaRows.pte.conversion, "18.4%"],
+      [txt.emailPreview.metaRows.pte.share, "30%+"],
+      [txt.emailPreview.metaRows.pte.unsub, "0.4%"],
+    ],
+    chaser: [
+      [txt.emailPreview.metaRows.chaser.openRate, "~42%"],
+      [txt.emailPreview.metaRows.chaser.conversion, "11.2%"],
+      [txt.emailPreview.metaRows.chaser.urgency, txt.emailPreview.templates.chaser.urgencyValue],
+      [txt.emailPreview.metaRows.chaser.abTest, "2 варианта"],
+    ],
+    win: [
+      [txt.emailPreview.metaRows.win.delivered, "100%"],
+      [txt.emailPreview.metaRows.win.opened, "~88%"],
+      [txt.emailPreview.metaRows.win.complaints, "0"],
+      [txt.emailPreview.metaRows.win.npsImpact, "+12"],
+    ],
+  };
+}
 
 export function EmailPreview({ type }: { type: EmailTemplateType }) {
-  const c = TEMPLATE_CONFIGS[type];
-  const metaRows = META_ROWS_BY_TYPE[type];
+  const { txt, locale } = useLocale();
+  const c = buildTemplateConfigs(txt)[type];
+  const metaRows = buildMetaRows(txt)[type];
   const airportIds = [EMAIL_FROM_AIRPORT_ID, EMAIL_TO_AIRPORT_ID];
   const airportsQuery = useAirportsWithLocationByIds(airportIds);
   const airports = airportsQuery.data ?? [];
   const fromAirport = airports.find((a) => a.id === EMAIL_FROM_AIRPORT_ID);
   const toAirport = airports.find((a) => a.id === EMAIL_TO_AIRPORT_ID);
-  const fromCityName = fromAirport?.city.name[CURRENT_LOCALE] ?? "";
-  const toCityName = toAirport?.city.name[CURRENT_LOCALE] ?? "";
+  const fromCityName = fromAirport?.city.name[locale] ?? "";
+  const toCityName = toAirport?.city.name[locale] ?? "";
   const metadataRows: MetadataRow[] = [
     {
       key: "type",
-      label: TXT.emailPreview.metadata.type,
+      label: txt.emailPreview.metadata.type,
       value: (
         <Pill color={c.tagC} bg={c.tagBg}>
           {c.tag}
@@ -122,12 +129,12 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
     },
     {
       key: "to",
-      label: TXT.emailPreview.metadata.to,
+      label: txt.emailPreview.metadata.to,
       value: <span className="text-xs text-text-secondary">{c.to}</span>,
     },
     {
       key: "subject",
-      label: TXT.emailPreview.metadata.subject,
+      label: txt.emailPreview.metadata.subject,
       value: <span className="text-xs text-text-primary">{c.subject}</span>,
     },
   ];
@@ -135,7 +142,7 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
     <div className="grid items-start gap-5" style={{ gridTemplateColumns: "1fr 330px" }}>
       <div className="flex flex-col gap-3">
         <div className={SIDE_PANEL_CARD_CLASS}>
-          <SectionLabel>{TXT.emailPreview.metadata.title}</SectionLabel>
+          <SectionLabel>{txt.emailPreview.metadata.title}</SectionLabel>
           {metadataRows.map((row) => (
             <div
               key={row.key}
@@ -147,7 +154,7 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
           ))}
         </div>
         <div className={SIDE_PANEL_CARD_CLASS}>
-          <SectionLabel>{TXT.emailPreview.channelMetrics.title}</SectionLabel>
+          <SectionLabel>{txt.emailPreview.channelMetrics.title}</SectionLabel>
           <div className="grid grid-cols-2 gap-2">
             {metaRows.map(([k, v]) => (
               <div key={k} className="rounded-[7px] bg-surface-page px-[11px] py-[9px]">
@@ -166,7 +173,7 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
             <div key={col} className="h-[9px] w-[9px] rounded-full" style={{ background: col }} />
           ))}
           <div className="ml-2 flex h-[17px] flex-1 items-center rounded-[4px] bg-surface-page pl-2">
-            <span className="text-[10px] text-text-muted">{TXT.emailPreview.browserHost}</span>
+            <span className="text-[10px] text-text-muted">{txt.emailPreview.browserHost}</span>
           </div>
         </div>
         <div className="p-3">
@@ -182,7 +189,7 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
                 <span className="text-[8px] font-extrabold text-on-brand-primary">HY</span>
               </div>
               <span className="text-xs font-semibold text-text-primary">
-                {TXT.emailPreview.airlineBrand}
+                {txt.emailPreview.airlineBrand}
               </span>
             </div>
             <div className="bg-surface-card p-3.5">
@@ -210,10 +217,10 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
                   <span className="text-xs">⏳</span>
                   <div>
                     <div className="text-[11px] font-semibold text-status-warning-fg">
-                      {TXT.emailPreview.urgencyTitle}
+                      {txt.emailPreview.urgencyTitle}
                     </div>
                     <div className="text-[10px] text-status-warning">
-                      {TXT.emailPreview.urgencyMeta}
+                      {txt.emailPreview.urgencyMeta}
                     </div>
                   </div>
                 </div>
@@ -230,7 +237,7 @@ export function EmailPreview({ type }: { type: EmailTemplateType }) {
                     <div className="text-[10px] text-text-muted">{o.desc}</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-[9px] text-text-muted">{TXT.emailPreview.fromLabel}</div>
+                    <div className="text-[9px] text-text-muted">{txt.emailPreview.fromLabel}</div>
                     <div className="text-sm font-bold" style={{ color: c.tagC }}>
                       {o.from}
                     </div>

@@ -17,7 +17,7 @@ import { EmailPreview } from "./pages/EmailPreview";
 import { EntitiesPage } from "./pages/EntitiesPage";
 import { PassengerBidUI } from "./pages/PassengerBidUI";
 import { AdminHeader, EmailTemplateTabs, EmptyFlightState } from "./pages/AdminShell";
-import { TXT } from "./i18n";
+import { useLocale } from "./locale";
 import { useFlightsSummary } from "./queries/useFlightsSummary";
 
 function routeToTab(pathname: string): MainTab {
@@ -89,6 +89,7 @@ function EmailRoute() {
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { txt } = useLocale();
   const {
     data: flightsSummary,
     isLoading: isFlightsLoading,
@@ -102,22 +103,22 @@ export default function App() {
   const totalActive = flightsSummary?.active ?? 0;
   const totalBids = flightsSummary?.bids ?? 0;
   const activeFlightsText = isFlightsLoading
-    ? TXT.admin.states.loading
+    ? txt.admin.states.loading
     : isFlightsError
-      ? TXT.admin.states.loadError
-      : `${totalActive} ${TXT.admin.activeFlightsSuffix}`;
+      ? txt.admin.states.loadError
+      : `${totalActive} ${txt.admin.activeFlightsSuffix}`;
   const bidsText = isFlightsLoading
-    ? TXT.admin.states.loading
+    ? txt.admin.states.loading
     : isFlightsError
-      ? TXT.admin.states.loadError
-      : `${totalBids} ${TXT.admin.bidsSuffix}`;
+      ? txt.admin.states.loadError
+      : `${totalBids} ${txt.admin.bidsSuffix}`;
 
   const navItems = [
-    { id: MAIN_TAB.flights, label: TXT.nav.flights },
-    { id: MAIN_TAB.flight, label: TXT.nav.flight, hide: !selectedFlight },
-    { id: MAIN_TAB.rules, label: TXT.nav.rules },
-    { id: MAIN_TAB.email, label: TXT.nav.email },
-    { id: MAIN_TAB.passenger, label: TXT.nav.passenger },
+    { id: MAIN_TAB.flights, label: txt.nav.flights },
+    { id: MAIN_TAB.flight, label: txt.nav.flight, hide: !selectedFlight },
+    { id: MAIN_TAB.rules, label: txt.nav.rules },
+    { id: MAIN_TAB.email, label: txt.nav.email },
+    { id: MAIN_TAB.passenger, label: txt.nav.passenger },
   ] satisfies Array<{ id: MainTab; label: string; hide?: boolean }>;
   const NAV = navItems.filter((t) => !t.hide);
 
@@ -184,7 +185,7 @@ export default function App() {
             textDecoration: "underline",
           }}
         >
-          {TXT.nav.entities}
+          {txt.nav.entities}
         </button>
       </footer>
     </div>

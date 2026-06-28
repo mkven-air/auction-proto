@@ -6,8 +6,8 @@ export type FlightStatus = "active" | "sold" | "upcoming";
 export type FlightHaul = "ultra-short" | "short" | "medium" | "long" | "ultra";
 export type Channel = "Email" | "App" | "MMB" | "Web";
 
-export type LocaleCode = "en" | "ru";
-export type LocalizedString = Record<LocaleCode, string>;
+export type LocaleCode = "en" | "ru" | "uz";
+export type LocalizedString = Partial<Record<LocaleCode, string>>;
 
 export type Country = {
   id: string;

@@ -1,19 +1,20 @@
 import { T } from "../theme";
-import { TXT } from "../i18n";
+import { useLocale } from "../locale";
 import { cn } from "../lib/utils";
 import type { Flight, SeatCell } from "../types";
 import { useSeatMap } from "../queries/useSeatMap";
 
 export function SeatMap({ flightId }: { flightId: Flight["id"] }) {
+  const { txt } = useLocale();
   const { data: seatMap = [] } = useSeatMap(flightId);
 
   return (
     <div>
       <div className="mb-2.5 flex flex-wrap gap-3">
         {[
-          { c: T.seatTakenBg, l: TXT.seatMap.taken },
-          { c: T.brandPrimary, l: TXT.seatMap.bid },
-          { c: T.surfaceElevated, l: TXT.seatMap.free, b: T.borderDefault },
+          { c: T.seatTakenBg, l: txt.seatMap.taken },
+          { c: T.brandPrimary, l: txt.seatMap.bid },
+          { c: T.surfaceElevated, l: txt.seatMap.free, b: T.borderDefault },
         ].map((s) => (
           <div key={s.l} className="flex items-center gap-1.5">
             <div

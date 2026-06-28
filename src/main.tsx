@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
+import { LocaleProvider } from "./locale";
 import "./index.css";
 
 const queryClient = new QueryClient();
@@ -17,7 +18,9 @@ ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <App />
+        <LocaleProvider>
+          <App />
+        </LocaleProvider>
       </BrowserRouter>
     </QueryClientProvider>
   </React.StrictMode>,
