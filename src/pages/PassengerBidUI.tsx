@@ -170,10 +170,7 @@ export function PassengerBidUI() {
             <button
               type="button"
               onClick={() => setSubmitted(false)}
-              className="rounded-lg border-[0.5px] border-border-default bg-transparent px-[18px] py-[9px] text-[13px] text-text-muted"
-              style={{
-                cursor: "pointer",
-              }}
+              className="cursor-pointer rounded-lg border-[0.5px] border-border-default bg-transparent px-[18px] py-[9px] text-[13px] text-text-muted"
             >
               {TXT.passenger.submitted.editButton}
             </button>
@@ -198,15 +195,11 @@ export function PassengerBidUI() {
           <div className="mb-2.5 flex items-center gap-[9px]">
             <div
               className="flex h-[18px] w-7 items-center justify-center rounded-[4px]"
-              style={{
-                background: T.brandPrimary,
-              }}
+              style={{ background: T.brandPrimary }}
             >
               <span
                 className="text-[8px] font-extrabold tracking-[0.5px]"
-                style={{
-                  color: T.onBrandPrimarySoft,
-                }}
+                style={{ color: T.onBrandPrimarySoft }}
               >
                 HY
               </span>
@@ -214,14 +207,7 @@ export function PassengerBidUI() {
             <span className="text-base font-bold tracking-[-0.3px] text-text-primary">
               {flight?.id ?? ""}
             </span>
-            <span
-              className="ml-auto font-mono text-xs text-text-muted"
-              style={{
-                color: T.textMuted,
-              }}
-            >
-              {departureLabel}
-            </span>
+            <span className="ml-auto font-mono text-xs text-text-muted">{departureLabel}</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="text-center">
@@ -243,20 +229,8 @@ export function PassengerBidUI() {
 
         <div className="max-h-[540px] overflow-y-auto px-4 py-[14px]">
           {/* Passenger row */}
-          <div
-            className="mb-[14px] flex items-center gap-[9px] rounded-lg px-3 py-[9px]"
-            style={{
-              background: T.surfaceElevated,
-              border: `0.5px solid ${T.borderDefault}`,
-            }}
-          >
-            <div
-              className="flex size-[30px] shrink-0 items-center justify-center rounded-full text-[11px] font-bold"
-              style={{
-                background: T.statusWarningBg,
-                color: T.statusWarningFg,
-              }}
-            >
+          <div className="mb-[14px] flex items-center gap-[9px] rounded-lg border-[0.5px] border-border-default bg-surface-elevated px-3 py-[9px]">
+            <div className="flex size-[30px] shrink-0 items-center justify-center rounded-full bg-status-warning-bg text-[11px] font-bold text-status-warning-fg">
               {passenger?.initials ?? ""}
             </div>
             <div>
@@ -293,12 +267,7 @@ export function PassengerBidUI() {
                   transition: "opacity .2s, border-color .2s",
                 }}
               >
-                <div
-                  className="mb-[9px] flex items-center justify-between"
-                  style={{
-                    display: "flex",
-                  }}
-                >
+                <div className="mb-[9px] flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div
                       className="flex size-7 shrink-0 items-center justify-center rounded-md text-[13px]"
@@ -404,13 +373,7 @@ export function PassengerBidUI() {
           <div className="mb-2.5 text-[10px] font-bold tracking-[1.5px] text-text-muted uppercase">
             {TXT.passenger.totalTitle}
           </div>
-          <div
-            className="mb-[11px] rounded-[10px] px-[13px] py-[11px]"
-            style={{
-              background: T.surfaceElevated,
-              border: `0.5px solid ${T.borderDefault}`,
-            }}
-          >
+          <div className="mb-[11px] rounded-[10px] border-[0.5px] border-border-default bg-surface-elevated px-[13px] py-[11px]">
             {productEntries.map(
               ([key, prod]) =>
                 active[key] && (
@@ -422,12 +385,7 @@ export function PassengerBidUI() {
                     }}
                   >
                     <span className="text-xs text-text-muted">{prod.label}</span>
-                    <span
-                      className="font-mono text-[13px] font-semibold text-text-primary"
-                      style={{
-                        color: T.textPrimary,
-                      }}
-                    >
+                    <span className="font-mono text-[13px] font-semibold text-text-primary">
                       ${bids[key]}
                     </span>
                   </div>
@@ -456,24 +414,11 @@ export function PassengerBidUI() {
           </div>
 
           {/* Info */}
-          <div
-            className="mb-[11px] flex gap-2 rounded-lg px-3 py-[9px]"
-            style={{
-              background: T.brandPrimaryBg,
-              border: `0.5px solid ${T.brandPrimary}`,
-            }}
-          >
-            <span
-              className="shrink-0 text-[13px] leading-[1.5]"
-              style={{ color: T.brandPrimaryFg }}
-            >
-              ℹ
-            </span>
-            <div className="text-[11px] leading-[1.6]" style={{ color: T.brandPrimaryFg }}>
+          <div className="mb-[11px] flex gap-2 rounded-lg border-[0.5px] border-brand-primary bg-brand-primary-bg px-3 py-[9px]">
+            <span className="shrink-0 text-[13px] leading-[1.5] text-brand-primary-fg">ℹ</span>
+            <div className="text-[11px] leading-[1.6] text-brand-primary-fg">
               {TXT.passenger.infoTextStart}{" "}
-              <strong style={{ color: T.onBrandPrimarySoft }}>
-                {TXT.passenger.infoTextStrong}
-              </strong>{" "}
+              <strong className="text-on-brand-primary-soft">{TXT.passenger.infoTextStrong}</strong>{" "}
               {TXT.passenger.infoTextEnd}
             </div>
           </div>
@@ -494,7 +439,7 @@ export function PassengerBidUI() {
           </button>
           <div className="pb-1 text-center text-[10px] text-text-muted">
             {TXT.passenger.auctionClosesIn}{" "}
-            <strong style={{ color: T.statusWarning }}>{PASSENGER_FRAME.closingIn}</strong>
+            <strong className="text-status-warning">{PASSENGER_FRAME.closingIn}</strong>
           </div>
         </div>
       </div>
