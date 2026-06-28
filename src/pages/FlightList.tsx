@@ -3,7 +3,7 @@ import { colorToken } from "../domain/color";
 import { useFlightsQuery } from "../queries/useFlightsQuery";
 import { useAirportsWithLocationByIds } from "../queries/useAirportsWithLocationByIds";
 import { MetricCard, Pill } from "../primitives";
-import { F, T } from "../theme";
+import { T } from "../theme";
 import { CURRENT_LOCALE, TXT } from "../i18n";
 import { useFlightStatusesById } from "../queries/useFlightStatuses";
 import { formatFlightDep, formatFlightDuration } from "../format/flightTime";
@@ -106,20 +106,18 @@ export function FlightList({ onSelect }: FlightListProps) {
   const totalFree = data?.summary.freeSeats ?? 0;
 
   if (isLoading) {
-    return <div style={{ fontSize: 13, color: T.textMuted }}>{TXT.flightList.states.loading}</div>;
+    return <div className="text-[13px] text-text-muted">{TXT.flightList.states.loading}</div>;
   }
 
   if (isError) {
     return (
-      <div style={{ fontSize: 13, color: T.statusDangerFg }}>{TXT.flightList.states.loadError}</div>
+      <div className="text-[13px] text-status-danger-fg">{TXT.flightList.states.loadError}</div>
     );
   }
 
   return (
     <div>
-      <div
-        style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: 20 }}
-      >
+      <div className="mb-5 grid grid-cols-4 gap-3">
         <MetricCard
           label={TXT.flightList.metrics.activeAuctions.label}
           value={String(totalActive)}
@@ -143,15 +141,7 @@ export function FlightList({ onSelect }: FlightListProps) {
           sub={TXT.flightList.metrics.revenueForecast.sub}
         />
       </div>
-      <div
-        style={{
-          display: "flex",
-          gap: 10,
-          marginBottom: 16,
-          alignItems: "center",
-          flexWrap: "wrap",
-        }}
-      >
+      <div className="mb-4 flex flex-wrap items-center gap-2.5">
         <input
           placeholder={TXT.flightList.searchPlaceholder}
           value={search}
@@ -162,18 +152,9 @@ export function FlightList({ onSelect }: FlightListProps) {
             next.set("page", "1");
             setSearchParams(next, { replace: true });
           }}
-          style={{
-            padding: "7px 12px",
-            borderRadius: 8,
-            border: `0.5px solid ${T.borderDefault}`,
-            background: T.surfaceElevated,
-            color: T.textPrimary,
-            fontSize: 13,
-            outline: "none",
-            width: 200,
-          }}
+          className="w-[200px] rounded-lg border-[0.5px] border-border-default bg-surface-elevated px-3 py-[7px] text-[13px] text-text-primary outline-none"
         />
-        <div style={{ display: "flex", gap: 5 }}>
+        <div className="flex gap-[5px]">
           {statusFilters.map(([k, l]) => {
             const isActive = statusF === k;
             const sm = k === "all" ? undefined : flightStatusesById[k];
@@ -207,45 +188,24 @@ export function FlightList({ onSelect }: FlightListProps) {
             );
           })}
         </div>
-        <div style={{ marginLeft: "auto", fontSize: 12, color: T.textMuted }}>
+        <div className="ml-auto text-xs text-text-muted">
           {total} {TXT.flightList.flightsSuffix}
         </div>
       </div>
-      <div
-        style={{
-          background: T.surfaceCard,
-          border: `0.5px solid ${T.borderDefault}`,
-          borderRadius: 12,
-          overflow: "hidden",
-        }}
-      >
-        <div style={{ overflowX: "auto" }}>
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              fontSize: 12,
-              tableLayout: "fixed",
-            }}
-          >
+      <div className="overflow-hidden rounded-xl border-[0.5px] border-border-default bg-surface-card">
+        <div className="overflow-x-auto">
+          <table className="w-full table-fixed border-collapse text-xs">
             <thead>
               <tr style={{ borderBottom: `0.5px solid ${T.borderDefault}` }}>
                 {headerCols.map(([col, lbl, w]) => (
                   <th
                     key={lbl}
                     onClick={col ? () => handleSort(col) : undefined}
+                    className="bg-surface-elevated px-[14px] py-[11px] text-left text-[11px] font-semibold tracking-[0.7px] uppercase select-none"
                     style={{
                       width: w,
-                      textAlign: "left",
-                      padding: "11px 14px",
-                      fontSize: 11,
-                      fontWeight: 600,
                       color: col && sortCol === col ? T.brandPrimaryFg : T.textMuted,
-                      textTransform: "uppercase",
-                      letterSpacing: 0.7,
                       cursor: col ? "pointer" : "default",
-                      userSelect: "none",
-                      background: T.surfaceElevated,
                     }}
                   >
                     {lbl}
@@ -266,88 +226,58 @@ export function FlightList({ onSelect }: FlightListProps) {
                 return (
                   <tr
                     key={f.id}
-                    style={{ borderBottom: `0.5px solid ${T.borderDefault}`, cursor: "pointer" }}
+                    className="cursor-pointer border-b-[0.5px] border-border-default"
                     onMouseEnter={(e) => (e.currentTarget.style.background = T.surfaceHover)}
                     onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                   >
-                    <td style={{ padding: "11px 14px" }}>
-                      <div
-                        style={{
-                          fontWeight: 700,
-                          fontSize: 14,
-                          color: T.textPrimary,
-                          letterSpacing: 0.2,
-                        }}
-                      >
+                    <td className="px-[14px] py-[11px]">
+                      <div className="text-[14px] font-bold tracking-[0.2px] text-text-primary">
                         {f.id}
                       </div>
-                      <div style={{ fontSize: 12, color: T.textMuted, marginTop: 2 }}>
-                        <span style={{ color: T.textSecondary, fontWeight: 600 }}>
-                          {f.fromAirportId}
-                        </span>
-                        <span style={{ margin: "0 4px" }}>→</span>
-                        <span style={{ color: T.textSecondary, fontWeight: 600 }}>
-                          {f.toAirportId}
-                        </span>
-                        <span style={{ marginLeft: 6 }}>
-                          {formatFlightDuration(f.depAt, f.arrAt)}
-                        </span>
+                      <div className="mt-0.5 text-xs text-text-muted">
+                        <span className="font-semibold text-text-secondary">{f.fromAirportId}</span>
+                        <span className="mx-1">→</span>
+                        <span className="font-semibold text-text-secondary">{f.toAirportId}</span>
+                        <span className="ml-1.5">{formatFlightDuration(f.depAt, f.arrAt)}</span>
                       </div>
                     </td>
-                    <td
-                      style={{
-                        padding: "11px 14px",
-                        color: T.textSecondary,
-                        fontSize: 12,
-                        fontFamily: F.mono,
-                      }}
-                    >
+                    <td className="px-[14px] py-[11px] font-mono text-xs text-text-secondary">
                       {formatFlightDep(f.depAt, airportTzById.get(f.fromAirportId) ?? "UTC")}
                     </td>
-                    <td style={{ padding: "11px 14px" }}>
+                    <td className="px-[14px] py-[11px]">
                       <span
+                        className="rounded-[4px] border-[0.5px] border-border-default bg-surface-elevated px-1.5 py-0.5 text-[11px] text-text-muted"
                         style={{
-                          fontSize: 11,
                           color: T.textMuted,
-                          background: T.surfaceElevated,
-                          padding: "2px 6px",
-                          borderRadius: 4,
-                          border: `0.5px solid ${T.borderDefault}`,
                         }}
                       >
                         {f.aircraft}
                       </span>
                     </td>
                     <td
+                      className="px-[14px] py-[11px] font-mono font-bold"
                       style={{
-                        padding: "11px 14px",
-                        fontWeight: 700,
-                        fontFamily: F.mono,
                         color: f.bids > 20 ? T.brandPrimaryFg : T.textPrimary,
                       }}
                     >
                       {f.bids}
                     </td>
-                    <td style={{ padding: "11px 14px" }}>
-                      <span style={{ fontWeight: 700, fontFamily: F.mono, color: fc }}>
+                    <td className="px-[14px] py-[11px]">
+                      <span className="font-mono font-bold" style={{ color: fc }}>
                         {f.bcFree}
                       </span>
-                      <span style={{ color: T.textMuted, fontSize: 11 }}> / {f.bcTotal}</span>
+                      <span className="text-[11px] text-text-muted"> / {f.bcTotal}</span>
                     </td>
-                    <td style={{ padding: "11px 14px", fontWeight: 700, fontFamily: F.mono }}>
-                      ${f.topBid}
-                    </td>
+                    <td className="px-[14px] py-[11px] font-mono font-bold">${f.topBid}</td>
                     <td
+                      className="px-[14px] py-[11px] font-mono font-bold"
                       style={{
-                        padding: "11px 14px",
-                        fontWeight: 700,
-                        fontFamily: F.mono,
                         color: T.statusSuccessFg,
                       }}
                     >
                       {f.revenue > 0 ? `$${f.revenue.toLocaleString()}` : "—"}
                     </td>
-                    <td style={{ padding: "11px 14px" }}>
+                    <td className="px-[14px] py-[11px]">
                       <Pill
                         color={colorToken(sm?.colorId ?? "textMuted")}
                         bg={colorToken(sm?.bgId ?? "neutralBgSoft")}
@@ -355,20 +285,16 @@ export function FlightList({ onSelect }: FlightListProps) {
                         {flightStatusesById[f.status]?.name[CURRENT_LOCALE] ?? f.status}
                       </Pill>
                     </td>
-                    <td style={{ padding: "11px 32px 11px 14px" }}>
+                    <td className="px-[14px] py-[11px] pr-8">
                       <button
                         type="button"
                         onClick={() => onSelect(f.id)}
+                        className="rounded-md border-[0.5px] px-[11px] py-1.5 text-[11px] font-semibold whitespace-nowrap"
                         style={{
-                          padding: "6px 11px",
-                          fontSize: 11,
-                          fontWeight: 600,
-                          borderRadius: 6,
                           cursor: "pointer",
                           background: T.brandPrimaryBg,
                           border: `0.5px solid ${T.brandPrimary}`,
                           color: T.brandPrimaryFg,
-                          whiteSpace: "nowrap",
                         }}
                       >
                         {TXT.flightList.openButton}
@@ -381,22 +307,13 @@ export function FlightList({ onSelect }: FlightListProps) {
           </table>
         </div>
       </div>
-      <div
-        style={{
-          marginTop: 10,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: 10,
-          flexWrap: "wrap",
-        }}
-      >
-        <div style={{ fontSize: 11, color: T.textMuted }}>
+      <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2.5">
+        <div className="text-[11px] text-text-muted">
           {TXT.flightList.pagination.pageOf
             .replace("{page}", String(page))
             .replace("{totalPages}", String(totalPages))}
         </div>
-        <div style={{ display: "flex", gap: 8 }}>
+        <div className="flex gap-2">
           <button
             type="button"
             disabled={page <= 1}
@@ -405,12 +322,8 @@ export function FlightList({ onSelect }: FlightListProps) {
               next.set("page", String(Math.max(1, page - 1)));
               setSearchParams(next, { replace: true });
             }}
+            className="rounded-md border-[0.5px] border-border-default bg-transparent px-2.5 py-[5px] text-text-primary"
             style={{
-              padding: "5px 10px",
-              borderRadius: 6,
-              border: `0.5px solid ${T.borderDefault}`,
-              background: "transparent",
-              color: T.textPrimary,
               cursor: page <= 1 ? "not-allowed" : "pointer",
               opacity: page <= 1 ? 0.6 : 1,
             }}
@@ -425,12 +338,8 @@ export function FlightList({ onSelect }: FlightListProps) {
               next.set("page", String(Math.min(totalPages, page + 1)));
               setSearchParams(next, { replace: true });
             }}
+            className="rounded-md border-[0.5px] border-border-default bg-transparent px-2.5 py-[5px] text-text-primary"
             style={{
-              padding: "5px 10px",
-              borderRadius: 6,
-              border: `0.5px solid ${T.borderDefault}`,
-              background: "transparent",
-              color: T.textPrimary,
               cursor: page >= totalPages ? "not-allowed" : "pointer",
               opacity: page >= totalPages ? 0.6 : 1,
             }}
@@ -439,9 +348,7 @@ export function FlightList({ onSelect }: FlightListProps) {
           </button>
         </div>
       </div>
-      <div style={{ marginTop: 10, fontSize: 11, color: T.textMuted }}>
-        {TXT.flightList.footerHint}
-      </div>
+      <div className="mt-2.5 text-[11px] text-text-muted">{TXT.flightList.footerHint}</div>
     </div>
   );
 }

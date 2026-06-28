@@ -21,6 +21,19 @@ import { queryKeys } from "../queries/keys";
 import { backendClient } from "../backend/client";
 import { formatFlightArr, formatFlightDep, formatFlightDuration } from "../format/flightTime";
 
+function BackButton({ onBack }: { onBack: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onBack}
+      className="mb-3 rounded-[7px] border-[0.5px] border-border-default bg-transparent px-3 py-1.5 text-xs font-semibold text-text-muted"
+      style={{ cursor: "pointer" }}
+    >
+      {TXT.flightDetail.backButton}
+    </button>
+  );
+}
+
 export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onBack: () => void }) {
   const queryClient = useQueryClient();
   const { data: flight, isLoading, isError } = useFlightDetail(flightId);
@@ -113,24 +126,8 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
   if (isLoading) {
     return (
       <div>
-        <button
-          type="button"
-          onClick={onBack}
-          style={{
-            padding: "6px 12px",
-            borderRadius: 7,
-            fontSize: 12,
-            fontWeight: 600,
-            cursor: "pointer",
-            background: "transparent",
-            border: `0.5px solid ${T.borderDefault}`,
-            color: T.textMuted,
-            marginBottom: 12,
-          }}
-        >
-          {TXT.flightDetail.backButton}
-        </button>
-        <div style={{ fontSize: 13, color: T.textMuted }}>{TXT.flightDetail.states.loading}</div>
+        <BackButton onBack={onBack} />
+        <div className="text-[13px] text-text-muted">{TXT.flightDetail.states.loading}</div>
       </div>
     );
   }
@@ -138,26 +135,8 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
   if (isError) {
     return (
       <div>
-        <button
-          type="button"
-          onClick={onBack}
-          style={{
-            padding: "6px 12px",
-            borderRadius: 7,
-            fontSize: 12,
-            fontWeight: 600,
-            cursor: "pointer",
-            background: "transparent",
-            border: `0.5px solid ${T.borderDefault}`,
-            color: T.textMuted,
-            marginBottom: 12,
-          }}
-        >
-          {TXT.flightDetail.backButton}
-        </button>
-        <div style={{ fontSize: 13, color: T.statusDangerFg }}>
-          {TXT.flightDetail.states.loadError}
-        </div>
+        <BackButton onBack={onBack} />
+        <div className="text-[13px] text-status-danger-fg">{TXT.flightDetail.states.loadError}</div>
       </div>
     );
   }
@@ -165,24 +144,8 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
   if (!flight) {
     return (
       <div>
-        <button
-          type="button"
-          onClick={onBack}
-          style={{
-            padding: "6px 12px",
-            borderRadius: 7,
-            fontSize: 12,
-            fontWeight: 600,
-            cursor: "pointer",
-            background: "transparent",
-            border: `0.5px solid ${T.borderDefault}`,
-            color: T.textMuted,
-            marginBottom: 12,
-          }}
-        >
-          {TXT.flightDetail.backButton}
-        </button>
-        <div style={{ fontSize: 13, color: T.textMuted }}>{TXT.flightDetail.states.notFound}</div>
+        <BackButton onBack={onBack} />
+        <div className="text-[13px] text-text-muted">{TXT.flightDetail.states.notFound}</div>
       </div>
     );
   }
@@ -190,26 +153,8 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
   if (isBidsLoading) {
     return (
       <div>
-        <button
-          type="button"
-          onClick={onBack}
-          style={{
-            padding: "6px 12px",
-            borderRadius: 7,
-            fontSize: 12,
-            fontWeight: 600,
-            cursor: "pointer",
-            background: "transparent",
-            border: `0.5px solid ${T.borderDefault}`,
-            color: T.textMuted,
-            marginBottom: 12,
-          }}
-        >
-          {TXT.flightDetail.backButton}
-        </button>
-        <div style={{ fontSize: 13, color: T.textMuted }}>
-          {TXT.flightDetail.states.bidsLoading}
-        </div>
+        <BackButton onBack={onBack} />
+        <div className="text-[13px] text-text-muted">{TXT.flightDetail.states.bidsLoading}</div>
       </div>
     );
   }
@@ -217,24 +162,8 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
   if (isBidsError) {
     return (
       <div>
-        <button
-          type="button"
-          onClick={onBack}
-          style={{
-            padding: "6px 12px",
-            borderRadius: 7,
-            fontSize: 12,
-            fontWeight: 600,
-            cursor: "pointer",
-            background: "transparent",
-            border: `0.5px solid ${T.borderDefault}`,
-            color: T.textMuted,
-            marginBottom: 12,
-          }}
-        >
-          {TXT.flightDetail.backButton}
-        </button>
-        <div style={{ fontSize: 13, color: T.statusDangerFg }}>
+        <BackButton onBack={onBack} />
+        <div className="text-[13px] text-status-danger-fg">
           {TXT.flightDetail.states.bidsLoadError}
         </div>
       </div>
@@ -243,53 +172,36 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
 
   return (
     <div>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          marginBottom: 18,
-          flexWrap: "wrap",
-        }}
-      >
+      <div className="mb-[18px] flex flex-wrap items-center gap-3">
         <button
           type="button"
           onClick={onBack}
+          className="rounded-[7px] border-[0.5px] border-border-default bg-transparent px-3 py-1.5 text-xs font-semibold text-text-muted"
           style={{
-            padding: "6px 12px",
-            borderRadius: 7,
-            fontSize: 12,
-            fontWeight: 600,
             cursor: "pointer",
-            background: "transparent",
-            border: `0.5px solid ${T.borderDefault}`,
-            color: T.textMuted,
           }}
         >
           {TXT.flightDetail.backButton}
         </button>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ fontSize: 20, fontWeight: 800 }}>{flight.id}</span>
-          <span style={{ fontSize: 13, color: T.textSecondary }}>
+        <div className="flex items-center gap-2.5">
+          <span className="text-xl font-extrabold">{flight.id}</span>
+          <span className="text-[13px] text-text-secondary">
             {flight.fromAirportId} → {flight.toAirportId}
           </span>
           <Pill color={T.statusSuccessFg} bg={T.statusSuccessBg}>
             {TXT.flightDetail.auctionOpen}
           </Pill>
         </div>
-        <div style={{ marginLeft: "auto", display: "flex", gap: 8 }}>
+        <div className="ml-auto flex gap-2">
           {!autoRan ? (
             <button
               type="button"
               onClick={autoSelect}
               disabled={autoSelectMutation.isPending}
+              className="rounded-lg px-4 py-[9px] text-[13px] font-semibold"
               style={{
                 background: T.brandPrimary,
                 border: "none",
-                borderRadius: 8,
-                padding: "9px 16px",
-                fontSize: 13,
-                fontWeight: 600,
                 color: T.onBrandPrimarySoft,
                 cursor: autoSelectMutation.isPending ? "not-allowed" : "pointer",
                 opacity: autoSelectMutation.isPending ? 0.7 : 1,
@@ -304,14 +216,12 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
           )}
         </div>
       </div>
-      <div style={{ fontSize: 12, color: T.textMuted, marginBottom: 18 }}>
+      <div className="mb-[18px] text-xs text-text-muted">
         {formatFlightDep(flight.depAt, fromTz)} — {formatFlightArr(flight.arrAt, toTz)} ·{" "}
         {flight.aircraft} · {formatFlightDuration(flight.depAt, flight.arrAt)} ·{" "}
         {haulsById[flight.haul]?.name[CURRENT_LOCALE] ?? flight.haul}
       </div>
-      <div
-        style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12, marginBottom: 18 }}
-      >
+      <div className="mb-[18px] grid grid-cols-4 gap-3">
         <MetricCard
           label={TXT.flightDetail.metrics.bcSeats.label}
           value={`${flight.bcFree} / ${flight.bcTotal}`}
@@ -336,40 +246,17 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
           sub={`${flight.bcFree} ${TXT.flightDetail.metrics.winnersSuffix}`}
         />
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 18 }}>
-        <div
-          style={{
-            background: T.surfaceCard,
-            border: `0.5px solid ${T.borderDefault}`,
-            borderRadius: 12,
-            padding: "16px 18px",
-          }}
-        >
+      <div className="mb-[18px] grid grid-cols-2 gap-4">
+        <div className="rounded-xl border-[0.5px] border-border-default bg-surface-card px-[18px] py-4">
           <SectionLabel>{TXT.flightDetail.section.seatMap}</SectionLabel>
           <SeatMap />
-          <div style={{ marginTop: 10, fontSize: 11, color: T.textMuted }}>
+          <div className="mt-2.5 text-[11px] text-text-muted">
             {flight.bcFree} свободных · {bids.length} заявок
           </div>
         </div>
-        <div
-          style={{
-            background: T.surfaceCard,
-            border: `0.5px solid ${T.borderDefault}`,
-            borderRadius: 12,
-            padding: "16px 18px",
-          }}
-        >
+        <div className="rounded-xl border-[0.5px] border-border-default bg-surface-card px-[18px] py-4">
           <SectionLabel>{TXT.flightDetail.section.bidDistribution}</SectionLabel>
-          <div
-            style={{
-              fontSize: 10,
-              fontWeight: 600,
-              color: T.textMuted,
-              textTransform: "uppercase",
-              letterSpacing: 0.8,
-              marginBottom: 8,
-            }}
-          >
+          <div className="mb-2 text-[10px] font-semibold tracking-[0.8px] text-text-muted uppercase">
             {TXT.flightDetail.section.businessClass}
           </div>
           <BarChart
@@ -378,17 +265,8 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
               color: colorToken(row.colorId),
             }))}
           />
-          <div style={{ height: 1, background: T.borderDefault, margin: "12px 0" }} />
-          <div
-            style={{
-              fontSize: 10,
-              fontWeight: 600,
-              color: T.textMuted,
-              textTransform: "uppercase",
-              letterSpacing: 0.8,
-              marginBottom: 8,
-            }}
-          >
+          <div className="my-3 h-px bg-border-default" />
+          <div className="mb-2 text-[10px] font-semibold tracking-[0.8px] text-text-muted uppercase">
             {TXT.flightDetail.section.exitRows}
           </div>
           <BarChart
@@ -399,26 +277,10 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
           />
         </div>
       </div>
-      <div
-        style={{
-          background: T.surfaceCard,
-          border: `0.5px solid ${T.borderDefault}`,
-          borderRadius: 12,
-          padding: "16px 18px",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            marginBottom: 14,
-            flexWrap: "wrap",
-            gap: 8,
-          }}
-        >
+      <div className="rounded-xl border-[0.5px] border-border-default bg-surface-card px-[18px] py-4">
+        <div className="mb-[14px] flex flex-wrap items-center justify-between gap-2">
           <SectionLabel>{TXT.flightDetail.section.bidsTable}</SectionLabel>
-          <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+          <div className="flex flex-wrap gap-[5px]">
             {detailFilters.map(([k, lbl]) => (
               <button
                 type="button"
@@ -440,15 +302,8 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
             ))}
           </div>
         </div>
-        <div style={{ overflowX: "auto" }}>
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              fontSize: 12,
-              tableLayout: "fixed",
-            }}
-          >
+        <div className="overflow-x-auto">
+          <table className="w-full table-fixed border-collapse text-xs">
             <thead>
               <tr>
                 {detailHeaderCols.map(([col, lbl, w]) => (
@@ -657,9 +512,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
             </tbody>
           </table>
         </div>
-        <div style={{ marginTop: 10, fontSize: 11, color: T.textMuted }}>
-          {TXT.flightDetail.footerHint}
-        </div>
+        <div className="mt-2.5 text-[11px] text-text-muted">{TXT.flightDetail.footerHint}</div>
       </div>
     </div>
   );

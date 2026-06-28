@@ -97,66 +97,37 @@ export function PassengerBidUI() {
   if (submitted) {
     const prods = productEntries.filter(([key]) => active[key]).map(([, prod]) => prod.label);
     return (
-      <div style={{ display: "flex", justifyContent: "center", padding: "24px 16px" }}>
-        <div
-          style={{
-            width: 390,
-            background: T.surfaceCard,
-            borderRadius: 16,
-            border: `0.5px solid ${T.borderDefault}`,
-            overflow: "hidden",
-          }}
-        >
+      <div className="flex justify-center px-4 py-6">
+        <div className="w-[390px] overflow-hidden rounded-2xl border-[0.5px] border-border-default bg-surface-card">
           {/* Status bar */}
-          <div
-            style={{
-              background: T.surfaceElevated,
-              padding: "9px 16px 7px",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <span style={{ fontSize: 11, color: T.textMuted }}>
-              {PASSENGER_FRAME.statusBarTime}
-            </span>
-            <span style={{ fontSize: 11, color: T.textMuted }}>
-              {PASSENGER_FRAME.statusBarHost}
-            </span>
-            <span style={{ fontSize: 11, color: T.textMuted }}>●●●</span>
+          <div className="flex justify-between bg-surface-elevated px-4 pb-[7px] pt-[9px]">
+            <span className="text-[11px] text-text-muted">{PASSENGER_FRAME.statusBarTime}</span>
+            <span className="text-[11px] text-text-muted">{PASSENGER_FRAME.statusBarHost}</span>
+            <span className="text-[11px] text-text-muted">●●●</span>
           </div>
-          <div style={{ padding: "32px 20px 24px", textAlign: "center" }}>
+          <div className="px-5 pb-6 pt-8 text-center">
             <div
+              className="mx-auto mb-4 flex size-[60px] items-center justify-center rounded-full text-2xl"
               style={{
-                width: 60,
-                height: 60,
-                borderRadius: "50%",
                 background: T.statusSuccessBg,
                 border: `1.5px solid ${T.statusSuccess}`,
-                margin: "0 auto 16px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 24,
               }}
             >
               ✓
             </div>
-            <div style={{ fontSize: 18, fontWeight: 700, color: T.textPrimary, marginBottom: 4 }}>
+            <div className="mb-1 text-lg font-bold text-text-primary">
               {TXT.passenger.submitted.title}
             </div>
-            <div style={{ fontSize: 12, color: T.textMuted, marginBottom: 22, lineHeight: 1.7 }}>
+            <div className="mb-[22px] text-xs leading-[1.7] text-text-muted">
               {TXT.passenger.submitted.desc1}
               <br />
               {TXT.passenger.submitted.desc2}
             </div>
             <div
+              className="mb-4 rounded-[10px] px-[14px] py-3 text-left"
               style={{
                 background: T.surfaceElevated,
                 border: `0.5px solid ${T.statusSuccessBg}`,
-                borderRadius: 10,
-                padding: "12px 14px",
-                marginBottom: 16,
-                textAlign: "left",
               }}
             >
               {[
@@ -171,25 +142,21 @@ export function PassengerBidUI() {
               ].map(([k, v], i, arr) => (
                 <div
                   key={k}
+                  className="flex justify-between py-1.5"
                   style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    padding: "6px 0",
                     borderBottom: i < arr.length - 1 ? `0.5px solid ${T.borderDefault}` : "none",
                   }}
                 >
-                  <span style={{ fontSize: 12, color: T.textMuted }}>{k}</span>
+                  <span className="text-xs text-text-muted">{k}</span>
                   <span
+                    className="font-mono text-[13px] font-semibold"
                     style={{
-                      fontSize: 13,
-                      fontWeight: 600,
                       color:
                         k === TXT.passenger.submitted.rows.paymentStatus
                           ? T.statusSuccessFg
                           : k === TXT.passenger.submitted.rows.weightedBid
                             ? T.brandPrimaryFg
                             : T.textPrimary,
-                      fontFamily: "monospace",
                     }}
                   >
                     {v}
@@ -197,19 +164,14 @@ export function PassengerBidUI() {
                 </div>
               ))}
             </div>
-            <div style={{ fontSize: 11, color: T.textMuted, marginBottom: 16, lineHeight: 1.6 }}>
+            <div className="mb-4 text-[11px] leading-[1.6] text-text-muted">
               {TXT.passenger.submitted.editHint}
             </div>
             <button
               type="button"
               onClick={() => setSubmitted(false)}
+              className="rounded-lg border-[0.5px] border-border-default bg-transparent px-[18px] py-[9px] text-[13px] text-text-muted"
               style={{
-                background: "transparent",
-                border: `0.5px solid ${T.borderDefault}`,
-                borderRadius: 8,
-                padding: "9px 18px",
-                fontSize: 13,
-                color: T.textMuted,
                 cursor: "pointer",
               }}
             >
@@ -222,100 +184,64 @@ export function PassengerBidUI() {
   }
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", padding: "24px 16px" }}>
-      <div
-        style={{
-          width: 390,
-          background: T.surfaceCard,
-          borderRadius: 16,
-          border: `0.5px solid ${T.borderDefault}`,
-          overflow: "hidden",
-        }}
-      >
+    <div className="flex justify-center px-4 py-6">
+      <div className="w-[390px] overflow-hidden rounded-2xl border-[0.5px] border-border-default bg-surface-card">
         {/* Status bar */}
-        <div
-          style={{
-            background: T.surfaceElevated,
-            padding: "9px 16px 7px",
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          <span style={{ fontSize: 11, color: T.textMuted }}>{PASSENGER_FRAME.statusBarTime}</span>
-          <span style={{ fontSize: 11, color: T.textMuted }}>{PASSENGER_FRAME.statusBarHost}</span>
-          <span style={{ fontSize: 11, color: T.textMuted }}>●●●</span>
+        <div className="flex justify-between bg-surface-elevated px-4 pb-[7px] pt-[9px]">
+          <span className="text-[11px] text-text-muted">{PASSENGER_FRAME.statusBarTime}</span>
+          <span className="text-[11px] text-text-muted">{PASSENGER_FRAME.statusBarHost}</span>
+          <span className="text-[11px] text-text-muted">●●●</span>
         </div>
 
         {/* Flight header */}
-        <div
-          style={{
-            background: T.surfaceElevated,
-            padding: "12px 16px 14px",
-            borderBottom: `0.5px solid ${T.borderDefault}`,
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 10 }}>
+        <div className="border-b-[0.5px] border-border-default bg-surface-elevated px-4 pb-[14px] pt-3">
+          <div className="mb-2.5 flex items-center gap-[9px]">
             <div
+              className="flex h-[18px] w-7 items-center justify-center rounded-[4px]"
               style={{
                 background: T.brandPrimary,
-                borderRadius: 4,
-                width: 28,
-                height: 18,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
               }}
             >
               <span
+                className="text-[8px] font-extrabold tracking-[0.5px]"
                 style={{
-                  fontSize: 8,
-                  fontWeight: 800,
                   color: T.onBrandPrimarySoft,
-                  letterSpacing: 0.5,
                 }}
               >
                 HY
               </span>
             </div>
-            <span
-              style={{ fontSize: 16, fontWeight: 700, color: T.textPrimary, letterSpacing: -0.3 }}
-            >
+            <span className="text-base font-bold tracking-[-0.3px] text-text-primary">
               {flight?.id ?? ""}
             </span>
             <span
+              className="ml-auto font-mono text-xs text-text-muted"
               style={{
-                marginLeft: "auto",
-                fontSize: 12,
                 color: T.textMuted,
-                fontFamily: "monospace",
               }}
             >
               {departureLabel}
             </span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 20, fontWeight: 700, color: T.textPrimary }}>
-                {fromAirport?.id ?? ""}
-              </div>
-              <div style={{ fontSize: 10, color: T.textMuted }}>{fromCityName}</div>
+          <div className="flex items-center gap-2">
+            <div className="text-center">
+              <div className="text-xl font-bold text-text-primary">{fromAirport?.id ?? ""}</div>
+              <div className="text-[10px] text-text-muted">{fromCityName}</div>
             </div>
-            <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 4 }}>
-              <div style={{ flex: 1, height: 1, background: T.borderDefault }} />
-              <span style={{ fontSize: 14, color: T.textMuted }}>✈</span>
-              <div style={{ flex: 1, height: 1, background: T.borderDefault }} />
+            <div className="flex flex-1 items-center gap-1">
+              <div className="h-px flex-1 bg-border-default" />
+              <span className="text-sm text-text-muted">✈</span>
+              <div className="h-px flex-1 bg-border-default" />
             </div>
-            <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: 20, fontWeight: 700, color: T.textPrimary }}>
-                {toAirport?.id ?? ""}
-              </div>
-              <div style={{ fontSize: 10, color: T.textMuted }}>{toCityName}</div>
+            <div className="text-center">
+              <div className="text-xl font-bold text-text-primary">{toAirport?.id ?? ""}</div>
+              <div className="text-[10px] text-text-muted">{toCityName}</div>
             </div>
           </div>
-          <div style={{ fontSize: 11, color: T.textMuted, marginTop: 7 }}>{aircraftLine}</div>
+          <div className="mt-[7px] text-[11px] text-text-muted">{aircraftLine}</div>
         </div>
 
-        <div style={{ padding: "14px 16px", maxHeight: 540, overflowY: "auto" }}>
+        <div className="max-h-[540px] overflow-y-auto px-4 py-[14px]">
           {/* Passenger row */}
           <div
             style={{
@@ -359,16 +285,7 @@ export function PassengerBidUI() {
             )}
           </div>
 
-          <div
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: 1.5,
-              color: T.textMuted,
-              marginBottom: 10,
-            }}
-          >
+          <div className="mb-2.5 text-[10px] font-bold tracking-[1.5px] text-text-muted uppercase">
             {TXT.passenger.chooseUpgrades}
           </div>
 
@@ -525,19 +442,10 @@ export function PassengerBidUI() {
           })}
 
           {/* Divider */}
-          <div style={{ height: "0.5px", background: T.borderDefault, margin: "12px 0" }} />
+          <div className="my-3 h-[0.5px] bg-border-default" />
 
           {/* Summary */}
-          <div
-            style={{
-              fontSize: 10,
-              fontWeight: 700,
-              textTransform: "uppercase",
-              letterSpacing: 1.5,
-              color: T.textMuted,
-              marginBottom: 10,
-            }}
-          >
+          <div className="mb-2.5 text-[10px] font-bold tracking-[1.5px] text-text-muted uppercase">
             {TXT.passenger.totalTitle}
           </div>
           <div
@@ -630,23 +538,16 @@ export function PassengerBidUI() {
             type="button"
             disabled={base === 0}
             onClick={() => setSubmitted(true)}
+            className="mb-2 w-full rounded-[10px] border-none p-[13px] text-sm font-bold tracking-[0.2px]"
             style={{
-              width: "100%",
-              padding: "13px",
-              borderRadius: 10,
-              border: "none",
-              fontSize: 14,
-              fontWeight: 700,
               cursor: base === 0 ? "not-allowed" : "pointer",
               background: base === 0 ? T.borderDefault : T.brandPrimary,
               color: base === 0 ? T.textMuted : T.onBrandPrimarySoft,
-              letterSpacing: 0.2,
-              marginBottom: 8,
             }}
           >
             {base === 0 ? TXT.passenger.submitEmpty : `${TXT.passenger.submitPrefix}${base}`}
           </button>
-          <div style={{ fontSize: 10, color: T.textMuted, textAlign: "center", paddingBottom: 4 }}>
+          <div className="pb-1 text-center text-[10px] text-text-muted">
             {TXT.passenger.auctionClosesIn}{" "}
             <strong style={{ color: T.statusWarning }}>{PASSENGER_FRAME.closingIn}</strong>
           </div>
