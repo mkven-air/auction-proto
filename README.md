@@ -19,33 +19,6 @@ The codebase is a pnpm monorepo split into three packages:
 The web app talks to the server over HTTP (via a Vite dev proxy in development).
 Data storage is still fully mocked in-memory inside `@auction/backend`.
 
-## Mock Backend Latency
-
-The in-memory mock backend can simulate network latency to better exercise loading states.
-
-Default behavior:
-- Enabled in development
-- Random delay between `120ms` and `800ms`
-- Disabled in test mode (`vitest`)
-
-Environment variables (read from both Vite and Node process env):
-- `VITE_MOCK_LATENCY_ENABLED` (`true`/`false`)
-- `VITE_MOCK_LATENCY_MIN_MS` (number)
-- `VITE_MOCK_LATENCY_MAX_MS` (number)
-
-## Mock Backend Failures
-
-The mock backend can also emulate server errors to test error states and retries.
-
-Default behavior:
-- Enabled in development
-- Global random failure rate is `0` (off unless configured)
-- Disabled in test mode (`vitest`)
-
-Environment variables (read from both Vite and Node process env):
-- `VITE_MOCK_FAILURE_ENABLED` (`true`/`false`)
-- `VITE_MOCK_FAILURE_RATE` (number between `0` and `1`)
-
 ## Tech Stack
 
 - pnpm workspaces monorepo (`packages/*`)
@@ -136,8 +109,7 @@ bash all-checks.sh # runs both scripts
 │   │   │   └── backend/
 │   │   │       ├── contracts.ts       # combined BackendClient contract (tests)
 │   │   │       ├── client.ts          # composition root: adminBackend + passengerBackend
-│   │   │       ├── serviceClient.ts   # builds db, both clients, latency wrapper
-│   │   │       ├── latency.ts         # latency + failure injection (Vite + Node)
+│   │   │       ├── serviceClient.ts   # builds db and both clients
 │   │   │       ├── admin/             # admin client contract + composition
 │   │   │       ├── passenger/         # passenger client contract + composition
 │   │   │       ├── db/                # generic DB emulator + contracts
@@ -193,7 +165,7 @@ bash all-checks.sh # runs both scripts
 - `@auction/core` is the shared vocabulary (types, color token union, pure helpers)
   and depends on no other workspace package
 - `@auction/backend` owns all data and business logic — services, DB emulator,
-  seed data, admin/passenger clients, latency/failure injection — and depends
+  seed data, admin/passenger clients — and depends
   only on `@auction/core`
 - `@auction/server` is a thin NestJS transport that wraps a singleton
   `createBackend()` from `@auction/backend` behind REST controllers
@@ -274,8 +246,8 @@ the `ColorTokenId` union in `@auction/core`.
   - `service.ts` — exports `<entity>Seed` and `create<Entity>Service(db)`
   - `utils.ts` — pure helpers (filter mapping, joins) shared with tests/other services
 - `packages/backend/src/backend/serviceClient.ts` merges all `*Seed` objects
-  into a single DB, builds the admin client, builds the passenger client on
-  top of it, then wraps each with latency/failure injection (`createBackend()`)
+  into a single DB, builds the admin client, and builds the passenger client
+  on top of it (`createBackend()`)
 - Generic DB emulator is in `packages/backend/src/backend/db/emulator.ts`;
   metadata access (`tableNames`) is split into the `DbSchema` facet
 - DB operations are declarative (`filters` + `patch`, no function arguments)
