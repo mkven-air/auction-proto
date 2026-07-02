@@ -1,25 +1,21 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Bid, Flight, FlightDetailFilter, FlightDetailSortCol, SortDir } from "@auction/core";
-import { F, T } from "../theme";
-import { CH_ICONS } from "../domain/channel";
-import { colorToken } from "../domain/color";
+import { F, T } from "@auction/web-shared";
+import { CH_ICONS } from "@auction/web-shared";
+import { colorToken } from "@auction/web-shared";
 import { weighted } from "@auction/core";
-import {
-  computeBidDistribution,
-  BC_DIST_COLORS,
-  EXIT_DIST_COLORS,
-} from "../format/bidDistribution";
-import { BarChart, MetricCard, Pill, SeatMap, SectionLabel } from "../primitives";
-import { useLocale } from "../locale";
-import { useTiersById } from "../queries/useTiers";
-import { useBidStatesById } from "../queries/useBidStates";
-import { useFlightHaulsById } from "../queries/useFlightHauls";
-import { useFlightDetail } from "../queries/useFlightDetail";
-import { useFlightBids } from "../queries/useFlightBids";
-import { queryKeys } from "../queries/keys";
-import { adminBackend } from "../api/httpBackend";
-import { formatFlightArr, formatFlightDep, formatFlightDuration } from "../format/flightTime";
+import { computeBidDistribution, BC_DIST_COLORS, EXIT_DIST_COLORS } from "@auction/web-shared";
+import { BarChart, MetricCard, Pill, SeatMap, SectionLabel } from "@auction/web-shared";
+import { useLocale } from "@auction/web-shared";
+import { useTiersById } from "@auction/web-shared";
+import { useBidStatesById } from "@auction/web-shared";
+import { useFlightHaulsById } from "@auction/web-shared";
+import { useFlightDetail } from "@auction/web-shared";
+import { useFlightBids } from "@auction/web-shared";
+import { queryKeys } from "@auction/web-shared";
+import { adminBackend } from "@auction/web-shared";
+import { formatFlightArr, formatFlightDep, formatFlightDuration } from "@auction/web-shared";
 
 function BackButton({ onBack }: { onBack: () => void }) {
   const { txt } = useLocale();

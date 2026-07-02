@@ -2,9 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
+import { LocaleProvider } from "@auction/web-shared";
+import "@auction/web-shared/index.css";
 import App from "./App";
-import { LocaleProvider } from "./locale";
-import "./index.css";
 
 const queryClient = new QueryClient();
 

@@ -13,14 +13,14 @@ import type {
   Tier,
   TimingRow,
 } from "@auction/core";
-import { T } from "../theme";
-import { useTiersById } from "../queries/useTiers";
-import { colorToken } from "../domain/color";
-import { useLocale } from "../locale";
-import { NumInput, Pill, SectionLabel, Toggle } from "../primitives";
-import { adminBackend } from "../api/httpBackend";
-import { queryKeys } from "../queries/keys";
-import { useRules } from "../queries/useRules";
+import { T } from "@auction/web-shared";
+import { useTiersById } from "@auction/web-shared";
+import { colorToken } from "@auction/web-shared";
+import { useLocale } from "@auction/web-shared";
+import { NumInput, Pill, SectionLabel, Toggle } from "@auction/web-shared";
+import { adminBackend } from "@auction/web-shared";
+import { queryKeys } from "@auction/web-shared";
+import { useRules } from "@auction/web-shared";
 
 type RuleSection = { id: RuleSectionId; l: string };
 type LabelDescRow<K extends string> = { key: K; label: string; desc: string };

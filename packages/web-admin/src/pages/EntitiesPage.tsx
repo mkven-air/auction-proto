@@ -1,5 +1,5 @@
-import { useLocale } from "../locale";
-import { useEntities } from "../queries/useEntities";
+import { useLocale } from "@auction/web-shared";
+import { useEntities } from "@auction/web-shared";
 import type { LocaleCode, LocalizedString } from "@auction/core";
 
 function isLocalizedString(value: unknown): value is LocalizedString {

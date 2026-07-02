@@ -1,12 +1,12 @@
 import { useSearchParams } from "react-router-dom";
-import { colorToken } from "../domain/color";
-import { useFlightsQuery } from "../queries/useFlightsQuery";
-import { useAirportsWithLocationByIds } from "../queries/useAirportsWithLocationByIds";
-import { MetricCard, Pill } from "../primitives";
-import { T } from "../theme";
-import { useLocale } from "../locale";
-import { useFlightStatusesById } from "../queries/useFlightStatuses";
-import { formatFlightDep, formatFlightDuration } from "../format/flightTime";
+import { colorToken } from "@auction/web-shared";
+import { useFlightsQuery } from "@auction/web-shared";
+import { useAirportsWithLocationByIds } from "@auction/web-shared";
+import { MetricCard, Pill } from "@auction/web-shared";
+import { T } from "@auction/web-shared";
+import { useLocale } from "@auction/web-shared";
+import { useFlightStatusesById } from "@auction/web-shared";
+import { formatFlightDep, formatFlightDuration } from "@auction/web-shared";
 import type { Flight, FlightListFilter, FlightListSortCol, SortDir } from "@auction/core";
 
 type FlightListProps = {

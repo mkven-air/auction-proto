@@ -1,11 +1,11 @@
 import { EMAIL_TEMPLATE_TYPE } from "@auction/core";
 import type { EmailTemplateType, MainTab } from "@auction/core";
-import { T } from "../theme";
-import { Pill } from "../primitives";
-import { useLocale } from "../locale";
-import { I18N } from "../i18n";
-import type { Locale } from "../i18n";
-import { cn } from "../lib/utils";
+import { T } from "@auction/web-shared";
+import { Pill } from "@auction/web-shared";
+import { useLocale } from "@auction/web-shared";
+import { I18N } from "@auction/web-shared";
+import type { Locale } from "@auction/web-shared";
+import { cn } from "@auction/web-shared";
 
 const LOCALES: Array<{ code: Locale; label: string }> = [
   { code: "en", label: "EN" },

@@ -5,7 +5,9 @@
     { "path": "packages/core" },
     { "path": "packages/api-contracts" },
     { "path": "packages/backend" },
-    { "path": "packages/web" },
+    { "path": "packages/web-shared" },
+    { "path": "packages/web-admin" },
+    { "path": "packages/web-passenger" },
     { "path": "packages/server" }
   ]
 }

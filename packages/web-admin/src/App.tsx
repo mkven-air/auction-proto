@@ -9,21 +9,17 @@ import {
 } from "react-router-dom";
 import { EMAIL_TEMPLATE_TYPE, MAIN_TAB } from "@auction/core";
 import type { EmailTemplateType, MainTab } from "@auction/core";
-import { F, T } from "./theme";
+import { F, T, useFlightsSummary, useLocale } from "@auction/web-shared";
 import { FlightList } from "./pages/FlightList";
 import { FlightDetail } from "./pages/FlightDetail";
 import { GlobalRules } from "./pages/GlobalRules";
 import { EmailPreview } from "./pages/EmailPreview";
 import { EntitiesPage } from "./pages/EntitiesPage";
-import { PassengerBidUI } from "./pages/PassengerBidUI";
 import { AdminHeader, EmailTemplateTabs, EmptyFlightState } from "./pages/AdminShell";
-import { useLocale } from "./locale";
-import { useFlightsSummary } from "./queries/useFlightsSummary";
 
 function routeToTab(pathname: string): MainTab {
   if (pathname === "/rules") return MAIN_TAB.rules;
   if (pathname === "/email") return MAIN_TAB.email;
-  if (pathname === "/passenger") return MAIN_TAB.passenger;
   if (pathname === "/entities") return MAIN_TAB.entities;
   if (pathname.startsWith("/flights/")) return MAIN_TAB.flight;
   return MAIN_TAB.flights;
@@ -85,7 +81,6 @@ function EmailRoute() {
   );
 }
 
-// ─── Root App ─────────────────────────────────────────────────
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -118,7 +113,6 @@ export default function App() {
     { id: MAIN_TAB.flight, label: txt.nav.flight, hide: !selectedFlight },
     { id: MAIN_TAB.rules, label: txt.nav.rules },
     { id: MAIN_TAB.email, label: txt.nav.email },
-    { id: MAIN_TAB.passenger, label: txt.nav.passenger },
   ] satisfies Array<{ id: MainTab; label: string; hide?: boolean }>;
   const NAV = navItems.filter((t) => !t.hide);
 
@@ -143,7 +137,6 @@ export default function App() {
             navigate(selectedFlight ? `/flights/${selectedFlight}` : "/flights");
           if (nextTab === MAIN_TAB.rules) navigate("/rules");
           if (nextTab === MAIN_TAB.email) navigate("/email");
-          if (nextTab === MAIN_TAB.passenger) navigate("/passenger");
           if (nextTab === MAIN_TAB.entities) navigate("/entities");
         }}
       />
@@ -155,7 +148,6 @@ export default function App() {
           <Route path="/flights/:flightId" element={<FlightDetailRoute />} />
           <Route path="/rules" element={<GlobalRules />} />
           <Route path="/email" element={<EmailRoute />} />
-          <Route path="/passenger" element={<PassengerBidUI />} />
           <Route path="/entities" element={<EntitiesPage />} />
           <Route path="*" element={<Navigate to="/flights" replace />} />
         </Routes>

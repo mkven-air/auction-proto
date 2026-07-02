@@ -1,9 +1,9 @@
 import type { ReactNode } from "react";
 import type { EmailTemplateConfig, EmailTemplateType } from "@auction/core";
-import { T } from "../theme";
-import { Pill, SectionLabel } from "../primitives";
-import { useLocale } from "../locale";
-import { useAirportsWithLocationByIds } from "../queries/useAirportsWithLocationByIds";
+import { T } from "@auction/web-shared";
+import { Pill, SectionLabel } from "@auction/web-shared";
+import { useLocale } from "@auction/web-shared";
+import { useAirportsWithLocationByIds } from "@auction/web-shared";
 
 const EMAIL_FROM_AIRPORT_ID = "TAS";
 const EMAIL_TO_AIRPORT_ID = "IST";

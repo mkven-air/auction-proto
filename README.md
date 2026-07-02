@@ -10,14 +10,16 @@ It includes:
 - Passenger-side bidding flow mockup
 - Auto-discovered Entities page (every seeded DB table is rendered)
 
-The codebase is a pnpm monorepo split into five packages:
+The codebase is a pnpm monorepo split into seven packages:
 - **`@auction/core`** — shared types, color tokens, and pure domain helpers
-- **`@auction/api-contracts`** — pure type surface for the admin and passenger APIs (no runtime code)
+- **`@auction/api-contracts`** — pure type surface for the admin and passenger APIs (`/admin` and `/passenger` subpath exports) plus Zod schemas at `/schemas` (no runtime code besides the schemas themselves)
 - **`@auction/backend`** — in-memory mock backend (services, DB emulator, seed data) — implements the contracts
-- **`@auction/server`** — NestJS HTTP server that exposes the backend under `/api/*`
-- **`@auction/web`** — the Vite + React SPA (admin + passenger UI) — consumes the contracts via a fetch client
+- **`@auction/server`** — NestJS HTTP server exposing the backend under `/api/*`
+- **`@auction/web-shared`** — UI primitives, theme, locale, layout helpers, query hooks and fetch client shared between the two apps
+- **`@auction/web-admin`** — Vite + React SPA for airline operators (flight list, bid moderation, rules, email previews, entities inspector)
+- **`@auction/web-passenger`** — Vite + React SPA for the passenger bidding flow
 
-The web app talks to the server over HTTP (via a Vite dev proxy in development,
+The apps talk to the server over HTTP (via a Vite dev proxy in development,
 `VITE_API_TARGET` in production). Data storage is still fully mocked in-memory
 inside `@auction/backend`; the contract surface stays the same when the mock is
 replaced with a real store.
@@ -52,31 +54,28 @@ pnpm -v
 pnpm install
 ```
 
-### 2. Run the API server and web app
+### 2. Run the API server and the web apps
 
-In one terminal:
-
-```bash
-pnpm dev:server   # NestJS on http://localhost:3000, routes under /api/*
-```
-
-In another terminal:
+Three concurrent processes in dev — API, admin app, passenger app:
 
 ```bash
-pnpm dev          # Vite on http://localhost:5173 (proxies /api -> :3000)
+pnpm dev:api          # NestJS on http://localhost:3000 (/api/* routes)
+pnpm dev              # web-admin on http://localhost:5173  (proxies /api -> :3000)
+pnpm dev:passenger    # web-passenger on http://localhost:5174 (proxies /api -> :3000)
 ```
 
-Open `http://localhost:5173/`.
+Each command runs in its own terminal.
 
 ## Available Scripts
 
 Root scripts orchestrate the whole workspace:
 
 ```bash
-pnpm dev              # start web dev server (Vite)
-pnpm dev:server       # start API dev server (NestJS, tsx watch)
-pnpm build            # production build of the web app
-pnpm preview          # preview production web build locally
+pnpm dev              # start web-admin dev server (Vite)
+pnpm dev:passenger    # start web-passenger dev server (Vite)
+pnpm dev:api          # start API dev server (NestJS, tsx watch)
+pnpm build            # production build of both web apps
+pnpm preview          # preview production web-admin build locally
 pnpm format           # format code with Biome
 pnpm lint             # lint with warnings treated as errors
 pnpm typecheck        # tsc -b (composite project references, all packages)
@@ -107,9 +106,10 @@ bash all-checks.sh # runs both scripts
 │   ├── api-contracts/                 # @auction/api-contracts — pure HTTP API surface
 │   │   └── src/
 │   │       ├── services/<name>.ts     # one file per resource service type
+│   │       ├── schemas/               # Zod runtime schemas (subpath export)
 │   │       ├── admin.ts               # AdminBackendClient + admin-only types
 │   │       ├── passenger.ts           # PassengerBackendClient + passenger types
-│   │       └── index.ts               # barrel (used by @auction/backend)
+│   │       └── index.ts               # barrel
 │   │
 │   ├── backend/                       # @auction/backend — in-memory mock backend
 │   │   ├── src/
@@ -131,31 +131,49 @@ bash all-checks.sh # runs both scripts
 │   │   │   ├── main.ts                # bootstrap, listens on :3000
 │   │   │   ├── app.module.ts          # root Nest module
 │   │   │   ├── backend/instance.ts    # singleton createBackend() instance
+│   │   │   ├── pipes/zodValidation.ts # request body validation via Zod
 │   │   │   ├── admin/                 # AdminController — /api/admin/*
 │   │   │   └── passenger/             # PassengerController — /api/passenger/*
 │   │   └── tsconfig.json              # decorator-enabled TS config
 │   │
-│   └── web/                           # @auction/web — Vite + React SPA
+│   ├── web-shared/                    # @auction/web-shared — shared UI + hooks
+│   │   ├── package.json
+│   │   └── src/
+│   │       ├── index.ts               # public surface
+│   │       ├── index.css              # global styles (imported by each app)
+│   │       ├── theme.ts               # semantic design tokens
+│   │       ├── i18n.ts                # locale dictionaries (ru/en/uz)
+│   │       ├── locale.tsx             # LocaleProvider + useLocale hook
+│   │       ├── api/httpBackend.ts     # fetch client (adminBackend + passengerBackend)
+│   │       ├── primitives/            # Pill, MetricCard, BarChart, SeatMap, ...
+│   │       ├── components/ui/         # shadcn/ui components
+│   │       ├── domain/                # color token resolver, channel icon map
+│   │       ├── format/                # display formatters
+│   │       ├── lib/                   # framework-agnostic utilities
+│   │       └── queries/               # TanStack Query hooks + keys
+│   │
+│   ├── web-admin/                     # @auction/web-admin — operator SPA
+│   │   ├── index.html
+│   │   ├── vite.config.ts             # proxies /api -> :3000 in dev
+│   │   ├── vercel.json                # per-app Vercel build config
+│   │   ├── components.json            # shadcn config
+│   │   ├── public/                    # static assets (favicons)
+│   │   └── src/
+│   │       ├── main.tsx               # React entry point
+│   │       ├── App.tsx                # routing + admin shell
+│   │       └── pages/                 # FlightList, FlightDetail, GlobalRules,
+│   │                                  #   EmailPreview, EntitiesPage, AdminShell
+│   │   └── tests/                     # smoke tests
+│   │
+│   └── web-passenger/                 # @auction/web-passenger — passenger SPA
 │       ├── index.html
-│       ├── vite.config.ts             # Vite config (proxies /api -> :3000)
-│       ├── components.json            # shadcn config
+│       ├── vite.config.ts
+│       ├── vercel.json
 │       ├── public/
-│       ├── src/
-│       │   ├── App.tsx                # main app orchestration
-│       │   ├── main.tsx               # React entry point
-│       │   ├── index.css              # global styles
-│       │   ├── theme.ts               # semantic design tokens
-│       │   ├── i18n.ts                # locale dictionaries (ru/en/uz)
-│       │   ├── locale.tsx             # LocaleProvider + useLocale hook
-│       │   ├── api/httpBackend.ts     # fetch client matching backend surface
-│       │   ├── pages/                 # AdminShell, FlightList, FlightDetail, ...
-│       │   ├── primitives/            # reusable UI atoms (Pill, MetricCard, ...)
-│       │   ├── components/ui/         # shadcn/ui components
-│       │   ├── domain/                # UI-side helpers (color.ts, channel.ts)
-│       │   ├── format/                # display formatters
-│       │   ├── lib/                   # framework-agnostic utilities
-│       │   └── queries/               # TanStack Query hooks + keys
-│       └── tests/                     # smoke tests
+│       └── src/
+│           ├── main.tsx
+│           ├── App.tsx                # single-page shell
+│           └── pages/PassengerBidUI.tsx
 │
 ├── package.json                       # root — shared devDeps + orchestrating scripts
 ├── pnpm-workspace.yaml                # packages, allowBuilds, overrides
@@ -183,7 +201,7 @@ bash all-checks.sh # runs both scripts
   `@auction/core` + `@auction/api-contracts`
 - `@auction/server` is a thin NestJS transport that wraps a singleton
   `createBackend()` from `@auction/backend` behind REST controllers
-- `@auction/web` never imports `@auction/backend` at runtime; it talks to the
+- `@auction/web-admin` and `@auction/web-passenger` never import `@auction/backend` at runtime; they talk to the
   server over HTTP through `src/api/httpBackend.ts`, which mirrors the backend
   contract exactly. This keeps a real network boundary between UI and data.
 - Cross-package imports resolve source-first via pnpm workspace symlinks and
@@ -208,11 +226,14 @@ bash all-checks.sh # runs both scripts
   and `PUT /admin/rules`.
 
 ### Modular Features (web)
-- Each major UI panel lives in `packages/web/src/pages/` as a self-contained module
-- Reusable atoms live in `packages/web/src/primitives/` (`Pill`, `MetricCard`, `BarChart`, ...)
-- UI components follow the shadcn/ui pattern — installed under `packages/web/src/components/ui/`
-  and styled via Tailwind CSS 4 utility classes with semantic CSS custom property tokens
-- `packages/web/src/domain/` contains UI-side helpers: `color.ts` (token resolver)
+- Each major admin panel lives in `packages/web-admin/src/pages/`; the single
+  passenger page lives in `packages/web-passenger/src/pages/`
+- Reusable atoms live in `packages/web-shared/src/primitives/` (`Pill`,
+  `MetricCard`, `BarChart`, ...)
+- UI components follow the shadcn/ui pattern — installed under
+  `packages/web-shared/src/components/ui/` and styled via Tailwind CSS 4
+  utility classes with semantic CSS custom property tokens
+- `packages/web-shared/src/domain/` contains UI-side helpers: `color.ts` (token resolver)
   and `channel.ts` (icon map). The `weighted.ts` bid-score formula lives in
   `@auction/core` since it is shared with the backend.
 - Color tokens are declared as a union in `@auction/core/src/colorTokens.ts`
@@ -220,11 +241,11 @@ bash all-checks.sh # runs both scripts
 
 ### Design Tokens
 The color palette is owned by CSS custom properties on `:root` in
-`packages/web/src/index.css` (single source of truth, shadcn-compatible).
+`packages/web-shared/src/index.css` (single source of truth, shadcn-compatible).
 The design tokens are exposed to Tailwind 4 via `@theme inline` so components
 can use utility classes like `bg-surface-card`, `text-text-muted`, and
 `border-border-default` directly.
-`packages/web/src/theme.ts` is a thin TypeScript bridge that maps semantic
+`packages/web-shared/src/theme.ts` is a thin TypeScript bridge that maps semantic
 names to `var(--token)` strings, retained for dynamic inline styles that
 still require runtime color values (e.g. conditional Pill colors from entity
 data). It uses `satisfies Record<ColorTokenId, string>` to stay in sync with
@@ -239,7 +260,7 @@ the `ColorTokenId` union in `@auction/core`.
   through their own backend services and consumed in pages via TanStack Query hooks
   (`useTiersById`, `useBidStatesById`, `useFlightStatusesById`, `useFlightHaulsById`)
   with `staleTime: Infinity`
-- `packages/web/src/i18n.ts` only contains pure UI text (labels, headings);
+- `packages/web-shared/src/i18n.ts` only contains pure UI text (labels, headings);
   no per-entity data
 
 ### Backend Layering
@@ -294,10 +315,11 @@ the `ColorTokenId` union in `@auction/core`.
    for tests.
 6. Expose the endpoints in `packages/server/src/admin/admin.controller.ts`
    (and `passenger/passenger.controller.ts` if applicable) and mirror the
-   shape in `packages/web/src/api/httpBackend.ts`.
-7. Add a query key in `packages/web/src/queries/keys.ts` and a `use<Name>`
-   hook under `packages/web/src/queries/` importing `adminBackend` or
-   `passengerBackend` from `../api/httpBackend`.
+   shape in `packages/web-shared/src/api/httpBackend.ts`.
+7. Add a query key in `packages/web-shared/src/queries/keys.ts` and a `use<Name>`
+   hook under `packages/web-shared/src/queries/` importing `adminBackend` or
+   `passengerBackend` from `../api/httpBackend`. Import from the hook in the
+   admin or passenger app as appropriate.
 
 ### Adding a Config/State-only Service (no DB table)
 For services that hold mutable config or non-relational state (like `rules`,
@@ -307,13 +329,13 @@ For services that hold mutable config or non-relational state (like `rules`,
 4. Spread the seed and register the service in
    `packages/backend/src/backend/serviceClient.ts`.
 5. Add a localized title under `entities.tableTitles` in
-   `packages/web/src/i18n.ts`.
+   `packages/web-shared/src/i18n.ts`.
 6. The new table appears automatically on the `/entities` page.
 
 ### Text & Localization
-- User-facing shared labels are centralized in `packages/web/src/i18n.ts`
+- User-facing shared labels are centralized in `packages/web-shared/src/i18n.ts`
   under locale dictionaries (`ru`, `en`, `uz`)
-- Runtime locale state is managed by `packages/web/src/locale.tsx`
+- Runtime locale state is managed by `packages/web-shared/src/locale.tsx`
   (`LocaleProvider`, `useLocale`)
 - Components consume `txt` from `useLocale()` instead of global translation constants
 - Domain dictionary entries (e.g. airport `name`/`city`/`country`) carry
@@ -323,16 +345,39 @@ For services that hold mutable config or non-relational state (like `rules`,
 
 ## Deployment
 
-The web app (`@auction/web`) is a static bundle; the server (`@auction/server`)
+The two web apps (`@auction/web-admin` and `@auction/web-passenger`) are static
+bundles; the server (`@auction/server`)
 is a long-lived Node process. They deploy separately.
 
 ### Web on Vercel
-The repository ships a root-level `vercel.json` that builds the Vite package:
-- Import the GitHub repo into Vercel — no dashboard overrides needed.
-- Set `VITE_API_TARGET` in project env vars to the deployed API origin
-  (e.g. `https://auction-proto-api.fly.dev`). The web fetch client uses that as
-  the base URL for `/api/*` calls; if unset, requests use a relative `/api`
-  which only resolves through the Vite dev proxy.
+Each web app has its own root-level `vercel.json` inside its package
+directory. Create **two Vercel projects**, both connected to the same GitHub
+repo:
+
+| Project name | Root Directory | Framework preset |
+| --- | --- | --- |
+| `auction-admin` | `packages/web-admin` | Vite |
+| `auction-passenger` | `packages/web-passenger` | Vite |
+
+For each project, set `VITE_API_TARGET` in Env Vars to the deployed API origin
+(e.g. `https://auction-proto-api.fly.dev`). The web fetch client uses that as
+the base URL for `/api/*` calls; if unset, requests fall back to relative
+`/api` (which only works through the local Vite dev proxy).
+
+Each `vercel.json` uses `cd ../.. && pnpm install` + a workspace-filtered
+build so pnpm resolves the workspace correctly from the app's Root Directory.
+
+To avoid rebuilding on every push to any file, set an **Ignored Build Step**
+per project (Settings → Git). For the admin project:
+
+```bash
+git diff HEAD^ HEAD --quiet -- packages/web-admin packages/web-shared \
+  packages/core packages/api-contracts pnpm-lock.yaml
+```
+
+Vercel skips the build when the command exits 0 (no changes in the listed
+paths). Mirror the same command for the passenger project, swapping
+`packages/web-admin` for `packages/web-passenger`.
 
 ### Server on Fly.io
 The repo ships a root-level `Dockerfile` (multi-stage, node:22-alpine, non-root
@@ -368,5 +413,5 @@ pnpm dlx skills add shadcn/ui
 Recommended next steps:
 1. Initialize shadcn for this app (`pnpm dlx shadcn@latest init`) so `components.json` is created.
 2. Add required components with `pnpm dlx shadcn@latest add <component>`.
-3. Keep generated UI primitives in `packages/web/src/components/ui` and compose
+3. Keep generated UI primitives in `packages/web-shared/src/components/ui` and compose
    app-specific components separately.

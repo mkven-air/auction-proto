@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { usePassengerTiersById } from "../queries/useTiers";
-import { colorToken } from "../domain/color";
-import { Pill, Toggle } from "../primitives";
-import { T } from "../theme";
-import { useLocale } from "../locale";
-import { cn } from "../lib/utils";
-import { usePassengerConfig } from "../queries/usePassengerConfig";
-import { useCurrentPassenger } from "../queries/useCurrentPassenger";
-import { usePassengerFlightDetail } from "../queries/useFlightDetail";
-import { formatFlightDep, formatFlightDuration } from "../format/flightTime";
+import { usePassengerTiersById } from "@auction/web-shared";
+import { colorToken } from "@auction/web-shared";
+import { Pill, Toggle } from "@auction/web-shared";
+import { T } from "@auction/web-shared";
+import { useLocale } from "@auction/web-shared";
+import { cn } from "@auction/web-shared";
+import { usePassengerConfig } from "@auction/web-shared";
+import { useCurrentPassenger } from "@auction/web-shared";
+import { usePassengerFlightDetail } from "@auction/web-shared";
+import { formatFlightDep, formatFlightDuration } from "@auction/web-shared";
 import type { ProductActiveMap, ProductBidMap, ProductConfig, ProductKey } from "@auction/core";
 
 export function PassengerBidUI() {
