@@ -103,4 +103,9 @@ export class AdminController {
   flightHauls() {
     return admin.flightHauls.list();
   }
+
+  @Get("seat-map/:id/business")
+  seatMap(@Param("id") id: string) {
+    return admin.seatMap.getBusinessClass(id);
+  }
 }

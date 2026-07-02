@@ -10,6 +10,5 @@ export type {
   PassengerRulesService,
   PassengersService,
   RulesService,
-  SeatMapService,
   TiersService,
 } from "@auction/api-contracts/passenger";

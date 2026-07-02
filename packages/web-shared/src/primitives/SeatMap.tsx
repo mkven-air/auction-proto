@@ -1,12 +1,10 @@
 import { T } from "../theme";
 import { useLocale } from "../locale";
 import { cn } from "../lib/utils";
-import type { Flight, SeatCell } from "@auction/core";
-import { useSeatMap } from "../queries/useSeatMap";
+import type { SeatCell, SeatMapLayout } from "@auction/core";
 
-export function SeatMap({ flightId }: { flightId: Flight["id"] }) {
+export function SeatMap({ seatMap }: { seatMap: SeatMapLayout }) {
   const { txt } = useLocale();
-  const { data: seatMap = [] } = useSeatMap(flightId);
 
   return (
     <div>

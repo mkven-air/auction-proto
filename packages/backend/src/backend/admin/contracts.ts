@@ -17,5 +17,6 @@ export type {
   FlightStatusesService,
   PassengersService,
   RulesService,
+  SeatMapService,
   TiersService,
 } from "@auction/api-contracts/admin";

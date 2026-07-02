@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { usePassengerTiersById } from "@auction/web-shared";
+import { usePassengerTiersById } from "../queries/useTiers";
 import { colorToken } from "@auction/web-shared";
 import { Pill, Toggle } from "@auction/web-shared";
 import { T } from "@auction/web-shared";
 import { useLocale } from "../locale";
 import { cn } from "@auction/web-shared";
-import { usePassengerConfig } from "@auction/web-shared";
-import { useCurrentPassenger } from "@auction/web-shared";
-import { usePassengerFlightDetail } from "@auction/web-shared";
+import { usePassengerConfig } from "../queries/usePassengerConfig";
+import { useCurrentPassenger } from "../queries/useCurrentPassenger";
+import { usePassengerFlightDetail } from "../queries/useFlightDetail";
 import { formatFlightDep, formatFlightDuration } from "@auction/web-shared";
 import type { ProductActiveMap, ProductBidMap, ProductConfig, ProductKey } from "@auction/core";
 

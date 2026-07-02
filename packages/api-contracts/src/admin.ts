@@ -9,6 +9,7 @@ import type { FlightStatusesService } from "./services/flightStatuses";
 import type { FlightsService } from "./services/flights";
 import type { PassengersService } from "./services/passengers";
 import type { RulesService } from "./services/rules";
+import type { SeatMapService } from "./services/seatMap";
 import type { TiersService } from "./services/tiers";
 
 /** Raw table row shape exposed by the entities inspector endpoint. */
@@ -41,6 +42,7 @@ export type AdminBackendClient = {
   bidStates: BidStatesService;
   flightStatuses: FlightStatusesService;
   flightHauls: FlightHaulsService;
+  seatMap: SeatMapService;
 };
 
 export type {
@@ -54,6 +56,7 @@ export type {
   FlightsService,
   PassengersService,
   RulesService,
+  SeatMapService,
   TiersService,
 };
 export type {

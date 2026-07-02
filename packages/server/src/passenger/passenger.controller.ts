@@ -24,9 +24,4 @@ export class PassengerController {
   async flightDetail(@Param("id") id: string) {
     return (await passenger.flights.findDetailById(id)) ?? null;
   }
-
-  @Get("seat-map/:id/business")
-  seatMap(@Param("id") id: string) {
-    return passenger.seatMap.getBusinessClass(id);
-  }
 }

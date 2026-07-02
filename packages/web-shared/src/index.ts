@@ -21,26 +21,7 @@ export * from "./primitives";
 // UI components (shadcn layer)
 export { Button } from "./components/ui/button";
 
-// HTTP client
-export { adminBackend, passengerBackend } from "./api/httpBackend";
-
-// Query keys + hooks
-export { queryKeys } from "./queries/keys";
-export * from "./queries/useAirportsByIds";
-export * from "./queries/useAirportsWithLocationByIds";
-export * from "./queries/useBidStates";
-export * from "./queries/useCitiesByIds";
-export * from "./queries/useCountriesByIds";
-export * from "./queries/useCurrentPassenger";
-export * from "./queries/useEntities";
-export * from "./queries/useFlightBids";
-export * from "./queries/useFlightById";
-export * from "./queries/useFlightDetail";
-export * from "./queries/useFlightHauls";
-export * from "./queries/useFlightsQuery";
-export * from "./queries/useFlightsSummary";
-export * from "./queries/useFlightStatuses";
-export * from "./queries/usePassengerConfig";
-export * from "./queries/useRules";
-export * from "./queries/useSeatMap";
-export * from "./queries/useTiers";
+// Low-level HTTP client only. Each app composes its OWN typed backend (endpoint
+// paths, request/response contracts) on top of these primitives, so the admin
+// API surface never ships in the public passenger bundle.
+export { getJson, idsQuery, postJson, putJson } from "./api/client";

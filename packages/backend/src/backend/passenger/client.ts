@@ -1,5 +1,4 @@
 import { createPassengerConfigService } from "../services/passengerConfig/service";
-import { createSeatMapService } from "../services/seatMap/service";
 import type { AdminBackendClient } from "../admin/contracts";
 import type { PassengerBackendClient } from "./contracts";
 
@@ -11,7 +10,6 @@ import type { PassengerBackendClient } from "./contracts";
 export function createPassengerClient(admin: AdminBackendClient): PassengerBackendClient {
   return {
     passengerConfig: createPassengerConfigService(),
-    seatMap: createSeatMapService(),
     passengers: admin.passengers,
     flights: { findDetailById: admin.flights.findDetailById },
     rules: { get: admin.rules.get },

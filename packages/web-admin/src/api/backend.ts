@@ -18,41 +18,13 @@ import type {
   FlightStatusRow,
   FlightWithRoute,
   FlightWithStats,
-  Passenger,
-  PassengerConfig,
   Rules,
   SeatMapLayout,
   TierRow,
 } from "@auction/core";
+import { getJson, idsQuery, postJson, putJson } from "@auction/web-shared";
 
-const API_BASE = `${(import.meta.env.VITE_API_TARGET ?? "").replace(/\/$/, "")}/api`;
-
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`, {
-    headers: { "content-type": "application/json" },
-    ...init,
-  });
-  if (!response.ok) {
-    throw new Error(`API ${init?.method ?? "GET"} ${path} failed with ${response.status}`);
-  }
-  const text = await response.text();
-  return (text.length > 0 ? JSON.parse(text) : undefined) as T;
-}
-
-const getJson = <T>(path: string): Promise<T> => request<T>(path);
-
-const postJson = <T>(path: string, body?: unknown): Promise<T> =>
-  request<T>(path, {
-    method: "POST",
-    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
-  });
-
-const putJson = <T>(path: string, body: unknown): Promise<T> =>
-  request<T>(path, { method: "PUT", body: JSON.stringify(body) });
-
-const idsQuery = (ids: ReadonlyArray<string>): string =>
-  `?ids=${encodeURIComponent(ids.join(","))}`;
-
+/** HTTP client for the admin API surface (`/api/admin/*`). */
 export const adminBackend = {
   flights: {
     getSummary: (): Promise<FlightsSummary> => getJson("/admin/flights/summary"),
@@ -114,25 +86,8 @@ export const adminBackend = {
   flightHauls: {
     list: (): Promise<FlightHaulRow[]> => getJson("/admin/flight-hauls"),
   },
-};
-
-export const passengerBackend = {
-  passengers: {
-    getCurrent: async (): Promise<Passenger | undefined> =>
-      (await getJson<Passenger | null>("/passenger/me")) ?? undefined,
-  },
-  passengerConfig: {
-    get: (): Promise<PassengerConfig> => getJson("/passenger/config"),
-  },
-  tiers: {
-    list: (): Promise<TierRow[]> => getJson("/passenger/tiers"),
-  },
-  flights: {
-    findDetailById: async (flightId: Flight["id"]): Promise<FlightWithRoute | undefined> =>
-      (await getJson<FlightWithRoute | null>(`/passenger/flights/${flightId}/detail`)) ?? undefined,
-  },
   seatMap: {
     getBusinessClass: (flightId: Flight["id"]): Promise<SeatMapLayout> =>
-      getJson(`/passenger/seat-map/${flightId}/business`),
+      getJson(`/admin/seat-map/${flightId}/business`),
   },
 };

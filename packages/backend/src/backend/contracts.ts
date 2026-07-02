@@ -10,9 +10,10 @@ import type {
   FlightsService,
   PassengersService,
   RulesService,
+  SeatMapService,
   TiersService,
 } from "@auction/api-contracts/admin";
-import type { PassengerConfigService, SeatMapService } from "@auction/api-contracts/passenger";
+import type { PassengerConfigService } from "@auction/api-contracts/passenger";
 
 export type * from "@auction/api-contracts";
 

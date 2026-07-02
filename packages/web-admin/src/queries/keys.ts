@@ -17,12 +17,10 @@ export const queryKeys = {
     ["airports-with-location-by-ids", [...ids].sort()] as const,
   citiesByIds: (ids: readonly string[]) => ["cities-by-ids", [...ids].sort()] as const,
   countriesByIds: (ids: readonly string[]) => ["countries-by-ids", [...ids].sort()] as const,
-  currentPassenger: ["current-passenger"] as const,
   rules: ["rules"] as const,
-  passengerConfig: ["passenger-config"] as const,
-  seatMap: (flightId: string) => ["seat-map", flightId] as const,
   tiers: ["tiers"] as const,
   bidStates: ["bid-states"] as const,
   flightStatuses: ["flight-statuses"] as const,
   flightHauls: ["flight-hauls"] as const,
+  seatMap: (flightId: string) => ["seat-map", flightId] as const,
 };

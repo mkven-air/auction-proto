@@ -8,13 +8,14 @@ import { weighted } from "@auction/core";
 import { computeBidDistribution, BC_DIST_COLORS, EXIT_DIST_COLORS } from "@auction/web-shared";
 import { BarChart, MetricCard, Pill, SeatMap, SectionLabel } from "@auction/web-shared";
 import { useLocale } from "../locale";
-import { useTiersById } from "@auction/web-shared";
-import { useBidStatesById } from "@auction/web-shared";
-import { useFlightHaulsById } from "@auction/web-shared";
-import { useFlightDetail } from "@auction/web-shared";
-import { useFlightBids } from "@auction/web-shared";
-import { queryKeys } from "@auction/web-shared";
-import { adminBackend } from "@auction/web-shared";
+import { useTiersById } from "../queries/useTiers";
+import { useBidStatesById } from "../queries/useBidStates";
+import { useFlightHaulsById } from "../queries/useFlightHauls";
+import { useFlightDetail } from "../queries/useFlightDetail";
+import { useFlightBids } from "../queries/useFlightBids";
+import { useSeatMap } from "../queries/useSeatMap";
+import { queryKeys } from "../queries/keys";
+import { adminBackend } from "../api/backend";
 import { formatFlightArr, formatFlightDep, formatFlightDuration } from "@auction/web-shared";
 
 function BackButton({ onBack }: { onBack: () => void }) {
@@ -40,6 +41,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
     isError: isBidsError,
   } = useFlightBids(flightId, "businessClass");
   const { data: exitBids = [] } = useFlightBids(flightId, "exitRows");
+  const { data: seatMap = [] } = useSeatMap(flightId);
   const { byId: tiersById } = useTiersById();
   const { byId: bidStatesById } = useBidStatesById();
   const { byId: haulsById } = useFlightHaulsById();
@@ -245,7 +247,7 @@ export function FlightDetail({ flightId, onBack }: { flightId: Flight["id"]; onB
       <div className="mb-[18px] grid grid-cols-2 gap-4">
         <div className="rounded-xl border-[0.5px] border-border-default bg-surface-card px-[18px] py-4">
           <SectionLabel>{txt.flightDetail.section.seatMap}</SectionLabel>
-          <SeatMap flightId={flight.id} />
+          <SeatMap seatMap={seatMap} />
           <div className="mt-2.5 text-[11px] text-text-muted">
             {flight.bcFree} свободных · {bids.length} заявок
           </div>

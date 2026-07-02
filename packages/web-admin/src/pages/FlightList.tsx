@@ -1,11 +1,11 @@
 import { useSearchParams } from "react-router-dom";
 import { colorToken } from "@auction/web-shared";
-import { useFlightsQuery } from "@auction/web-shared";
-import { useAirportsWithLocationByIds } from "@auction/web-shared";
+import { useFlightsQuery } from "../queries/useFlightsQuery";
+import { useAirportsWithLocationByIds } from "../queries/useAirportsWithLocationByIds";
 import { MetricCard, Pill } from "@auction/web-shared";
 import { T } from "@auction/web-shared";
 import { useLocale } from "../locale";
-import { useFlightStatusesById } from "@auction/web-shared";
+import { useFlightStatusesById } from "../queries/useFlightStatuses";
 import { formatFlightDep, formatFlightDuration } from "@auction/web-shared";
 import type { Flight, FlightListFilter, FlightListSortCol, SortDir } from "@auction/core";
 

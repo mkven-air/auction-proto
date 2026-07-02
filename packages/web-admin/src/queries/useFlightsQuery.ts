@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import type { FlightQuery } from "@auction/api-contracts/admin";
-import { adminBackend } from "../api/httpBackend";
+import { adminBackend } from "../api/backend";
 import { queryKeys } from "./keys";
 
 export const useFlightsQuery = (query: FlightQuery) =>

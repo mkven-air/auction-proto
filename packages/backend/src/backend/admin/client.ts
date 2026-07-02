@@ -10,6 +10,7 @@ import { createFlightStatusesService } from "../services/flightStatuses/service"
 import { createFlightsService } from "../services/flights/service";
 import { createPassengersService } from "../services/passengers/service";
 import { createRulesService } from "../services/rules/service";
+import { createSeatMapService } from "../services/seatMap/service";
 import { createTiersService } from "../services/tiers/service";
 import type { AdminBackendClient, EntitiesService } from "./contracts";
 
@@ -45,5 +46,6 @@ export function createAdminClient(
     bidStates: createBidStatesService(db),
     flightStatuses: createFlightStatusesService(db),
     flightHauls: createFlightHaulsService(db),
+    seatMap: createSeatMapService(),
   };
 }

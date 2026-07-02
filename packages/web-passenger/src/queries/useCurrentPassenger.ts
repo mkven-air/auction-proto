@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { passengerBackend } from "../api/httpBackend";
+import { passengerBackend } from "../api/backend";
 import { queryKeys } from "./keys";
 
 export const useCurrentPassenger = () =>

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { adminBackend } from "../api/httpBackend";
+import { adminBackend } from "../api/backend";
 import type { FlightStatusRow } from "@auction/core";
 import { queryKeys } from "./keys";
 

@@ -136,7 +136,7 @@ bash all-checks.sh # runs both scripts
 │   │   │   └── passenger/             # PassengerController — /api/passenger/*
 │   │   └── tsconfig.json              # decorator-enabled TS config
 │   │
-│   ├── web-shared/                    # @auction/web-shared — shared UI + hooks
+│   ├── web-shared/                    # @auction/web-shared — shared UI + low-level client
 │   │   ├── package.json
 │   │   └── src/
 │   │       ├── index.ts               # public surface
@@ -144,13 +144,12 @@ bash all-checks.sh # runs both scripts
 │   │       ├── theme.ts               # semantic design tokens
 │   │       ├── i18n.ts                # SHARED_I18N slice (flightTime + seatMap)
 │   │       ├── locale.tsx             # LocaleProvider + shared useLocale hook
-│   │       ├── api/httpBackend.ts     # fetch client (adminBackend + passengerBackend)
+│   │       ├── api/client.ts          # neutral getJson/postJson/putJson/idsQuery
 │   │       ├── primitives/            # Pill, MetricCard, BarChart, SeatMap, ...
 │   │       ├── components/ui/         # shadcn/ui components
 │   │       ├── domain/                # color token resolver, channel icon map
 │   │       ├── format/                # display formatters
-│   │       ├── lib/                   # framework-agnostic utilities
-│   │       └── queries/               # TanStack Query hooks + keys
+│   │       └── lib/                   # framework-agnostic utilities
 │   │
 │   ├── web-admin/                     # @auction/web-admin — operator SPA
 │   │   ├── index.html
@@ -161,11 +160,15 @@ bash all-checks.sh # runs both scripts
 │   │   └── src/
 │   │       ├── main.tsx               # React entry point
 │   │       ├── App.tsx                # routing + admin shell
-│   │       └── pages/                 # FlightList, FlightDetail, GlobalRules,
-│   │                                  #   EmailPreview, EntitiesPage, AdminShell
-│   │   └── tests/                     # smoke tests
+│   │       ├── i18n.ts                # ADMIN_I18N dictionary
+│   │       ├── locale.ts              # admin useLocale wrapper
+│   │       ├── api/backend.ts         # adminBackend fetch client (/api/admin/*)
+│   │       ├── queries/               # admin-only TanStack Query hooks + keys
+│   │       ├── pages/                 # FlightList, FlightDetail, GlobalRules,
+│   │       │                          #   EmailPreview, EntitiesPage, AdminShell
+│   │       └── tests/                 # smoke tests
 │   │
-│   └── web-passenger/                 # @auction/web-passenger — passenger SPA
+│   └── web-passenger/                 # @auction/web-passenger — passenger SPA (public)
 │       ├── index.html
 │       ├── vite.config.ts
 │       ├── vercel.json
@@ -173,6 +176,10 @@ bash all-checks.sh # runs both scripts
 │       └── src/
 │           ├── main.tsx
 │           ├── App.tsx                # single-page shell
+│           ├── i18n.ts                # PASSENGER_I18N dictionary
+│           ├── locale.ts              # passenger useLocale wrapper
+│           ├── api/backend.ts         # passengerBackend fetch client (/api/passenger/*)
+│           ├── queries/               # passenger-only hooks + keys
 │           └── pages/PassengerBidUI.tsx
 │
 ├── package.json                       # root — shared devDeps + orchestrating scripts
@@ -193,17 +200,39 @@ bash all-checks.sh # runs both scripts
 - `@auction/core` is the shared vocabulary (types, color token union, pure helpers)
   and depends on no other workspace package
 - `@auction/api-contracts` defines the HTTP-facing surface as pure TypeScript
-  types: two subpath exports (`/admin`, `/passenger`) so each frontend can
-  eventually import only the contract it needs. Depends only on `@auction/core`.
-  This package contains no runtime code.
+  types: two subpath exports (`/admin`, `/passenger`) so each frontend imports
+  only the contract it needs, plus a `/schemas` subpath with Zod schemas.
+  Depends only on `@auction/core`.
 - `@auction/backend` owns all data and business logic — services, DB emulator,
   seed data, admin/passenger clients — and satisfies the contracts. Depends on
   `@auction/core` + `@auction/api-contracts`
 - `@auction/server` is a thin NestJS transport that wraps a singleton
   `createBackend()` from `@auction/backend` behind REST controllers
-- `@auction/web-admin` and `@auction/web-passenger` never import `@auction/backend` at runtime; they talk to the
-  server over HTTP through `src/api/httpBackend.ts`, which mirrors the backend
-  contract exactly. This keeps a real network boundary between UI and data.
+- `@auction/web-shared` holds only genuinely shared code: UI primitives, theme,
+  the locale mechanism, shared i18n slice, and a **neutral** low-level HTTP
+  client (`api/client.ts` — `getJson`/`postJson`/`putJson`/`idsQuery`). It knows
+  nothing about admin or passenger endpoints.
+- `@auction/web-admin` and `@auction/web-passenger` each own their own fetch
+  client (`api/backend.ts`), query hooks, i18n dictionary and pages. They never
+  import `@auction/backend`; they talk to the server over HTTP. This keeps a
+  real network boundary between UI and data.
+
+### Web bundle isolation (public passenger app)
+The passenger app is intended to be publicly deployed, so **nothing about the
+admin surface may appear in its bundle** — no admin routes, HTTP methods,
+contract shapes, or admin i18n. This is enforced structurally, not by
+convention:
+- admin-only fetch client, query hooks, query keys and i18n live in
+  `packages/web-admin`; passenger equivalents live in `packages/web-passenger`.
+  Neither app can import the other's runtime code.
+- `web-shared` contains no endpoint strings — only the neutral request helpers
+  and truly shared UI. The `SeatMap` primitive is presentational (data passed
+  in as a prop), so it carries no query/endpoint dependency.
+- the seat-map capability, used only by admin, lives entirely on the `/admin`
+  surface; the passenger API and bundle contain no seat-map code.
+- verification: building `@auction/web-passenger` and grepping the bundle for
+  `/admin/`, `flights/query`, `globalRules`, `Auction Admin`, etc. yields zero
+  matches.
 - Cross-package imports resolve source-first via pnpm workspace symlinks and
   each package's `main`/`types` field pointing at `./src/index.ts`. TypeScript
   is configured with composite project references (`tsc -b`) so cross-package
@@ -214,10 +243,11 @@ bash all-checks.sh # runs both scripts
 - `@auction/server` mounts `AdminController` under `/api/admin` and
   `PassengerController` under `/api/passenger`, delegating each route to the
   matching method on the shared `createBackend()` instance
-- Vite's dev server proxies `/api` to `http://localhost:3000`, so the web app
+- Vite's dev server proxies `/api` to `http://localhost:3000`, so each web app
   uses relative URLs in both dev and production
-- `httpBackend.ts` exports objects with the same shape as `adminBackend` /
-  `passengerBackend`, so query hooks are agnostic to the transport
+- each app's `api/backend.ts` exports a fetch client (`adminBackend` /
+  `passengerBackend`) built on the neutral `web-shared` request helpers; query
+  hooks call these clients and stay agnostic to transport details
 - Request bodies for mutation endpoints are validated at runtime with Zod
   schemas from `@auction/api-contracts/schemas`, applied via a small
   `ZodValidationPipe` in `packages/server/src/pipes/`. Invalid payloads get
@@ -273,7 +303,7 @@ the `ColorTokenId` union in `@auction/core`.
     `rules.update`, raw entity tables, and ownership of all reference data
   - `passengerBackend` (`packages/backend/src/backend/passenger/`) — a
     read-mostly facade for the passenger app. It owns passenger-specific
-    services (`passengerConfig`, `seatMap`) and, like a BFF in a real system,
+    services (`passengerConfig`) and, like a BFF in a real system,
     **delegates shared reads to the admin client**. It exposes only a
     narrowed, safe subset: `flights.findDetailById` (no listing/query),
     `rules.get` (no update), `passengers.getCurrent`, and re-exported
@@ -317,11 +347,10 @@ the `ColorTokenId` union in `@auction/core`.
    for tests.
 6. Expose the endpoints in `packages/server/src/admin/admin.controller.ts`
    (and `passenger/passenger.controller.ts` if applicable) and mirror the
-   shape in `packages/web-shared/src/api/httpBackend.ts`.
-7. Add a query key in `packages/web-shared/src/queries/keys.ts` and a `use<Name>`
-   hook under `packages/web-shared/src/queries/` importing `adminBackend` or
-   `passengerBackend` from `../api/httpBackend`. Import from the hook in the
-   admin or passenger app as appropriate.
+   shape in the owning app's `api/backend.ts` (`packages/web-admin` or
+   `packages/web-passenger`).
+7. Add a query key and a `use<Name>` hook under that app's `src/queries/`
+   importing its `adminBackend`/`passengerBackend` from `../api/backend`.
 
 ### Adding a Config/State-only Service (no DB table)
 For services that hold mutable config or non-relational state (like `rules`,

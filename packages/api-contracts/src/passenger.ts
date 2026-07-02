@@ -6,7 +6,6 @@ import type { FlightsService } from "./services/flights";
 import type { PassengerConfigService } from "./services/passengerConfig";
 import type { PassengersService } from "./services/passengers";
 import type { RulesService } from "./services/rules";
-import type { SeatMapService } from "./services/seatMap";
 import type { TiersService } from "./services/tiers";
 
 /** Passengers may only read a single flight's detail, never the admin listing/query surface. */
@@ -17,12 +16,11 @@ export type PassengerRulesService = Pick<RulesService, "get">;
 
 /**
  * Passenger API surface: a read-mostly facade tailored to the passenger app.
- * Owns passenger-specific services (bid config, seat map) and delegates shared
- * reads via a narrowed, safe subset.
+ * Owns passenger-specific services (bid config) and delegates shared reads via
+ * a narrowed, safe subset.
  */
 export type PassengerBackendClient = {
   passengerConfig: PassengerConfigService;
-  seatMap: SeatMapService;
   passengers: PassengersService;
   flights: PassengerFlightsService;
   rules: PassengerRulesService;
@@ -42,6 +40,5 @@ export type {
   PassengerConfigService,
   PassengersService,
   RulesService,
-  SeatMapService,
   TiersService,
 };
