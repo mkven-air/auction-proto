@@ -4,7 +4,7 @@ import { useFlightsQuery } from "@auction/web-shared";
 import { useAirportsWithLocationByIds } from "@auction/web-shared";
 import { MetricCard, Pill } from "@auction/web-shared";
 import { T } from "@auction/web-shared";
-import { useLocale } from "@auction/web-shared";
+import { useLocale } from "../locale";
 import { useFlightStatusesById } from "@auction/web-shared";
 import { formatFlightDep, formatFlightDuration } from "@auction/web-shared";
 import type { Flight, FlightListFilter, FlightListSortCol, SortDir } from "@auction/core";

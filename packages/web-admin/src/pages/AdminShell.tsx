@@ -2,10 +2,11 @@ import { EMAIL_TEMPLATE_TYPE } from "@auction/core";
 import type { EmailTemplateType, MainTab } from "@auction/core";
 import { T } from "@auction/web-shared";
 import { Pill } from "@auction/web-shared";
-import { useLocale } from "@auction/web-shared";
-import { I18N } from "@auction/web-shared";
+import { useLocale } from "../locale";
 import type { Locale } from "@auction/web-shared";
 import { cn } from "@auction/web-shared";
+
+type Txt = ReturnType<typeof useLocale>["txt"];
 
 const LOCALES: Array<{ code: Locale; label: string }> = [
   { code: "en", label: "EN" },
@@ -33,7 +34,7 @@ export function AdminHeader({
   bidsText,
   onSelectTab,
 }: AdminHeaderProps) {
-  const { locale, setLocale } = useLocale();
+  const { locale, setLocale, txt } = useLocale();
   return (
     <div className="flex flex-wrap items-center border-b-[0.5px] border-border-default px-6">
       <div className="mr-6 flex items-center gap-[9px] py-[13px]">
@@ -45,7 +46,7 @@ export function AdminHeader({
           className="block rounded"
         />
         <span className="text-xs font-bold tracking-[0.5px] text-text-primary">
-          {I18N[locale].admin.title}
+          {txt.admin.title}
         </span>
       </div>
       {navItems.map((tab) => (
@@ -100,7 +101,7 @@ type EmailTemplateTabsProps = {
   onChange: (tab: EmailTemplateType) => void;
 };
 
-const EMAIL_TABS_FOR = (txt: (typeof I18N)[Locale]): Array<[EmailTemplateType, string]> => [
+const EMAIL_TABS_FOR = (txt: Txt): Array<[EmailTemplateType, string]> => [
   [EMAIL_TEMPLATE_TYPE.pte, txt.emailTemplates.pte],
   [EMAIL_TEMPLATE_TYPE.chaser, txt.emailTemplates.chaser],
   [EMAIL_TEMPLATE_TYPE.win, txt.emailTemplates.win],

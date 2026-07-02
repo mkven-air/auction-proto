@@ -3,7 +3,7 @@ import { usePassengerTiersById } from "@auction/web-shared";
 import { colorToken } from "@auction/web-shared";
 import { Pill, Toggle } from "@auction/web-shared";
 import { T } from "@auction/web-shared";
-import { useLocale } from "@auction/web-shared";
+import { useLocale } from "../locale";
 import { cn } from "@auction/web-shared";
 import { usePassengerConfig } from "@auction/web-shared";
 import { useCurrentPassenger } from "@auction/web-shared";
@@ -35,7 +35,7 @@ export function PassengerBidUI() {
   if (configLoading || !config || !bids || !active) {
     return (
       <div className="flex justify-center px-4 py-6">
-        <div className="text-[13px] text-text-muted">{txt.admin.states.loading}</div>
+        <div className="text-[13px] text-text-muted">{txt.states.loading}</div>
       </div>
     );
   }

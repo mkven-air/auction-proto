@@ -1,11 +1,11 @@
-import { I18N } from "../i18n";
+import { SHARED_I18N } from "../i18n";
 import type { Locale } from "../i18n";
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
 type Parts = { day: number; month: number; hour: number; minute: number };
 
-const flightTimeTextFor = (locale: Locale) => I18N[locale].flightTime;
+const flightTimeTextFor = (locale: Locale) => SHARED_I18N[locale].flightTime;
 
 const getParts = (iso: string, timeZone: string): Parts => {
   const fmt = new Intl.DateTimeFormat("en-US", {

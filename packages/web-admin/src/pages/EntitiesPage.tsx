@@ -1,4 +1,4 @@
-import { useLocale } from "@auction/web-shared";
+import { useLocale } from "../locale";
 import { useEntities } from "@auction/web-shared";
 import type { LocaleCode, LocalizedString } from "@auction/core";
 

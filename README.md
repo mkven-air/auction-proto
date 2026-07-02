@@ -142,8 +142,8 @@ bash all-checks.sh # runs both scripts
 │   │       ├── index.ts               # public surface
 │   │       ├── index.css              # global styles (imported by each app)
 │   │       ├── theme.ts               # semantic design tokens
-│   │       ├── i18n.ts                # locale dictionaries (ru/en/uz)
-│   │       ├── locale.tsx             # LocaleProvider + useLocale hook
+│   │       ├── i18n.ts                # SHARED_I18N slice (flightTime + seatMap)
+│   │       ├── locale.tsx             # LocaleProvider + shared useLocale hook
 │   │       ├── api/httpBackend.ts     # fetch client (adminBackend + passengerBackend)
 │   │       ├── primitives/            # Pill, MetricCard, BarChart, SeatMap, ...
 │   │       ├── components/ui/         # shadcn/ui components
@@ -260,7 +260,9 @@ the `ColorTokenId` union in `@auction/core`.
   through their own backend services and consumed in pages via TanStack Query hooks
   (`useTiersById`, `useBidStatesById`, `useFlightStatusesById`, `useFlightHaulsById`)
   with `staleTime: Infinity`
-- `packages/web-shared/src/i18n.ts` only contains pure UI text (labels, headings);
+- `packages/web-shared/src/i18n.ts` only holds the text slice actually shared by
+  both apps (`flightTime` for the flight-time formatters, `seatMap` for the
+  shared SeatMap primitive);
   no per-entity data
 
 ### Backend Layering
@@ -328,20 +330,29 @@ For services that hold mutable config or non-relational state (like `rules`,
 `packages/backend/src/data/`, and pass no `db` argument to the factory.
 4. Spread the seed and register the service in
    `packages/backend/src/backend/serviceClient.ts`.
-5. Add a localized title under `entities.tableTitles` in
-   `packages/web-shared/src/i18n.ts`.
-6. The new table appears automatically on the `/entities` page.
+5. The entities inspector (admin-only) renders every seeded table automatically;
+   its localized table title comes from the backend `entityTitles` map. Section
+   chrome (headers, empty state) lives under the `entities` key in
+   `packages/web-admin/src/i18n.ts`.
+6. The new table appears automatically on the admin `/entities` page.
 
 ### Text & Localization
-- User-facing shared labels are centralized in `packages/web-shared/src/i18n.ts`
-  under locale dictionaries (`ru`, `en`, `uz`)
-- Runtime locale state is managed by `packages/web-shared/src/locale.tsx`
-  (`LocaleProvider`, `useLocale`)
-- Components consume `txt` from `useLocale()` instead of global translation constants
+- Locale **state** (current locale + setter) is owned by
+  `packages/web-shared/src/locale.tsx` (`LocaleProvider`, `useLocale`). The
+  shared `useLocale` also returns the shared text slice (flightTime + seatMap)
+  used by shared components.
+- Each app owns its **own dictionary** to avoid shipping the other app's text:
+  `packages/web-admin/src/i18n.ts` (`ADMIN_I18N`) and
+  `packages/web-passenger/src/i18n.ts` (`PASSENGER_I18N`). Each app's
+  `src/locale.ts` wraps the shared `useLocale` and indexes its own dictionary,
+  so app pages import `useLocale` from `../locale` and get app-scoped `txt`
+  while sharing one locale state. (This split is why the passenger bundle no
+  longer contains admin strings.)
+- All three dictionaries carry the same locales (`ru`, `en`, `uz`)
 - Domain dictionary entries (e.g. airport `name`/`city`/`country`) carry
   `LocalizedString` and are rendered via `value[locale]`
-- Adding a new locale can be done by extending `I18N`; switchers in admin/passenger UI
-  update text reactively
+- Adding a new locale means extending each `*_I18N` dictionary and the shared
+  `SHARED_I18N`; the switcher in each app's header updates text reactively
 
 ## Deployment
 

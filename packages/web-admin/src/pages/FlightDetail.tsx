@@ -7,7 +7,7 @@ import { colorToken } from "@auction/web-shared";
 import { weighted } from "@auction/core";
 import { computeBidDistribution, BC_DIST_COLORS, EXIT_DIST_COLORS } from "@auction/web-shared";
 import { BarChart, MetricCard, Pill, SeatMap, SectionLabel } from "@auction/web-shared";
-import { useLocale } from "@auction/web-shared";
+import { useLocale } from "../locale";
 import { useTiersById } from "@auction/web-shared";
 import { useBidStatesById } from "@auction/web-shared";
 import { useFlightHaulsById } from "@auction/web-shared";

@@ -9,7 +9,8 @@ import {
 } from "react-router-dom";
 import { EMAIL_TEMPLATE_TYPE, MAIN_TAB } from "@auction/core";
 import type { EmailTemplateType, MainTab } from "@auction/core";
-import { F, T, useFlightsSummary, useLocale } from "@auction/web-shared";
+import { F, T, useFlightsSummary } from "@auction/web-shared";
+import { useLocale } from "./locale";
 import { FlightList } from "./pages/FlightList";
 import { FlightDetail } from "./pages/FlightDetail";
 import { GlobalRules } from "./pages/GlobalRules";

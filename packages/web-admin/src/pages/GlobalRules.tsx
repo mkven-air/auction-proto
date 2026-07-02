@@ -16,7 +16,7 @@ import type {
 import { T } from "@auction/web-shared";
 import { useTiersById } from "@auction/web-shared";
 import { colorToken } from "@auction/web-shared";
-import { useLocale } from "@auction/web-shared";
+import { useLocale } from "../locale";
 import { NumInput, Pill, SectionLabel, Toggle } from "@auction/web-shared";
 import { adminBackend } from "@auction/web-shared";
 import { queryKeys } from "@auction/web-shared";
@@ -215,7 +215,7 @@ function buildRuleCopy(txt: Txt) {
   ];
 
   const featureStatusLabels: Record<FeatureStatusKey, string> = {
-    seatBlocker: txt.passenger.products.sb.label,
+    seatBlocker: txt.globalRules.pricingProducts.seatBlock,
     payWithPoints: "Pay with Points",
     crossAirlineUpgrades: "Cross Airline",
     continuousPricing: "Continuous Pricing",

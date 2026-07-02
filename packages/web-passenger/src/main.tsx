@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { LocaleProvider } from "@auction/web-shared";
+import { LocaleProvider } from "./locale";
 import "@auction/web-shared/index.css";
 import { PassengerBidUI } from "./pages/PassengerBidUI";
 
