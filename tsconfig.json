@@ -3,6 +3,7 @@
   "include": [],
   "references": [
     { "path": "packages/core" },
+    { "path": "packages/api-contracts" },
     { "path": "packages/backend" },
     { "path": "packages/web" },
     { "path": "packages/server" }

@@ -1,7 +1,7 @@
 import { BID_STATES_DATA } from "../../../data/bidStates";
 import type { BidStateRow, LocalizedString } from "@auction/core";
 import type { DbEmulator, EntitySeed } from "../../db/contracts";
-import type { BidStatesService } from "./contracts";
+import type { BidStatesService } from "@auction/api-contracts/admin";
 
 export const bidStatesSeed: EntitySeed = {
   bidStates: BID_STATES_DATA,

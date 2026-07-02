@@ -9,7 +9,7 @@ import type {
   Passenger,
 } from "@auction/core";
 import type { DbEmulator, EntitySeed } from "../../db/contracts";
-import type { BidsService } from "./contracts";
+import type { BidsService } from "@auction/api-contracts/admin";
 import { toBidFilters } from "./utils";
 
 export const bidsSeed: EntitySeed = {

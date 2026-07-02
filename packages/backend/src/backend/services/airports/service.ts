@@ -1,7 +1,7 @@
 import { AIRPORTS_DATA } from "../../../data/airports";
 import type { Airport, LocalizedString } from "@auction/core";
 import type { DbEmulator, EntitySeed } from "../../db/contracts";
-import type { AirportsService } from "./contracts";
+import type { AirportsService } from "@auction/api-contracts/admin";
 import { findAirportsWithLocationByIds, loadAirportsWithLocation } from "./utils";
 
 export const airportsSeed: EntitySeed = {

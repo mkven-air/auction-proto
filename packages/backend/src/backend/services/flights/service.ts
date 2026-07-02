@@ -9,7 +9,7 @@ import type {
 } from "@auction/core";
 import type { DbEmulator, EntitySeed } from "../../db/contracts";
 import { findAirportsWithLocationByIds } from "../airports/utils";
-import type { FlightsService, FlightsSummary } from "./contracts";
+import type { FlightsService, FlightsSummary } from "@auction/api-contracts/admin";
 import { toDbFilters, toFlightQueryParams, toFlightSummaryQueryParams } from "./utils";
 
 export const flightsSeed: EntitySeed = {

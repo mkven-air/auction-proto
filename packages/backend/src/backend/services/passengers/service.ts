@@ -1,7 +1,7 @@
 import { PASSENGERS_DATA } from "../../../data/passengers";
 import type { LocalizedString, Passenger } from "@auction/core";
 import type { DbEmulator, EntitySeed } from "../../db/contracts";
-import type { PassengersService } from "./contracts";
+import type { PassengersService } from "@auction/api-contracts/admin";
 
 // In a real backend this would be the authenticated user's id. For the prototype we
 // pin it to a Platinum bidder so the mobile UI mirrors a real participant.

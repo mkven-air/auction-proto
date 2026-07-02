@@ -1,5 +1,5 @@
 import type { Flight, SeatCell, SeatMapLayout } from "@auction/core";
-import type { SeatMapService } from "./contracts";
+import type { SeatMapService } from "@auction/api-contracts/passenger";
 
 const DEFAULT_SEAT_MAP_BC: SeatMapLayout = [
   [

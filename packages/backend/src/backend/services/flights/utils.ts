@@ -1,5 +1,5 @@
 import type { DbFilter, DbQuery } from "../../db/contracts";
-import type { FlightQuery } from "./contracts";
+import type { FlightQuery } from "@auction/api-contracts/admin";
 
 const SEARCH_FIELDS = ["id", "fromAirportId", "toAirportId", "aircraft"];
 

@@ -1,6 +1,6 @@
 import { DEFAULT_RULES } from "./seed";
 import type { Rules } from "@auction/core";
-import type { RulesService } from "./contracts";
+import type { RulesService } from "@auction/api-contracts/admin";
 
 function cloneRules(rules: Rules): Rules {
   return {

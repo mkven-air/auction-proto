@@ -1,4 +1,9 @@
-import type { EntityTable, FlightQuery, FlightsPage, FlightsSummary } from "@auction/backend";
+import type {
+  EntityTable,
+  FlightQuery,
+  FlightsPage,
+  FlightsSummary,
+} from "@auction/api-contracts/admin";
 import type {
   Airport,
   AirportWithLocation,

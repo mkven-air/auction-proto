@@ -1,7 +1,7 @@
 import { FLIGHT_STATUSES_DATA } from "../../../data/flightStatuses";
 import type { FlightStatusRow, LocalizedString } from "@auction/core";
 import type { DbEmulator, EntitySeed } from "../../db/contracts";
-import type { FlightStatusesService } from "./contracts";
+import type { FlightStatusesService } from "@auction/api-contracts/admin";
 
 export const flightStatusesSeed: EntitySeed = {
   flightStatuses: FLIGHT_STATUSES_DATA,

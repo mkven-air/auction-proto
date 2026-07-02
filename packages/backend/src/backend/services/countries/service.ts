@@ -1,7 +1,7 @@
 import { COUNTRIES_DATA } from "../../../data/countries";
 import type { Country, LocalizedString } from "@auction/core";
 import type { DbEmulator, EntitySeed } from "../../db/contracts";
-import type { CountriesService } from "./contracts";
+import type { CountriesService } from "@auction/api-contracts/admin";
 
 export const countriesSeed: EntitySeed = {
   countries: COUNTRIES_DATA,

@@ -1,5 +1,5 @@
 import type { PassengerConfig } from "@auction/core";
-import type { PassengerConfigService } from "./contracts";
+import type { PassengerConfigService } from "@auction/api-contracts/passenger";
 
 const DEFAULT_PASSENGER_CONFIG: PassengerConfig = {
   flightId: "HY 602",

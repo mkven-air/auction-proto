@@ -1,7 +1,7 @@
 import { CITIES_DATA } from "../../../data/cities";
 import type { City, LocalizedString } from "@auction/core";
 import type { DbEmulator, EntitySeed } from "../../db/contracts";
-import type { CitiesService } from "./contracts";
+import type { CitiesService } from "@auction/api-contracts/admin";
 
 export const citiesSeed: EntitySeed = {
   cities: CITIES_DATA,

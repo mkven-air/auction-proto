@@ -10,14 +10,17 @@ It includes:
 - Passenger-side bidding flow mockup
 - Auto-discovered Entities page (every seeded DB table is rendered)
 
-The codebase is a pnpm monorepo split into three packages:
+The codebase is a pnpm monorepo split into five packages:
 - **`@auction/core`** — shared types, color tokens, and pure domain helpers
-- **`@auction/backend`** — in-memory mock backend (services, DB emulator, seed data)
-- **`@auction/web`** — the Vite + React SPA (admin + passenger UI)
-- **`@auction/server`** — NestJS HTTP server that exposes the mock backend under `/api/*`
+- **`@auction/api-contracts`** — pure type surface for the admin and passenger APIs (no runtime code)
+- **`@auction/backend`** — in-memory mock backend (services, DB emulator, seed data) — implements the contracts
+- **`@auction/server`** — NestJS HTTP server that exposes the backend under `/api/*`
+- **`@auction/web`** — the Vite + React SPA (admin + passenger UI) — consumes the contracts via a fetch client
 
-The web app talks to the server over HTTP (via a Vite dev proxy in development).
-Data storage is still fully mocked in-memory inside `@auction/backend`.
+The web app talks to the server over HTTP (via a Vite dev proxy in development,
+`VITE_API_TARGET` in production). Data storage is still fully mocked in-memory
+inside `@auction/backend`; the contract surface stays the same when the mock is
+replaced with a real store.
 
 ## Tech Stack
 
@@ -101,19 +104,26 @@ bash all-checks.sh # runs both scripts
 │   │       ├── domain/weighted.ts     # bid weighted-score formula
 │   │       └── index.ts               # public surface
 │   │
+│   ├── api-contracts/                 # @auction/api-contracts — pure HTTP API surface
+│   │   └── src/
+│   │       ├── services/<name>.ts     # one file per resource service type
+│   │       ├── admin.ts               # AdminBackendClient + admin-only types
+│   │       ├── passenger.ts           # PassengerBackendClient + passenger types
+│   │       └── index.ts               # barrel (used by @auction/backend)
+│   │
 │   ├── backend/                       # @auction/backend — in-memory mock backend
 │   │   ├── src/
 │   │   │   ├── index.ts               # exports adminBackend, passengerBackend,
-│   │   │   │                          #   createBackend, createServiceClient, contracts
+│   │   │   │                          #   createBackend, createServiceClient
 │   │   │   ├── data/<entity>.ts       # per-entity seed data (one file per table)
 │   │   │   └── backend/
-│   │   │       ├── contracts.ts       # combined BackendClient contract (tests)
+│   │   │       ├── contracts.ts       # combined BackendClient (re-exports api-contracts)
 │   │   │       ├── client.ts          # composition root: adminBackend + passengerBackend
 │   │   │       ├── serviceClient.ts   # builds db and both clients
-│   │   │       ├── admin/             # admin client contract + composition
-│   │   │       ├── passenger/         # passenger client contract + composition
+│   │   │       ├── admin/             # admin client composition
+│   │   │       ├── passenger/         # passenger client composition
 │   │   │       ├── db/                # generic DB emulator + contracts
-│   │   │       └── services/<entity>/ # per-entity contracts.ts, service.ts, utils.ts
+│   │   │       └── services/<entity>/ # per-entity service.ts + utils.ts
 │   │   └── tests/                     # backend service + DB emulator suites
 │   │
 │   ├── server/                        # @auction/server — NestJS HTTP server
@@ -164,9 +174,13 @@ bash all-checks.sh # runs both scripts
 ### Package Boundaries
 - `@auction/core` is the shared vocabulary (types, color token union, pure helpers)
   and depends on no other workspace package
+- `@auction/api-contracts` defines the HTTP-facing surface as pure TypeScript
+  types: two subpath exports (`/admin`, `/passenger`) so each frontend can
+  eventually import only the contract it needs. Depends only on `@auction/core`.
+  This package contains no runtime code.
 - `@auction/backend` owns all data and business logic — services, DB emulator,
-  seed data, admin/passenger clients — and depends
-  only on `@auction/core`
+  seed data, admin/passenger clients — and satisfies the contracts. Depends on
+  `@auction/core` + `@auction/api-contracts`
 - `@auction/server` is a thin NestJS transport that wraps a singleton
   `createBackend()` from `@auction/backend` behind REST controllers
 - `@auction/web` never imports `@auction/backend` at runtime; it talks to the
@@ -258,22 +272,24 @@ the `ColorTokenId` union in `@auction/core`.
 ### Adding a New Entity (DB-backed)
 1. Add the type to `packages/core/src/types.ts` and seed data to
    `packages/backend/src/data/<name>.ts`.
-2. Create `packages/backend/src/backend/services/<name>/{contracts,service}.ts`
-   (and `utils.ts` if needed), exporting `<name>Seed` and a
-   `create<Name>Service(db)` factory.
-3. Merge `<name>Seed` into the `createDbEmulator` call in
+2. Define the service contract in
+   `packages/api-contracts/src/services/<name>.ts` (interface only). Include
+   it in `admin.ts` or `passenger.ts` (or both) as a field of the client type.
+3. Create `packages/backend/src/backend/services/<name>/service.ts`
+   (and `utils.ts` if needed), importing the service type from
+   `@auction/api-contracts/admin` (or `/passenger`) and exporting
+   `<name>Seed` + a `create<Name>Service(db)` factory.
+4. Merge `<name>Seed` into the `createDbEmulator` call in
    `packages/backend/src/backend/serviceClient.ts`.
-4. Register the service on the relevant client:
-   `packages/backend/src/backend/admin/{contracts,client}.ts` (and, if the
-   passenger app needs it, expose/delegate it in
-   `packages/backend/src/backend/passenger/{contracts,client}.ts`). Keep
+5. Register the service on the relevant client in
+   `packages/backend/src/backend/admin/client.ts` (and, if the passenger app
+   needs it, in `packages/backend/src/backend/passenger/client.ts`). Keep
    `BackendClient` in `packages/backend/src/backend/contracts.ts` in sync
    for tests.
-5. Expose the endpoints in `packages/server/src/admin/admin.controller.ts`
+6. Expose the endpoints in `packages/server/src/admin/admin.controller.ts`
    (and `passenger/passenger.controller.ts` if applicable) and mirror the
-   shape in `packages/web/src/api/httpBackend.ts` so the web transport stays
-   aligned with the backend contract.
-6. Add a query key in `packages/web/src/queries/keys.ts` and a `use<Name>`
+   shape in `packages/web/src/api/httpBackend.ts`.
+7. Add a query key in `packages/web/src/queries/keys.ts` and a `use<Name>`
    hook under `packages/web/src/queries/` importing `adminBackend` or
    `passengerBackend` from `../api/httpBackend`.
 
