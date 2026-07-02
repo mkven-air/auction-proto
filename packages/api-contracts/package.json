@@ -9,9 +9,11 @@
   "exports": {
     ".": "./src/index.ts",
     "./admin": "./src/admin.ts",
-    "./passenger": "./src/passenger.ts"
+    "./passenger": "./src/passenger.ts",
+    "./schemas": "./src/schemas/index.ts"
   },
   "dependencies": {
-    "@auction/core": "workspace:*"
+    "@auction/core": "workspace:*",
+    "zod": "^4.4.3"
   }
 }

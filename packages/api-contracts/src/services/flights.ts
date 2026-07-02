@@ -6,19 +6,34 @@ import type {
   SortDir,
 } from "@auction/core";
 
+export const FLIGHT_FILTER_FIELDS = [
+  "id",
+  "fromAirportId",
+  "toAirportId",
+  "depAt",
+  "arrAt",
+  "aircraft",
+  "bcFree",
+  "bcTotal",
+  "status",
+  "haul",
+] as const satisfies ReadonlyArray<keyof Flight>;
+
+export type FlightFilterField = (typeof FLIGHT_FILTER_FIELDS)[number];
+
 export type FlightFilter = {
-  field: keyof Flight;
+  field: FlightFilterField;
   op: "eq" | "contains" | "in";
   value: string | number | Array<string | number>;
 };
 
 export type FlightQuery = {
-  search?: string;
-  filters?: FlightFilter[];
-  sortBy?: FlightListSortCol;
-  sortDir?: SortDir;
-  page?: number;
-  pageSize?: number;
+  search?: string | undefined;
+  filters?: FlightFilter[] | undefined;
+  sortBy?: FlightListSortCol | undefined;
+  sortDir?: SortDir | undefined;
+  page?: number | undefined;
+  pageSize?: number | undefined;
 };
 
 export type FlightsSummary = {

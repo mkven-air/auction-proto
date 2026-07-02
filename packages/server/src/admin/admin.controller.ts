@@ -1,7 +1,9 @@
 import { Body, Controller, Get, Param, Post, Put, Query } from "@nestjs/common";
-import type { FlightQuery } from "@auction/backend";
+import type { FlightQuery } from "@auction/api-contracts/admin";
+import { FlightQuerySchema, RulesSchema } from "@auction/api-contracts/schemas";
 import type { BidProduct, Rules } from "@auction/core";
 import { backend, parseIds } from "../backend/instance.js";
+import { ZodValidationPipe } from "../pipes/zodValidation.js";
 
 const admin = backend.admin;
 
@@ -13,7 +15,7 @@ export class AdminController {
   }
 
   @Post("flights/query")
-  flightsQuery(@Body() query: FlightQuery) {
+  flightsQuery(@Body(new ZodValidationPipe(FlightQuerySchema)) query: FlightQuery) {
     return admin.flights.query(query);
   }
 
@@ -53,7 +55,7 @@ export class AdminController {
   }
 
   @Put("rules")
-  updateRules(@Body() rules: Rules) {
+  updateRules(@Body(new ZodValidationPipe(RulesSchema)) rules: Rules) {
     return admin.rules.update(rules);
   }
 

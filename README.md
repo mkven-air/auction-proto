@@ -200,6 +200,12 @@ bash all-checks.sh # runs both scripts
   uses relative URLs in both dev and production
 - `httpBackend.ts` exports objects with the same shape as `adminBackend` /
   `passengerBackend`, so query hooks are agnostic to the transport
+- Request bodies for mutation endpoints are validated at runtime with Zod
+  schemas from `@auction/api-contracts/schemas`, applied via a small
+  `ZodValidationPipe` in `packages/server/src/pipes/`. Invalid payloads get
+  a `400 Bad Request` with a JSON error tree (missing fields, wrong types,
+  disallowed enum values). Currently guarded: `POST /admin/flights/query`
+  and `PUT /admin/rules`.
 
 ### Modular Features (web)
 - Each major UI panel lives in `packages/web/src/pages/` as a self-contained module
