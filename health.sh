@@ -46,4 +46,11 @@ fi
 echo "=== Vulnerability audit ==="
 pnpm audit --audit-level high
 
+echo "=== Docker image scan (Trivy) ==="
+if ! command -v trivy >/dev/null 2>&1; then
+  echo "trivy is not installed. Install it: https://trivy.dev/latest/getting-started/installation/"
+  exit 1
+fi
+bash compose/scan.sh
+
 echo "Health checks passed."

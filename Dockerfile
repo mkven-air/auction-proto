@@ -35,14 +35,20 @@ FROM node:22-alpine
 # Patch base image
 RUN apk update && apk upgrade --no-cache && rm -rf /var/cache/apk/*
 
-# Strip bundled package managers that we don't use at runtime
+# Strip bundled package managers that we don't use at runtime (pnpm-only,
+# and this stage never installs anything — deps are copied from the builder)
 RUN rm -rf \
     /usr/local/lib/node_modules/npm \
     /usr/local/bin/npm \
     /usr/local/bin/npx \
     /opt/yarn-* \
     /usr/local/bin/yarn \
-    /usr/local/bin/yarnpkg
+    /usr/local/bin/yarnpkg \
+    /root/.cache/node \
+    /usr/local/lib/node_modules/corepack \
+    /usr/local/bin/corepack \
+    /usr/local/bin/pnpm \
+    /usr/local/bin/pnpx
 
 # Non-root user
 RUN addgroup -S app && adduser -S app -G app

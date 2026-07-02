@@ -86,10 +86,23 @@ pnpm test             # vitest run
 Project check scripts in repo root:
 
 ```bash
-bash check.sh      # format + lint + typecheck + tests
-bash health.sh     # gitleaks + outdated deps + security audit
-bash all-checks.sh # runs both scripts
+bash check.sh       # format + lint + typecheck + tests
+bash health.sh      # gitleaks + outdated deps + audit + Trivy image scan
+bash all-checks.sh  # runs both scripts
+bash compose/scan.sh # build + Trivy-scan the server image (--all also scans base images)
 ```
+
+`health.sh` runs a Trivy scan of the production server image and **fails if
+`trivy` is not installed**. Install it once (not into the repo):
+
+```bash
+curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
+  | sudo sh -s -- -b /usr/local/bin
+```
+
+Because the pre-commit hook runs `all-checks.sh`, each commit builds the Docker
+image and scans it. Use `SKIP_SIMPLE_GIT_HOOKS=1 git commit …` to bypass in a
+pinch.
 
 ## Project Structure
 
